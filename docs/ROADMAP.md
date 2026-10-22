@@ -206,7 +206,9 @@ runs them, the unit tests, and the import rule, and prints a line the agent quot
 Every eighth commit is a tithe (R-012): no result changes, the agent's environment improves. Every
 phase ends with a tithe pass: re-measure `docs/AGENT.md`, read `CLAUDE.md` as a new agent would, run
 the fresh-agent trial (a copy of the repository, an agent told only a task phrased as a proposal,
-scored on whether it opened the right files first and changed nothing).
+scored on whether it opened the right files first and changed nothing). The task and its pass
+condition are phrased fresh for each run and written nowhere the agent can read until it is over;
+reads are counted by file, and `CLAUDE.md` does not count, since the tool loads it (R-020).
 
 | Metric | Phase 0 target | Why it matters to the agent |
 | --- | --- | --- |
@@ -254,7 +256,7 @@ working with agents in cloud sessions, and are the team's own.
     *Check:* every doc test passes on the empty project; `test_ghost` fails on a deliberately
     conflicting pair, then passes when one is superseded.
 0.6 **Tithe pass 0:** the fresh-agent trial on the empty project; its task and pass condition are
-    in J-012, written after the run (R-020, proposed).
+    in J-012, written after the run (R-020).
 
 Decisions recorded: R-001, R-010, R-011 settled; R-002 to R-009 and R-012 to R-014 in force.
 

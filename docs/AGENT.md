@@ -15,9 +15,9 @@ until a metric is first measured within its target it is "not armed" and not com
   before a task.
 - **AGT-04 A routing row opens at most five files, none over 400 lines.**
 - **AGT-05 Every generated artifact has a command that regenerates it and a test that fails when it
-  is stale**: the feature table, the goldens, the metrics table. One exception, R-019: the largest
-  source file is re-recorded at tithe passes (`scripts/metrics.py --write`), and between them only its
-  target is held.
+  is stale**: the feature table, the goldens, the metrics table. Two exceptions, R-019: the largest
+  source file and docs per source line are re-recorded at tithe passes (`scripts/metrics.py
+  --write`), and between them only their targets are held.
 - **AGT-06 Every number carries its trials line and its dispersion** (P-07). An agent never reports a
   metric from a run that wrote no line.
 - **AGT-07 The session is the machine.** There is no CI and no local run (R-003);

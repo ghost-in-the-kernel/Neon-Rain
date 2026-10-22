@@ -28,7 +28,7 @@ def test_the_table_is_not_stale(root: Path) -> None:
 
 
 def test_a_metric_recorded_at_tithe_is_still_judged_against_its_target() -> None:
-    assert metrics.AT_TITHE == ("Largest source file (lines)",)
+    assert metrics.AT_TITHE == ("Largest source file (lines)", "Docs lines per source line")
     assert agent_table.verdict("< 400", "150", 401) == "regressed"
 
 

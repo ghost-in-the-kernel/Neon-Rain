@@ -88,7 +88,7 @@ lint is configured.
 ## Step 0.6, tithe pass 0 — done (J-012)
 
 Run in a fresh cloud session. Its task and pass condition are in J-012 and nowhere ahead of a run
-(R-020, proposed: the first run read them here and graded itself). Two things it showed are fixed;
+(R-020: the first run read them here and graded itself). Two things it showed are fixed;
 the others wait below, at 1.4 and with Ghost.
 
 ## For Opus: phase 1, the harness — the shape of the work
@@ -115,10 +115,8 @@ Three things about phase 1 that are easy to get wrong:
   with Ghost): is opening from zero weight and closing at the end of a test span charged; is cost
   charged per overlapping sleeve (HAR-07's h sleeves, each at 1/h) or on the netted book; is turnover
   summed over both legs; and is a position closed by a delisting charged.
-- **The first file under `neonrain/` makes "Docs lines per source line" measurable**, so AGENT.md
-  goes stale on every commit until it is recorded at tithes like the largest file (R-019); until
-  Ghost says so, rerun `scripts/metrics.py --write` after each such commit. It starts "not armed"
-  (far past 0.35) and is not failed.
+- **The first file under `neonrain/` makes "Docs lines per source line" measurable.** It is
+  recorded at tithes (R-019) and starts "not armed" (far past 0.35), so it fails nothing.
 - **The goldens are written at 1.7, not before.** A golden recorded while the harness is still
   changing records a bug as the expected answer.
 

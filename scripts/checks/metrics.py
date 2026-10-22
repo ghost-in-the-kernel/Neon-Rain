@@ -7,7 +7,7 @@ from scripts.checks import ghost, results
 SOURCE_DIRS: tuple[str, ...] = ("neonrain", "scripts", "test")
 TIMED: tuple[str, ...] = ("Fast loop (s)", "Full check, `precommit.sh` (min)")
 # Decision: R-019 (recorded at tithe passes: judged against its target every run, never stale-checked)
-AT_TITHE: tuple[str, ...] = ("Largest source file (lines)",)
+AT_TITHE: tuple[str, ...] = ("Largest source file (lines)", "Docs lines per source line")
 
 
 def python_lines(root: Path, tops: tuple[str, ...]) -> list[int]:

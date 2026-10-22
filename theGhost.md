@@ -347,17 +347,19 @@ it is `in force`.
 - **See also:** R-001, R-017
 - **subject:** toolchain
 
-### R-019: The largest source file is recorded at tithe passes, not on every commit
-- **Decision:** AGENT.md's "Largest source file (lines)" is re-recorded only at a tithe pass, with
-  `scripts/metrics.py --write`. Every run still judges it against its target (under 400 lines, and
-  an armed metric may not pass it); only the check that the recorded number is current skips it.
+### R-019: The largest source file and docs per source line are recorded at tithe passes, not on every commit
+- **Decision:** AGENT.md's "Largest source file (lines)" and "Docs lines per source line" are
+  re-recorded only at a tithe pass, with `scripts/metrics.py --write`. Every run still judges each
+  against its target (an armed metric may not pass it); only the check that the recorded number is
+  current skips them. (Docs per source line added 2026-10-22, J-012.)
 - **Why:** The largest file grows with nearly every commit that adds a test, so a stale-check on its
   exact count forced a table rewrite five times in step 0.5 (J-011) and recorded nothing a reader
   needs between tithes. The target is what protects the agent; the exact count is a tithe's
-  measurement (R-012). Narrows AGT-05 by this one metric.
+  measurement (R-012). Docs per source line moves with every commit under `neonrain/` the same way
+  (J-012). Narrows AGT-05 by these two metrics.
 - **Held by:** `scripts/checks/metrics.py` (`AT_TITHE`); `test/test_metrics.py`; docs/AGENT.md AGT-05.
 - **Source:** proposed by Claude Opus, 2026-10-22 (J-011); Ghost, 2026-10-22: "go with your call on
-  the metric".
+  the metric"; extended to docs per source line on Ghost's word, 2026-10-22: "extend R-019".
 - **Status:** in force
 - **See also:** R-012, R-015
 - **subject:** agent environment
@@ -371,8 +373,8 @@ it is `in force`.
   condition, recognised the test and scored itself against it ("I opened CLAUDE.md first", which the
   tool had done for it). A trial the agent can read is a trial it can pass by reading. One batched
   shell command can read eight files, so a count of tool calls measures nothing.
-- **Held by:** docs/ROADMAP.md §5 (when in force); the journal entry of each trial.
-- **Source:** proposed by Claude Opus, 2026-10-22, from J-012.
-- **Status:** proposed
+- **Held by:** docs/ROADMAP.md §5; the journal entry of each trial.
+- **Source:** proposed by Claude Opus, 2026-10-22, from J-012; Ghost, 2026-10-22: "approve R-020".
+- **Status:** in force
 - **See also:** R-012
 - **subject:** agent environment
