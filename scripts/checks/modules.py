@@ -67,10 +67,10 @@ def file_problems(path: Path, package: Path, allowed: dict[str, list[str]]) -> l
 def problems(root: Path) -> list[str]:
     """Every module rule broken under root/neonrain; [] when there is no neonrain/ yet."""
     spec = json.loads((root / "docs" / "modules.json").read_text())
-    allowed = {name: entry["mayImport"] for name, entry in spec["modules"].items()}
+    # neonrain/__init__.py is held too, as a module that may import nothing of ours.
+    allowed = {name: entry["mayImport"] for name, entry in spec["modules"].items()} | {"__init__": []}
     package = root / "neonrain"
-    files = [path for path in sorted(package.rglob("*.py")) if path.parent != package or path.name != "__init__.py"]
     found = []
-    for path in files:
+    for path in sorted(package.rglob("*.py")):
         found += file_problems(path, package, allowed)
     return found

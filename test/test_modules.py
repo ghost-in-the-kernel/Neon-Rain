@@ -64,3 +64,20 @@ def test_reading_the_clock_is_caught(tmp_path: Path, root: Path) -> None:
 def test_a_module_modules_json_does_not_name_is_caught(tmp_path: Path, root: Path) -> None:
     found = modules.problems(plant(tmp_path, root, {"trading/x.py": "x = 1\n"}))
     assert found == ["neonrain/trading/x.py is in module 'trading', which docs/modules.json does not name"]
+
+
+def test_the_package_init_is_held_too(tmp_path: Path, root: Path) -> None:
+    found = modules.problems(plant(tmp_path, root, {"__init__.py": "import anthropic\nfrom neonrain import models\n"}))
+    assert found == [
+        "neonrain/__init__.py imports anthropic: only scorer imports a model client (MOD-01)",
+        "neonrain/__init__.py imports models: __init__ may import only []",
+    ]
+
+
+def test_every_problem_in_every_file_is_reported(tmp_path: Path, root: Path) -> None:
+    files = {"harness/a.py": "import neonrain.models\nimport neonrain.baselines\n", "ledger/b.py": "import neonrain.universe\n"}
+    assert modules.problems(plant(tmp_path, root, files)) == [
+        "neonrain/harness/a.py imports models: harness may import only ['features', 'targets']",
+        "neonrain/harness/a.py imports baselines: harness may import only ['features', 'targets']",
+        "neonrain/ledger/b.py imports universe: ledger may import only []",
+    ]
