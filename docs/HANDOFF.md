@@ -5,7 +5,7 @@ finished. This file says what the next session should actually do, and what it m
 
 ## Where the project stands (2026-10-22)
 
-Phase 0 is most of the way done: every founding document exists, `theGhost.md` holds R-001 to R-018,
+Phase 0 is most of the way done: every founding document exists, `theGhost.md` holds R-001 to R-019,
 step 0.3 has been measured, and **step 0.5 is done** (J-011): the lock is compiled, every founding
 document is held by a test in `test/` whose checks live in `scripts/checks/`, and
 `scripts/precommit.sh` is the gate (fast loop, ruff, mutmut with every survivor explained, the

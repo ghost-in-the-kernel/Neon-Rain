@@ -21,9 +21,15 @@ def test_every_metric_measured_is_in_the_table_and_back(root: Path) -> None:
 
 def test_the_table_is_not_stale(root: Path) -> None:
     rows, values = real(root)
-    stale = {name: (rows[name]["measured"], agent_table.shown(value)) for name, value in values.items()
+    recorded = {name: value for name, value in values.items() if name not in metrics.AT_TITHE}
+    stale = {name: (rows[name]["measured"], agent_table.shown(value)) for name, value in recorded.items()
              if value is not None and agent_table.number(rows[name]["measured"]) != value}
     assert stale == {}, "run .venv/bin/python scripts/metrics.py --write and review the diff"
+
+
+def test_a_metric_recorded_at_tithe_is_still_judged_against_its_target() -> None:
+    assert metrics.AT_TITHE == ("Largest source file (lines)",)
+    assert agent_table.verdict("< 400", "150", 401) == "regressed"
 
 
 def test_no_armed_metric_regressed(root: Path) -> None:
