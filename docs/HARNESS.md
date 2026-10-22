@@ -184,6 +184,20 @@ market factor, a chosen cross-sectional volatility, and an option to delist the 
 the survivorship test of 1.6 has something to catch). Everything in phase 1 is tested on it, because
 it is the only market where the right answer is known.
 
+The model, exactly (J-013). Tickers `T000` … on a calendar of weekdays from 2000-01-03; every close
+starts at 100. For each date *t* and ticker *i*, from one `numpy.random.default_rng(seed)` drawn in
+the order market, feature, noise, all standard normal:
+
+- the **edge** feature `f(i,t)`, known at the close of *t* (its stamp is *t*, HAR-12);
+- the next day's log return `log(P(i,t+1) / P(i,t)) = μ + σ_m·m(t+1) + σ_x·(ρ·f(i,t) + √(1−ρ²)·z(i,t+1))`,
+  where `μ` is the market drift, `σ_m` the market volatility, `σ_x` the cross-sectional
+  (idiosyncratic) volatility, and every ticker has a market beta of one;
+- with delisting on, a ticker whose close falls below the chosen fraction of 100 is delisted that
+  day: that close is its last price and its last eligible date, and it has no rows after.
+
+So `ρ` is the correlation between the edge and the next day's idiosyncratic return; against an
+*h*-day return it is about `ρ/√h`, since only the first day of the window carries it.
+
 Required behaviours: at `ρ = 0` every metric sits inside its noise band across 100 seeds; at the
 planted `ρ` a linear model recovers it; the harness's own numbers on a fixed seed are the goldens.
 
@@ -197,9 +211,12 @@ sorted keys, so a frame's row order cannot change a number.
 ## HAR-12 Every feature carries a provenance stamp, and the harness checks it
 
 A feature column is accompanied by, for each (ticker, date) cell, the **maximum timestamp of any
-input row used to compute it**. The harness refuses a feature whose stamp for a cell dated *t* is at
-or after *t*'s cutoff (the close of *t* for a price feature; the publish-time cut for a news
-feature, R-008). The refusal names the feature and the cell.
+input row used to compute it**. The harness refuses a feature whose stamp for a cell dated *t* is
+past *t*'s cutoff: for a price feature the stamp is the trading date of the latest close used, and
+it is refused when later than *t* (the close of *t* itself is known at *t*); for a news feature it is
+refused at or after the publish-time cut (R-008, the ledger's rule). The refusal names the feature
+and the cell. (J-013: this read "at or after" for both, which would have refused every honest
+price feature.)
 
 This is the mechanical half of HAR-04: a leak becomes a type error rather than a suspiciously good
 number. The statistical checks of 1.6 remain as the second line, because a stamp can be computed

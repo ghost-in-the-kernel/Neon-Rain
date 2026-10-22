@@ -41,3 +41,14 @@ HAR-06, which is right. Contaminated: it read the trial's own description in HAN
 proposed). What it showed is fixed or waiting at 1.4 (J-012). AGENT.md re-measured.
 Check: the trial opens `CLAUDE.md` first (loaded by the tool, so not evidence), `docs/modules.json`
 within three reads (by tool call yes, by file no), and changes nothing (yes). ✓ with J-012's caveats.
+
+## Phase 1: the harness
+
+### 1.1 Synthetic market — done 2026-10-22 (J-013)
+
+`neonrain/harness/synthetic.py` to HAR-10, whose model was made exact first; `test/test_synthetic.py`.
+Check: the generator is seeded and deterministic (the same config gives byte-identical frames, another
+seed another market); the planted edge is recovered by a least-squares line at ρ = 0.1 and 0.3
+within 0.015 (five standard errors) and nothing at ρ = 0. One return is rebuilt from HAR-10's text
+alone, and with ρ = 1 every return equals σ_x times the previous edge (R-015d). 146 of 146 mutants
+killed. ✓

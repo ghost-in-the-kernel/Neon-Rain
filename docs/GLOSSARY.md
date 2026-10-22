@@ -17,6 +17,7 @@ apart. Add a term before using a new word for a concept (Katana R-039's rule).
 | **feature** | one input column of the feature table, per ticker per day | signal (a signal is a trading rule's output), input, indicator (an indicator is one family of features) |
 | **feature family** | features that share a source and an ablation: price-derived, indicator, news | feature group, feature set |
 | **harness** | the evaluation code: splits, cost model, metrics, trials file (R-002, frozen) | backtester, framework, oracle (Katana's word; here the harness has no oracle but the future) |
+| **synthetic market** | the seeded fake market of HAR-10, with an edge of known strength planted in it | simulation, toy data, fake market |
 | **fold** | one walk-forward step: its training span, embargo and test span | split (a split is the whole grid), slice |
 | **group** | one of *k* seeded partitions of the universe by ticker, held out in turn (R-014) | cluster, bucket |
 | **dispersion** | the spread of a metric across folds and across groups: standard deviation and range | variance (a statistic, not the report), error bars |

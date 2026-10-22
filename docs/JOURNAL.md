@@ -231,3 +231,31 @@ failure), **Cost**, **Class** (`contradiction`, `ambiguity`, `failure-caught`, `
 - **Caught by:** the trial (b, and a); reading its transcript (the contamination).
 - **Cost:** $0.40 for the trial; a few minutes lost to the short commit id.
 - **Class:** trial
+
+### J-013 Step 1.1: the synthetic market, and two contract sentences that could not be built
+- **Who:** Ghost, Claude Opus.
+- **Intent:** ROADMAP 1.1 / HAR-10: a seeded market with a planted edge of known strength.
+- **Found:** (a) HAR-10 named the edge but not what it predicts; a choice in code would have been a
+  decision hidden in a function. (b) HAR-12 refused a feature stamped "at or after" the close of its
+  date, which every honest price feature is (a feature from the close of *t* is known at *t*): built
+  as written, the stamp check would have refused them all. (c) Mutation testing reported 57
+  "survivors" of the generator that were timeouts; run by hand, each was killed at once. mutmut
+  forked its workers from the process that had run the suite, and polars's thread pool deadlocks
+  across a fork. (d) After that, six real survivors: the noise's sign and `ρ**3` for `ρ**2` (too small
+  for a statistical test to see), `<=` for `<` at the delisting line, a dropped frame schema (only
+  an empty market shows it), and a missing calendar (the determinism test compared None with None).
+- **Options:** (a) the edge predicts the next day's idiosyncratic return, so against an *h*-day
+  return it thins to about ρ/√h and the four horizons differ for a reason (taken), or a persistent
+  edge (more parameters, no test that needs it yet). (c) one thread for polars in the tests, or
+  mutmut's fork server (taken: it isolates the cause without changing what the tests run).
+- **Resolved:** HAR-10's model written exactly before the code; HAR-12 reads "later than *t*" for
+  price features and keeps "at or after" for news (the ledger's cut). The generator built to it;
+  the six survivors killed by tests (one return rebuilt from HAR-10's text alone, the line case,
+  the empty market, the calendar's value) and the slow kill made fast (the test's join declares
+  itself one-to-one). Glossary: "synthetic market".
+- **Touched:** docs/HARNESS.md (HAR-10, HAR-12), docs/GLOSSARY.md, `neonrain/`, test/test_synthetic.py,
+  `pyproject.toml`, docs/modules.json (entry point), TODO.md (phase 1's items), docs/DONE.md,
+  docs/HANDOFF.md.
+- **Caught by:** writing the code against the contract (a, b); mutmut, then running its mutants by
+  hand (c, d).
+- **Class:** ambiguity

@@ -21,6 +21,41 @@ round-trips a 1 MB file by content hash through the artifacts repository.
 
 ## Phase 1: the harness
 
+Nothing under `neonrain/models/` or `neonrain/baselines/` begins until 1.6 passes (R-002).
+
+### 1.2 Targets
+
+Check: `test/test_targets.py` on a hand-built ten-day, three-ticker series.
+
+### 1.3 Splits
+
+Check: no training label's horizon window overlaps any test date; every ticker is in exactly one
+group; the grid is reproducible from a seed.
+
+### 1.4 Cost model and metrics
+
+Check: a zero-edge strategy on the synthetic market reports a deflated Sharpe inside its noise band
+after costs across 100 seeds. First, HAR-06 answers the four questions in docs/HANDOFF.md (J-012).
+
+### 1.5 The trials file
+
+Check: every harness run appends to `harness/trials.tsv`; `docs/RESULTS.md`'s test refuses a number
+with no line.
+
+### 1.6 Adversarial tests
+
+Check: every test of ROADMAP 1.6 red on the broken input, green on the honest one; the mirror written
+blind (R-015c).
+
+### 1.7 Freeze
+
+Check: `harness/goldens/` written from the synthetic market; a harness change after it is a commit
+with every golden identical or a decision saying why not.
+
+### 1.8 Tithe pass 1
+
+Check: AGENT.md re-measured; a fresh-agent trial run under R-020.
+
 ## Phase 2: real data
 
 ## Phase 3: baselines

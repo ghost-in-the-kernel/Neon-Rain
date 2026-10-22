@@ -5,12 +5,10 @@ finished. This file says what the next session should actually do, and what it m
 
 ## Where the project stands (2026-10-22)
 
-Phase 0 is done but for Ghost's items (0.2, 0.4): every founding document exists, `theGhost.md` holds R-001 to R-020,
-step 0.3 has been measured, and **step 0.5 is done** (J-011): the lock is compiled, every founding
-document is held by a test in `test/` whose checks live in `scripts/checks/`, and
-`scripts/precommit.sh` is the gate (fast loop, ruff, mutmut with every survivor explained, the
-metrics), and 0.6's fresh-agent trial has run (J-012). There is still no `neonrain/`: **next is
-phase 1, step 1.1**, below. No model, no data, no result.
+Phase 0 is done but for Ghost's items (0.2, 0.4), and **phase 1 has begun: 1.1, the synthetic
+market, is done** (J-013): `neonrain/harness/synthetic.py`, its model written exactly into HAR-10
+first. `theGhost.md` holds R-001 to R-020. **Next is 1.2, targets** (`neonrain/targets.py`, R-004,
+HAR-02), tested on a hand-built ten-day, three-ticker series. No real data, no model, no result.
 
 Two decisions are `proposed` and must not be built on (`TODO.md` 0.2): **R-011** (license, Ghost's
 alone) and **R-016** (data and artifacts through a second GitHub repository, from 0.3's measurement).
@@ -111,6 +109,9 @@ Three things about phase 1 that are easy to get wrong:
   independent, deliberately naive implementation of the metrics. Then compare on the synthetic
   market. If you write both sides, you have written a mirror that agrees with itself on every shared
   mistake, and phase 1's most important check is worthless.
+- **Mutation testing runs workers from a fork server** (`pyproject.toml`): polars's thread pool
+  does not survive a plain fork, and the synthetic market's mutants deadlocked into timeouts that
+  looked like survivors (J-013). A run of timeouts is the first thing to suspect if it recurs.
 - **HAR-06 must answer four questions before 1.4's code** (J-012; the contract is Fable's to write,
   with Ghost): is opening from zero weight and closing at the end of a test span charged; is cost
   charged per overlapping sleeve (HAR-07's h sleeves, each at 1/h) or on the netted book; is turnover

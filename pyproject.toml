@@ -23,7 +23,10 @@ ignore = ["B905"]
 "scripts/probe/reachability.py" = ["E501"]
 
 [tool.mutmut]
-# R-015(a): every line the tests are trusted to hold. neonrain/ joins when its first module exists.
-source_paths = ["scripts/checks/"]
+# R-015(a): every line the tests are trusted to hold.
+source_paths = ["scripts/checks/", "neonrain/"]
+# Workers fork from a clean server, not from the process that ran the suite: polars's thread pool does not
+# survive a fork, and forked mutants of the synthetic market deadlocked into timeouts (J-013).
+process_isolation = "forkserver"
 # The doc tests read the documents themselves, so the copy mutmut tests in carries them.
 also_copy = ["docs/", "data/", "harness/", "theGhost.md", "TODO.md", "CLAUDE.md", "README.md", "requirements.lock", "scripts/probe/", "scripts/metrics.py"]
