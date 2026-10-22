@@ -29,13 +29,15 @@ at the plan.
 | Reporting a number | `docs/RESULTS.md`, `harness/trials.tsv` | P-07, R-014 | `test/test_results.py` |
 | A bias, a leak, a failed hypothesis | `docs/FINDINGS.md` | P-03 | |
 | The agent's environment: metrics | `docs/AGENT.md`, `scripts/metrics.py` | `docs/ROADMAP.md` §5 | `test/test_metrics.py` |
+| A surviving mutant | `docs/MUTATION.md` | R-015 | `scripts/precommit.sh` |
 | The supply chain: a dependency, a config | `requirements.lock`, `docs/SUPPLY-CHAIN.md` | the binding rules below | `test/test_supply_chain.py` |
 
 ## Commands
 
 `pip install -r requirements.lock` once per session (lockfile only). `pytest test/ -q` is the fast
 loop: doc tests and unit tests, no data, no model, no network. `scripts/precommit.sh` is the check
-before a push: the fast loop, the import rule, the metrics line; quote its last line in the commit.
+before a push: the fast loop, the import rule, the mutation score (R-015), the metrics line; quote
+its last line in the commit.
 Data and artifacts are fetched, never committed: `scripts/fetch/<dataset>.py` and
 `scripts/fetch/artifacts.py` (R-006, R-010).
 

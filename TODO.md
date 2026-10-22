@@ -11,7 +11,7 @@ and the first open item has a check.
 ### 0.2 Ghost's three decisions
 
 Check: `test/test_ghost.py` passes and no phase-1 step cites a `proposed` decision. Waiting on
-Ghost: R-001 (Python), R-011 (license). R-010 (artifact store) waits on 0.3.
+Ghost: R-011 (license). R-001 is in force (Python, 2026-10-22). R-010 (artifact store) waits on 0.3.
 
 ### 0.3 Reachability
 
@@ -25,7 +25,8 @@ Check: `scripts/fetch/artifacts.py` round-trips a 1 MB file by content hash.
 ### 0.5 The doc tests and `precommit.sh`
 
 Check: every doc test passes on the empty project; `test_ghost` fails on a deliberately conflicting
-pair, then passes when one is superseded.
+pair, then passes when one is superseded; `precommit.sh` runs `mutmut` and refuses an unexplained
+survivor (R-015); the readability lint of R-015(b) is configured.
 
 ### 0.6 Tithe pass 0
 

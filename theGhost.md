@@ -31,9 +31,11 @@ it is `in force`.
   install is the supply-chain rule (docs/SUPPLY-CHAIN.md).
 - **Held by:** `requirements.lock`; `scripts/precommit.sh` refuses an import not in it;
   `test/test_supply_chain.py`.
-- **Source:** proposed by Claude Fable, 2026-10-22, for Ghost's word.
-- **Status:** proposed
-- **See also:** R-003, R-009
+- **Source:** proposed by Claude Fable, 2026-10-22; decided by Ghost, 2026-10-22: "lets do python.
+  the drawback is my ability to audit code by hand, so I am going to be relying more heavily on
+  testing here." That drawback is answered by R-015.
+- **Status:** in force
+- **See also:** R-003, R-009, R-015
 - **subject:** toolchain
 
 ### R-002: The harness before the model, and the harness is frozen before the first model trains
@@ -261,4 +263,29 @@ it is `in force`.
 - **Source:** Ghost, 2026-10-22; shaped on recommendation.
 - **Status:** in force
 - **See also:** R-005, R-007
+- **subject:** method
+
+### R-015: Tests are the audit: mutation-tested, readable Python, and the mirror written blind
+- **Decision:** Because Ghost cannot audit Python by eye the way he can Java, the tests carry the
+  audit. (a) Every unit test runs through mutation testing (`mutmut`, in `scripts/precommit.sh`);
+  a surviving mutant gets a test that kills it or a one-line write-up in `docs/MUTATION.md` saying
+  why it is harmless, as Suite Builder does with Stryker. (b) Code is written to be read by a
+  non-Python reader: type hints on every function, no comprehension over three clauses, no
+  decorator magic, no `*args/**kwargs` in our own signatures, no operator overloading beyond what a
+  library forces, one concept per function under 40 lines, and a docstring that says what the
+  function returns for a concrete input. (c) The independent reimplementations the harness's mirror
+  tests compare against (ROADMAP 1.6) are written by an agent that has not seen the code under test,
+  from the contract in `docs/HARNESS.md` alone. (d) Every number Ghost is asked to trust has a test
+  that computes it by hand on a ten-row example he can check in a spreadsheet.
+- **Why:** Ghost, 2026-10-22, on choosing Python: he will rely more heavily on testing here. A test
+  suite that mutation cannot break is the closest thing to a second reader; readable code is the
+  second; a blind mirror is the only check on the harness's own arithmetic (Katana: a reimplemented
+  oracle agrees with its twin on every shared mistake). (d) is how the non-Python program director
+  stays the project's first reviewer, as he is Katana's.
+- **Held by:** `scripts/precommit.sh` (mutation score reported; a surviving mutant with no
+  `docs/MUTATION.md` line fails); `docs/MUTATION.md`; a lint rule for (b) in `pyproject.toml`
+  (phase 0.5); `test/test_harness_adversarial.py` for (c).
+- **Source:** Ghost, 2026-10-22; shaped on recommendation.
+- **Status:** in force
+- **See also:** R-001, R-002, R-012
 - **subject:** method

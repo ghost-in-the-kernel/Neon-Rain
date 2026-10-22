@@ -43,3 +43,15 @@ failure), **Cost**, **Class** (`contradiction`, `ambiguity`, `failure-caught`, `
 - **Touched:** R-014, R-005 (`See also`), ROADMAP §5, §6 phase 1.3 and 1.6, GLOSSARY (`group`,
   `dispersion`).
 - **Class:** decision
+
+### J-003 Python, and the audit it costs
+- **Who:** Ghost, Claude Fable.
+- **Intent:** Settle R-001.
+- **Found:** Ghost chose Python and named its cost: he cannot audit it by hand as he can Java, so
+  he will lean on testing.
+- **Options:** Java after all (refused by Ghost); Python with ordinary tests (not enough: a test
+  that cannot fail is not a check); Python with mutation-tested tests, readable-code rules, blind
+  mirrors and hand-checkable ten-row examples (taken).
+- **Resolved:** R-001 in force; R-015 added.
+- **Touched:** R-001, R-015, CLAUDE.md (precommit now reports the mutation score), TODO 0.5.
+- **Class:** decision
