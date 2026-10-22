@@ -194,8 +194,8 @@ it is `in force`.
   measurement, not a guess.
 - **Held by:** `scripts/fetch/artifacts.py`; `docs/ROADMAP.md` 0.4.
 - **Source:** proposed by Claude Fable, 2026-10-22.
-- **Status:** proposed
-- **See also:** R-003, R-006
+- **Status:** superseded by R-016
+- **See also:** R-003, R-006, R-016
 - **subject:** environment
 
 ### R-011: Licensing and publication
@@ -289,3 +289,26 @@ it is `in force`.
 - **Status:** in force
 - **See also:** R-001, R-002, R-012
 - **subject:** method
+
+### R-016: Data and artifacts arrive through GitHub as plain git blobs; nothing is fetched live from the workspace
+- **Decision:** (a) Datasets are obtained by Ghost (downloaded on his machine or elsewhere with
+  network access) and pushed to a separate private data repository, `ghost-in-the-kernel/neon-rain-data`,
+  as plain git files under 100 MB each (parquet, chunked by year or by ticker range when larger).
+  (b) The artifact store of R-010 is a second private repository, `ghost-in-the-kernel/neon-rain-artifacts`,
+  same rules, content-addressed: each file is named by its SHA-256 and the main repository records
+  the hash it depends on. (c) `scripts/fetch/<dataset>.py` of R-006 clones or pulls the data
+  repository and verifies the manifest hash; it never reaches any other host. (d) The license of
+  every dataset is checked by Ghost before it enters the data repository; the manifest line says
+  so. Until a news feed is supplied the same way, phase 5 is blocked and phases 1–4 proceed.
+- **Why:** NR-F-01: from this workspace every market-data and news host is refused, GitHub Releases
+  and LFS uploads are refused for this session type, and plain git pushes are the one write that
+  works. A second repository keeps blobs out of the code repository's history (R-006's reason) and
+  keeps the main clone small for the agent (AGT-01). Hash-naming makes artifacts immutable and
+  cheap to verify.
+- **Held by:** `scripts/fetch/`; `data/MANIFEST.md` (a `supplied by` column); `test/test_manifest.py`
+  (every line has a hash and a license); `scripts/probe/reachability.py` (re-run at every phase
+  boundary; a newly reachable host is a journal entry, not a silent change of route).
+- **Source:** measured by Claude Fable, 2026-10-22; decision proposed for Ghost's word.
+- **Status:** proposed
+- **See also:** R-003, R-006, R-010
+- **subject:** environment

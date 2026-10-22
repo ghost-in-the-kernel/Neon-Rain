@@ -55,3 +55,20 @@ failure), **Cost**, **Class** (`contradiction`, `ambiguity`, `failure-caught`, `
 - **Resolved:** R-001 in force; R-015 added.
 - **Touched:** R-001, R-015, CLAUDE.md (precommit now reports the mutation score), TODO 0.5.
 - **Class:** decision
+
+### J-004 Reachability
+- **Who:** Claude Fable.
+- **Intent:** ROADMAP 0.3: measure which hosts the workspace can reach before any fetch script is written.
+- **Found:** Every price, news and dataset host refused by the proxy; PyPI and GitHub reachable;
+  GitHub Releases, LFS uploads and REST writes refused for the session type; a plain git blob pushes.
+  The `pip install` of a package was blocked by the session's own policy classifier on the first
+  attempt; `pip download` worked, so PyPI itself is open.
+- **Options:** Fetch from the workspace (impossible); Ghost supplies data through a data repository
+  or the desktop bridge (taken as the proposal); a scheduled task elsewhere with network (parked for
+  the news feed).
+- **Resolved:** NR-F-01 written; R-016 proposed; R-010 superseded by it. A scratch branch
+  `probe-plain` is left on GitHub because the proxy refuses branch deletion; Ghost deletes it.
+- **Touched:** NR-F-01, R-010, R-016, `scripts/probe/reachability.py`.
+- **Caught by:** the probe, by design of 0.3 (F-07).
+- **Cost:** about twenty minutes.
+- **Class:** measurement

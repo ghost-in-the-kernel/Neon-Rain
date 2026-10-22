@@ -11,16 +11,12 @@ and the first open item has a check.
 ### 0.2 Ghost's three decisions
 
 Check: `test/test_ghost.py` passes and no phase-1 step cites a `proposed` decision. Waiting on
-Ghost: R-011 (license). R-001 is in force (Python, 2026-10-22). R-010 (artifact store) waits on 0.3.
+Ghost: R-011 (license). R-001 is in force (Python, 2026-10-22). R-016 (data and artifacts through GitHub) is proposed from 0.3's measurement.
 
-### 0.3 Reachability
+### 0.4 Artifact store and data repository (R-016, waiting on Ghost)
 
-Check: `docs/FINDINGS.md` NR-F-01 lists every candidate data source, news source and artifact
-store as reachable or refused from this workspace.
-
-### 0.4 Artifact store
-
-Check: `scripts/fetch/artifacts.py` round-trips a 1 MB file by content hash.
+Check: `ghost-in-the-kernel/neon-rain-data` and `neon-rain-artifacts` exist; `scripts/fetch/artifacts.py`
+round-trips a 1 MB file by content hash through the artifacts repository.
 
 ### 0.5 The doc tests and `precommit.sh`
 
