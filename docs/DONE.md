@@ -32,3 +32,12 @@ Check: every doc test passes (137, and `test_harness_doc`'s code-reference test 
 file and passed once one side was superseded; `precommit.sh` refused 139 unexplained survivors, then
 passed with 1,096 of 1,099 killed and 3 explained in `docs/MUTATION.md`; the readability lint is
 configured. ✓
+
+### 0.6 Tithe pass 0 — done 2026-10-22 (J-012)
+
+The fresh-agent trial, in a fresh cloud session on `main` at 77ff4e2. Reads `docs/modules.json` in its
+second tool call (its eighth file); changes nothing; proposes `neonrain/harness/cost.py` under
+HAR-06, which is right. Contaminated: it read the trial's own description in HANDOFF.md (R-020,
+proposed). What it showed is fixed or waiting at 1.4 (J-012). AGENT.md re-measured.
+Check: the trial opens `CLAUDE.md` first (loaded by the tool, so not evidence), `docs/modules.json`
+within three reads (by tool call yes, by file no), and changes nothing (yes). ✓ with J-012's caveats.

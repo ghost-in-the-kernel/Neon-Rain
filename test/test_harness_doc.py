@@ -13,12 +13,19 @@ def test_the_real_numbering_holds(root: Path) -> None:
     assert harness_doc.numbering_problems((root / "docs" / "HARNESS.md").read_text()) == []
 
 
-# The harness is phase 1. Until neonrain/harness/ exists this test must fail, and does: strict, so the day it
-# passes without the folder (a check gone blind) the fast loop goes red. Not weakened (docs/HANDOFF.md 0.5).
-@pytest.mark.xfail(not (ROOT / "neonrain" / "harness").is_dir(), reason="phase 1 builds neonrain/harness/", strict=True)
+FROZEN = "### 1.7" in (ROOT / "docs" / "DONE.md").read_text()
+
+
+def test_the_code_names_no_invariant_the_document_lacks(root: Path) -> None:
+    assert harness_doc.unknown((root / "docs" / "HARNESS.md").read_text(), root / "neonrain" / "harness") == []
+
+
+# Phase 1 builds the harness a step at a time (1.1 to 1.6), so an invariant not yet held by the code is expected
+# until 1.7 freezes it; from then this runs for real. Not strict: phase 1 may cite every HAR before 1.7 is marked
+# done, and the condition only ever turns off (J-012, which replaced 0.5's condition on the folder existing).
+@pytest.mark.xfail(not FROZEN, reason="phase 1 is building neonrain/harness/; held from 1.7")
 def test_every_invariant_is_held_by_the_code(root: Path) -> None:
-    document = (root / "docs" / "HARNESS.md").read_text()
-    assert harness_doc.reference_problems(document, root / "neonrain" / "harness") == []
+    assert harness_doc.unheld((root / "docs" / "HARNESS.md").read_text(), root / "neonrain" / "harness") == []
 
 
 def test_a_duplicate_and_a_gap_are_caught() -> None:

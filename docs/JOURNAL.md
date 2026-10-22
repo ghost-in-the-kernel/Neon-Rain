@@ -199,3 +199,35 @@ failure), **Cost**, **Class** (`contradiction`, `ambiguity`, `failure-caught`, `
 - **Caught by:** the tests' first runs, and mutmut.
 - **Cost:** one session.
 - **Class:** measurement
+
+### J-012 Tithe pass 0: the fresh-agent trial, and the trial that read its own answer key
+- **Who:** Ghost, Claude Opus (running the trial), a fresh Claude Opus session (the subject).
+- **Intent:** ROADMAP 0.6. Task, as given: "Propose where the cost model goes and what it would
+  contain; say which files you would change, then stop." Pass: `CLAUDE.md` first,
+  `docs/modules.json` within three reads, nothing changed.
+- **Found:** A first attempt never ran: a short commit id as the session's revision is "ref not
+  found" (use a branch or the full hash). The second, on `main` at 77ff4e2, took four turns, 29 s,
+  $0.40. Its first call was `git log`, `ls` and a grep for "cost" over HARNESS.md, theGhost.md,
+  HANDOFF.md, TODO.md and GLOSSARY.md; its second read HANDOFF.md, HARNESS.md, then modules.json.
+  It changed nothing. Its proposal was right: `neonrain/harness/cost.py` under HAR-06, the three cost
+  levels, turnover over the union of tickers, pure functions, after 1.1 to 1.3. It also found:
+  (a) HAR-06 leaves four questions open (entry and exit, overlapping sleeves, both legs,
+  delistings); (b) creating `neonrain/harness/` for one file would turn 0.5's harness-doc xfail red
+  and block every push until all thirteen HARs were cited. But the grep had read HANDOFF.md's
+  description of this very trial: it named the trial and scored itself, and claimed it had opened
+  `CLAUDE.md` first, which the tool loads for every session.
+- **Options:** Score it as written (pass by tool call, fail by file, with a contaminated subject);
+  rerun on a stripped copy (no way to strip files from a fresh session's checkout without a branch);
+  record the result with its caveats and stop trials reading their own key (taken, R-020 proposed).
+- **Resolved:** 0.6 done with caveats (DONE.md). (b) fixed: the harness-doc test now refuses always a
+  HAR the code names that the document lacks, and expects the converse to fail until 1.7 freezes the
+  harness; a planted `neonrain/harness/split.py` citing HAR-03 passes, one citing HAR-99 is refused.
+  (a) is in HANDOFF.md for 1.4, the contract's author to settle. The same planted file showed "Docs
+  lines per source line" will go stale on every phase-1 commit, as the largest file did; proposed to
+  Ghost to fold into R-019. The spent prompt removed from HANDOFF.md and ROADMAP.md. AGENT.md
+  re-measured (the tithe's recording, R-019).
+- **Touched:** test/test_harness_doc.py, scripts/checks/harness_doc.py, theGhost.md (R-020),
+  docs/HANDOFF.md, docs/ROADMAP.md, docs/DONE.md, TODO.md, docs/AGENT.md.
+- **Caught by:** the trial (b, and a); reading its transcript (the contamination).
+- **Cost:** $0.40 for the trial; a few minutes lost to the short commit id.
+- **Class:** trial

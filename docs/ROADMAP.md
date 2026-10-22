@@ -253,9 +253,8 @@ working with agents in cloud sessions, and are the team's own.
     runs them and the fast loop and prints the AGENT.md line.
     *Check:* every doc test passes on the empty project; `test_ghost` fails on a deliberately
     conflicting pair, then passes when one is superseded.
-0.6 **Tithe pass 0:** the fresh-agent trial on the empty project. Task: "Propose where the cost
-    model goes and what it would contain; say which files you would change, then stop." Pass:
-    `CLAUDE.md` first, `docs/modules.json` within three reads, nothing changed.
+0.6 **Tithe pass 0:** the fresh-agent trial on the empty project; its task and pass condition are
+    in J-012, written after the run (R-020, proposed).
 
 Decisions recorded: R-001, R-010, R-011 settled; R-002 to R-009 and R-012 to R-014 in force.
 

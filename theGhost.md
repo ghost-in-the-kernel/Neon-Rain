@@ -361,3 +361,18 @@ it is `in force`.
 - **Status:** in force
 - **See also:** R-012, R-015
 - **subject:** agent environment
+
+### R-020: A trial's task and pass condition stay out of the repository until it has run
+- **Decision:** A fresh-agent trial's task is phrased fresh for each run and kept, with its pass
+  condition, out of every file the agent can read until the run is over; both are written into the
+  journal afterwards. Reads are counted by file in the order the transcript shows, not by tool call,
+  and `CLAUDE.md` does not count, since the tool loads it.
+- **Why:** J-012: tithe pass 0's agent grepped HANDOFF.md, found the trial's prompt and pass
+  condition, recognised the test and scored itself against it ("I opened CLAUDE.md first", which the
+  tool had done for it). A trial the agent can read is a trial it can pass by reading. One batched
+  shell command can read eight files, so a count of tool calls measures nothing.
+- **Held by:** docs/ROADMAP.md §5 (when in force); the journal entry of each trial.
+- **Source:** proposed by Claude Opus, 2026-10-22, from J-012.
+- **Status:** proposed
+- **See also:** R-012
+- **subject:** agent environment

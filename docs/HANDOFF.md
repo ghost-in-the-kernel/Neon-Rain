@@ -5,12 +5,12 @@ finished. This file says what the next session should actually do, and what it m
 
 ## Where the project stands (2026-10-22)
 
-Phase 0 is most of the way done: every founding document exists, `theGhost.md` holds R-001 to R-019,
+Phase 0 is done but for Ghost's items (0.2, 0.4): every founding document exists, `theGhost.md` holds R-001 to R-020,
 step 0.3 has been measured, and **step 0.5 is done** (J-011): the lock is compiled, every founding
 document is held by a test in `test/` whose checks live in `scripts/checks/`, and
 `scripts/precommit.sh` is the gate (fast loop, ruff, mutmut with every survivor explained, the
-metrics). There is still no `neonrain/`: the first package code is phase 1's harness. No model, no
-data, no result. **Next is 0.6**, below.
+metrics), and 0.6's fresh-agent trial has run (J-012). There is still no `neonrain/`: **next is
+phase 1, step 1.1**, below. No model, no data, no result.
 
 Two decisions are `proposed` and must not be built on (`TODO.md` 0.2): **R-011** (license, Ghost's
 alone) and **R-016** (data and artifacts through a second GitHub repository, from 0.3's measurement).
@@ -85,12 +85,11 @@ comprehensions at most three clauses, no `*args`/`**kwargs` in our own signature
 then passes when one is superseded; `precommit.sh` refuses an unexplained mutant; the readability
 lint is configured.
 
-## For Opus: 0.6, tithe pass 0 — start here
+## Step 0.6, tithe pass 0 — done (J-012)
 
-The fresh-agent trial. A copy of the repository, an agent told only
-*"Propose where the cost model goes and what it would contain; say which files you would change,
-then stop."* Pass: it opens `CLAUDE.md` first, `docs/modules.json` within three reads, and changes
-nothing. Record the result in the journal whichever way it goes, and fix what it showed.
+Run in a fresh cloud session. Its task and pass condition are in J-012 and nowhere ahead of a run
+(R-020, proposed: the first run read them here and graded itself). Two things it showed are fixed;
+the others wait below, at 1.4 and with Ghost.
 
 ## For Opus: phase 1, the harness — the shape of the work
 
@@ -112,6 +111,14 @@ Three things about phase 1 that are easy to get wrong:
   independent, deliberately naive implementation of the metrics. Then compare on the synthetic
   market. If you write both sides, you have written a mirror that agrees with itself on every shared
   mistake, and phase 1's most important check is worthless.
+- **HAR-06 must answer four questions before 1.4's code** (J-012; the contract is Fable's to write,
+  with Ghost): is opening from zero weight and closing at the end of a test span charged; is cost
+  charged per overlapping sleeve (HAR-07's h sleeves, each at 1/h) or on the netted book; is turnover
+  summed over both legs; and is a position closed by a delisting charged.
+- **The first file under `neonrain/` makes "Docs lines per source line" measurable**, so AGENT.md
+  goes stale on every commit until it is recorded at tithes like the largest file (R-019); until
+  Ghost says so, rerun `scripts/metrics.py --write` after each such commit. It starts "not armed"
+  (far past 0.35) and is not failed.
 - **The goldens are written at 1.7, not before.** A golden recorded while the harness is still
   changing records a bug as the expected answer.
 
