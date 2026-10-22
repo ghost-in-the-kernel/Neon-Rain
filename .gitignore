@@ -1,0 +1,14 @@
+# Data and artifacts are regenerated, never committed (theGhost.md R-003, R-006, R-010)
+data/*
+!data/MANIFEST.md
+cache/
+models/*.pt
+models/*.safetensors
+ledger/*.parquet
+harness/runs/
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+*.ipynb_checkpoints
+.env
