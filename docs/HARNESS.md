@@ -80,8 +80,11 @@ A **fold** is three spans of the calendar, in order: a training span `[a, b)`, a
 - Folds roll forward: `b` advances by the **step** (default 126 trading days, about six months),
   `c = b + E + step`. Training is expanding by default (`a` fixed at the start of data); a rolling
   window is a parameter, and which was used is in the config hash.
-- The first fold requires at least 756 training dates (about three years) after purging; earlier
-  dates are warm-up, not folds.
+- The first fold requires at least 756 training dates (about three years) after purging at the
+  **longest** horizon: its `b` is the first with `b − a − 63 ≥ 756`, counted in trading dates. The
+  folds are therefore the same for all four horizons (J-015). Earlier dates are warm-up, not folds.
+- A fold exists only when its whole test span is on the calendar (`c ≤` the number of dates); a
+  partial last span is not a fold. With a rolling window of `W` dates, `a = b − W`.
 
 **There is no random k-fold, no shuffled split, and no stratified sampling over dates, ever.** A
 function in the harness that shuffles rows across dates is a defect.
@@ -99,9 +102,11 @@ HAR-12 enforces per feature.
 
 ## HAR-05 The second axis: held-out ticker groups (R-014)
 
-The universe is partitioned into `k` groups (default `k = 5`) by `group(ticker) = int(sha256(seed +
-ticker).hexdigest(), 16) % k`, with the seed in the config hash. A ticker is in exactly one group for
-the whole run; a ticker that enters or leaves the universe keeps its group.
+The universe is partitioned into `k` groups (default `k = 5`) by `group(ticker) =
+int(sha256(f"{seed}:{ticker}".encode("utf-8")).hexdigest(), 16) % k`, with the seed in the config
+hash (the colon keeps seed 1 with ticker "2AB" apart from seed 12 with "AB", J-015). A ticker is in
+exactly one group for the whole run; a ticker that enters or leaves the universe keeps its group. A
+partition that leaves a group empty is refused, naming the group: its grid cells would test nothing.
 
 Every evaluation is the **grid** of folds × groups: for each fold and each group `g`, train on the
 fold's training rows for tickers not in `g`, and test on the fold's test rows for tickers in `g`.

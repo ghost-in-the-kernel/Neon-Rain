@@ -61,3 +61,13 @@ Check: the hand-built ten-day, three-ticker series gives the hand-computed forwa
 returns, directions, ranks and the three dropped counts at horizons 3, 5 and 9. On the synthetic
 market every label is well formed at the four horizons, and the planted edge's rank correlation
 thins as HAR-10 predicts (about ρ/√h at 3 and 21 days). 278 of 278 mutants killed. ✓
+
+### 1.3 Splits — done 2026-10-22 (J-015)
+
+`neonrain/harness/split.py` to R-005, R-014 and HAR-03 to HAR-05, made exact first (the first fold at
+the longest horizon, whole test spans only, the group hash with a separator, no empty group);
+`test/test_split.py`.
+Check: no training label's horizon window overlaps any test date, at all four horizons and every
+fold on a 1,300-day synthetic market, checked by brute force from the calendar independently of
+`split.py`; every ticker is in exactly one group; the grid is reproducible from a seed (and another
+seed gives another). Folds and purging by hand. 178 of 178 mutants killed. ✓

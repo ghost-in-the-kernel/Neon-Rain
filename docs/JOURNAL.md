@@ -286,3 +286,30 @@ failure), **Cost**, **Class** (`contradiction`, `ambiguity`, `failure-caught`, `
   test/test_targets.py, docs/modules.json, TODO.md, docs/DONE.md, docs/HANDOFF.md.
 - **Caught by:** writing the code against the contract (a to d); mutmut (e).
 - **Class:** ambiguity
+
+### J-015 Step 1.3: the splits, where a day either way is a leak
+- **Who:** Ghost, Claude Opus.
+- **Intent:** ROADMAP 1.3 / R-005 / R-014 / HAR-03 to HAR-05: walk-forward folds with purge and
+  embargo, crossed with seeded ticker groups.
+- **Found:** (a) "756 training dates after purging" depended on the horizon, since purging is per
+  horizon, while HAR-03 wants one set of folds for all four. (b) Nothing said whether a partial last
+  test span is a fold. (c) `sha256(seed + ticker)` does not run with an integer seed, and read as
+  string concatenation it makes seed 1 with "2AB" the same as seed 12 with "AB". (d) A hash partition
+  can leave a group empty on a small universe. (e) Not a gap, worth knowing: with E ≥ 63 the embargo
+  alone already keeps every training label out of every test span; the purge is what keeps labels
+  out of the *embargo*, which is HAR-04's "< s − E". And training labels' medians include the
+  held-out group's past returns: the ticker axis is not a pure split, as R-014 already says. (f)
+  Writing `cell` showed that "not in the other groups" would have tested any ticker missing from
+  the group map. (g) Mutation: an off-by-one at the test span's end had no test; and two mutants
+  turned the fold loop infinite, killed only by hanging.
+- **Options:** (a) count at the longest horizon (taken: the same folds for every horizon, and the
+  shorter horizons simply keep more rows).
+- **Resolved:** HAR-03: the first fold's `b` is the first with `b − a − 63 ≥ 756`; whole test spans
+  only; `a = b − W` for a rolling window. HAR-05: `sha256(f"{seed}:{ticker}")`; an empty group is
+  refused, naming it. `cell` selects the held-out group by name and refuses an unmapped ticker; the
+  fold loop is a `range`, which cannot run forever; tests for the end of the test span, the default
+  seed, the empty calendar, and the error messages' numbers.
+- **Touched:** docs/HARNESS.md (HAR-03, HAR-05), `neonrain/harness/split.py`, test/test_split.py,
+  docs/modules.json, TODO.md, docs/DONE.md, docs/HANDOFF.md.
+- **Caught by:** writing the code against the contract (a to d, f); mutmut (g).
+- **Class:** ambiguity

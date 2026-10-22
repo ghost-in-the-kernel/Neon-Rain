@@ -23,11 +23,6 @@ round-trips a 1 MB file by content hash through the artifacts repository.
 
 Nothing under `neonrain/models/` or `neonrain/baselines/` begins until 1.6 passes (R-002).
 
-### 1.3 Splits
-
-Check: no training label's horizon window overlaps any test date; every ticker is in exactly one
-group; the grid is reproducible from a seed.
-
 ### 1.4 Cost model and metrics
 
 Check: a zero-edge strategy on the synthetic market reports a deflated Sharpe inside its noise band

@@ -5,10 +5,12 @@ finished. This file says what the next session should actually do, and what it m
 
 ## Where the project stands (2026-10-22)
 
-Phase 0 is done but for Ghost's items (0.2, 0.4). Phase 1: **1.1, the synthetic market** (J-013)
-and **1.2, the targets** (J-014) are done, each with its contract made exact before the code.
-`theGhost.md` holds R-001 to R-020. **Next is 1.3, the splits** (`neonrain/harness/split.py`, R-005,
-R-014, HAR-03 to HAR-05). No real data, no model, no result.
+Phase 0 is done but for Ghost's items (0.2, 0.4). Phase 1: **1.1, the synthetic market** (J-013),
+**1.2, the targets** (J-014) and **1.3, the splits** (J-015) are done, each with its contract made
+exact before the code. `theGhost.md` holds R-001 to R-020. **Next is 1.4, cost and metrics, and it
+starts with Ghost**: HAR-06's four questions (below) are the contract's, not the code's. The metrics
+half (HAR-07) does not depend on them, but its mirror is written blind from HAR-07 (R-015c), so
+read that paragraph before starting. No real data, no model, no result.
 
 Two decisions are `proposed` and must not be built on (`TODO.md` 0.2): **R-011** (license, Ghost's
 alone) and **R-016** (data and artifacts through a second GitHub repository, from 0.3's measurement).
