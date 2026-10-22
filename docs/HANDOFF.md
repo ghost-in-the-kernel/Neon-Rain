@@ -7,10 +7,10 @@ finished. This file says what the next session should actually do, and what it m
 
 Phase 0 is done but for Ghost's items (0.2, 0.4). Phase 1: **1.1, the synthetic market** (J-013),
 **1.2, the targets** (J-014) and **1.3, the splits** (J-015) are done, each with its contract made
-exact before the code. `theGhost.md` holds R-001 to R-020. **Next is 1.4, cost and metrics, and it
-starts with Ghost**: HAR-06's four questions (below) are the contract's, not the code's. The metrics
-half (HAR-07) does not depend on them, but its mirror is written blind from HAR-07 (R-015c), so
-read that paragraph before starting. No real data, no model, no result.
+exact before the code. `theGhost.md` holds R-001 to R-021. **1.4 is in three parts (TODO.md); 1.4a,
+the portfolio after costs, is done** (J-016, R-021). **Next is 1.4b**, the metrics of HAR-07 in
+`neonrain/harness/metrics.py`; then 1.4c, whose mirror is written blind from HAR-07 (R-015c), so
+read that paragraph before starting either. No real data, no model, no result.
 
 Two decisions are `proposed` and must not be built on (`TODO.md` 0.2): **R-011** (license, Ghost's
 alone) and **R-016** (data and artifacts through a second GitHub repository, from 0.3's measurement).
@@ -114,10 +114,7 @@ Three things about phase 1 that are easy to get wrong:
 - **Mutation testing runs workers from a fork server** (`pyproject.toml`): polars's thread pool
   does not survive a plain fork, and the synthetic market's mutants deadlocked into timeouts that
   looked like survivors (J-013). A run of timeouts is the first thing to suspect if it recurs.
-- **HAR-06 must answer four questions before 1.4's code** (J-012; the contract is Fable's to write,
-  with Ghost): is opening from zero weight and closing at the end of a test span charged; is cost
-  charged per overlapping sleeve (HAR-07's h sleeves, each at 1/h) or on the netted book; is turnover
-  summed over both legs; and is a position closed by a delisting charged.
+- **HAR-06's four questions are answered** (R-021): everything pays, nothing nets.
 - **The first file under `neonrain/` makes "Docs lines per source line" measurable.** It is
   recorded at tithes (R-019) and starts "not armed" (far past 0.35), so it fails nothing.
 - **The goldens are written at 1.7, not before.** A golden recorded while the harness is still

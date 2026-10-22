@@ -313,3 +313,32 @@ failure), **Cost**, **Class** (`contradiction`, `ambiguity`, `failure-caught`, `
   docs/modules.json, TODO.md, docs/DONE.md, docs/HANDOFF.md.
 - **Caught by:** writing the code against the contract (a to d, f); mutmut (g).
 - **Class:** ambiguity
+
+### J-016 Step 1.4a: the cost answers, the portfolio, and a sum that depended on row order
+- **Who:** Ghost, Claude Opus.
+- **Intent:** ROADMAP 1.4, first part: HAR-06's four questions and HAR-07's long–short decile
+  portfolio after costs. 1.4 as a whole (a cost model, five metrics, the deflated Sharpe, two-axis
+  dispersion, a 100-seed check and a blind mirror) is several sittings, so it is taken in three
+  parts, recorded in TODO.md.
+- **Found:** (a) Beyond HAR-06's four questions, HAR-07's portfolio left open: how many names a leg
+  holds when `N/10` is not whole or is under one; ties at the decile edge; what a sleeve holds over
+  its `h` days; what the day counts before `h` sleeves exist; where a delisted member's slot goes;
+  and a sleeve still open when the calendar ends. (b) Mutation: the first version kept per-day sums
+  in dicts with `.get(day, 0.0)` defaults, and most of its 18 survivors lived in those defaults
+  (they matter only when a whole leg has nothing earning on a day). (c) Two survivors were
+  `group_by(maintain_order=...)` flips: if polars visits the dates in another order, the floats are
+  added in another order and the sums can differ in the last bits between runs, against HAR-11.
+  (d) A name with no price the day after it is bought closes on the opening day, which no test had.
+- **Options:** (b) explain the defaults as equivalent, or write arrays over the calendar where adding
+  is plain addition (taken). (c) sort inside polars and trust it, or loop over the sorted dates in
+  Python (taken: the order is visible in the code).
+- **Resolved:** R-021 (Ghost: everything pays, nothing nets). HAR-07's sleeve made exact: `⌊N/10⌋`
+  names a leg, none under ten; ties by ticker; equal weights held through the hold; cash before the
+  first `h` sleeves; a delisted slot closed at its last price, paying, then earning 0; a sleeve open at
+  the calendar's end closed there. `neonrain/harness/portfolio.py` built to it with arrays and
+  `for` loops (none can run forever); a test that any row order gives the same bits. On the
+  synthetic market the steady daily cost is exactly `4c/h` and the planted edge pays before costs.
+- **Touched:** theGhost.md (R-021), docs/HARNESS.md (HAR-06, HAR-07), `neonrain/harness/portfolio.py`,
+  test/test_portfolio.py, docs/modules.json, TODO.md, docs/HANDOFF.md.
+- **Caught by:** writing the code against the contract (a); mutmut (b to d).
+- **Class:** ambiguity

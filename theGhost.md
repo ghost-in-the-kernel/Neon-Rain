@@ -378,3 +378,21 @@ it is `in force`.
 - **Status:** in force
 - **See also:** R-012
 - **subject:** agent environment
+
+### R-021: Costs are charged on every trade that could be charged, never netted
+- **Decision:** HAR-06's four open questions (J-012), each answered so cost is never understated:
+  (1) opening a sleeve from zero and closing it at the end of its hold both pay; (2) each of the `h`
+  overlapping sleeves pays for itself at its `1/h` share, never netted against another; (3) turnover
+  sums both legs, so a round trip is `4c / 10000` of a sleeve's share; (4) a position closed by a
+  delisting pays at its last price.
+- **Why:** The harness exists to refuse numbers that look like success (HANDOFF, "What to
+  distrust"). Every one of the four questions had an answer that lowered cost; netting in
+  particular would make a fast-turning signal look cheaper than any real fund trading it alone
+  could make it. An edge that survives the conservative cost is one a real book can keep.
+- **Held by:** docs/HARNESS.md HAR-06 and HAR-07 (the sleeve construction);
+  `neonrain/harness/portfolio.py`; `test/test_portfolio.py`.
+- **Source:** proposed by Claude Opus, 2026-10-22 (J-015's handoff); Ghost, 2026-10-22: "go with your
+  recommendations on HAR-06".
+- **Status:** in force
+- **See also:** R-002, R-005, R-007
+- **subject:** method

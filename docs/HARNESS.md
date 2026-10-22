@@ -121,6 +121,19 @@ in basis points of notional. `c` is a parameter; the default is **10 basis point
 for commission, half-spread and slippage on a liquid US name, and every result also reports `c = 0`
 and `c = 25` so a reader sees how fast the edge dies. A result quoted at one `c` only is incomplete.
 
+Which trades pay (R-021, every answer the one that does not understate cost):
+
+- **Opening and closing both pay.** A sleeve (HAR-07) opened from zero pays on its full gross
+  weight, and closing it at the end of its hold pays again; so does the last sleeve of a test span.
+- **Each sleeve pays for itself.** The `h` overlapping sleeves are charged separately, each at its
+  `1/h` share, with no netting of one sleeve's buys against another's sells. A real book that nets
+  would pay less; the harness never assumes it does.
+- **Both legs count.** Turnover sums the long and the short leg: opening a sleeve is
+  `Σ|w| = 2` (gross 1 per leg) and so is closing it, so a sleeve's round trip costs `4c / 10000` of
+  its share.
+- **A delisting pays.** A position whose ticker leaves the universe while held is closed at its
+  last price and pays on that weight then (see NR-F-02 for the labels' side of delistings).
+
 Direction accuracy and rank correlation are cost-free by construction and reported once; only the
 portfolio metrics carry costs.
 
@@ -141,7 +154,21 @@ per (i, t); for rank, a real-valued score per (i, t) whose order is what matters
   the top decile and short the bottom decile, equal-weighted within each leg, gross exposure 1 per
   leg. The position is held `h` trading days, so `h` overlapping portfolios run in parallel and the
   day's return is their average (this is the standard overlapping-portfolio construction; it keeps
-  the daily series i.i.d.-ish rather than counting the same bet `h` times).
+  the daily series i.i.d.-ish rather than counting the same bet `h` times). Exactly (J-016):
+  - A leg holds `n = ⌊N(t)/10⌋` names of the `N(t)` tickers with a score and a price on *t*; with
+    `n = 0` the date opens no sleeve. Ties in score are broken by ticker, ascending, so the order is
+    total and the same every run.
+  - A **sleeve** opened at the close of *t* earns on each of the next `h` trading dates `d` the mean
+    daily return `P(i,d)/P(i,d−1) − 1` of its long names minus that of its short names: equal
+    weights, held through the `h` days. The day's portfolio return is the sum over the sleeves open
+    that day of `1/h` times the sleeve's return, less the costs of HAR-06 paid that day; a sleeve
+    that does not exist yet (the first `h − 1` days of a span) is cash, earning 0.
+  - A name that has no price on a day of its hold was delisted: its last return is the one up to its
+    last price, it is closed there and pays its cost (HAR-06), and its slot earns 0 for the rest of
+    the sleeve, so the leg's mean still divides by `n`.
+  - Sleeves open on test dates only; a sleeve opened on the span's last dates runs past it into the
+    next span's dates, so the daily series covers the test dates plus up to `h` after. A sleeve
+    still open on the calendar's last date is closed there and pays.
 - **Sharpe**: `mean(daily) / sd(daily) · √252`, on the after-cost daily series, excess of zero (not
   of a risk-free rate; the comparison is to not trading, and the series is already long–short).
 - **Deflated Sharpe ratio (DSR)**, after Bailey & López de Prado (2014), the one number that
