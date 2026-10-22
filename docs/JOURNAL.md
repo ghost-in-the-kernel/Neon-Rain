@@ -121,3 +121,23 @@ failure), **Cost**, **Class** (`contradiction`, `ambiguity`, `failure-caught`, `
 - **Touched:** docs/HANDOFF.md, TODO.md, docs/ROADMAP.md.
 - **Caught by:** reading the documents against theGhost.md.
 - **Class:** contradiction
+
+### J-008 The Hugging Face Hub answered
+- **Who:** Ghost, Claude Opus.
+- **Intent:** Bring `scripts/probe/reachability.py` under R-015(b)'s readability rules (type hints,
+  one import per line, a `main`) and run it to show it still works.
+- **Found:** In this session the Hugging Face Hub is reachable; J-004's session was refused it.
+  Every other dataset host is still refused. FNSPID's card says CC BY-NC 4.0 and its news files are
+  5.7 GB and 23 GB.
+- **Options:** Change R-016's route to fetch from the Hub (refused: R-016 is Ghost's, and a route
+  that depends on which session you got is not a route); record it and leave the decision to Ghost
+  (taken).
+- **Resolved:** NR-F-01 re-measured; R-016 and phase 5 unchanged pending Ghost. Worth his word:
+  whether a session with the Hub open may stream FNSPID, filter it to the universe, and push the
+  result to `neon-rain-data` in chunks under 100 MB, which would unblock phase 5 without his
+  machine. The non-commercial license bears on R-011.
+- **Touched:** scripts/probe/reachability.py, docs/FINDINGS.md, docs/HANDOFF.md (the clone path no
+  longer assumes a home directory).
+- **Caught by:** the probe, re-run as R-016's `Held by` asks.
+- **Cost:** a few minutes.
+- **Class:** measurement

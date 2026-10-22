@@ -30,7 +30,7 @@ allowlist, and no client or retry changes that.
 | FRED | rates | refused |
 | SEC EDGAR | filings | refused |
 | GDELT doc API | news | refused |
-| Hugging Face Hub (FNSPID dataset) | news, artifact store candidate | refused |
+| Hugging Face Hub (FNSPID dataset) | news, artifact store candidate | refused; **reachable** from a later session the same day (below) |
 | Kaggle | datasets | refused |
 | Claude's web-fetch tool (outside the shell) | small text pages | needs Ghost to paste each URL into the chat; not a route for bulk data |
 | Ghost's own computer, through the desktop-app bridge | staging files into the workspace | available when his machine is on and the app open; his machine is unstable (R-003) |
@@ -49,3 +49,15 @@ What this means for the plan (decided as R-016):
   from here. Phase 5 depends on a news dataset with publish timestamps that Ghost obtains (FNSPID
   on Hugging Face is the leading candidate) and supplies as above, or on a scheduled task that runs
   somewhere with network access. Until that is settled, phase 5 is blocked and phases 1–4 are not.
+
+### Re-measured, 2026-10-22, a later session (J-008)
+
+The same probe, unchanged in what it fetches, from a different cloud session: the price, rates,
+filings and news hosts and Kaggle are still refused, and **the Hugging Face Hub is reachable** (the
+dataset API, and `resolve/main/README.md` from the FNSPID repository). Reachability is a property of
+the session's network policy, not of the project: two sessions on one day disagreed. What was read,
+and nothing more: FNSPID's card says CC BY-NC 4.0 (non-commercial; see R-011), and its news files
+are `Stock_news/All_external.csv` (5.7 GB) and `Stock_news/nasdaq_exteral_data.csv` (23 GB), with
+prices in `Stock_price/full_history.zip`. Each is far past this session's disk and R-016's 100 MB
+per git file, so nothing was downloaded and R-016's route is unchanged until Ghost decides
+otherwise.

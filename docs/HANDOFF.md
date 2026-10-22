@@ -17,8 +17,8 @@ R-001 (Python) and R-002 (harness first) are in force; R-010 is superseded by R-
 ## Starting a session cold
 
 ```sh
-git clone https://github.com/ghost-in-the-kernel/Neon-Rain /home/claude/neon-rain
-cd /home/claude/neon-rain
+git clone https://github.com/ghost-in-the-kernel/Neon-Rain neon-rain   # wherever the session keeps repos
+cd neon-rain
 git config user.name Ghost
 git config user.email 118085043+ghost-in-the-kernel@users.noreply.github.com
 ```

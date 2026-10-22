@@ -1,7 +1,10 @@
 """Reachability probe for Neon Rain phase 0.3: one small GET per candidate host, report status."""
-import urllib.request, urllib.error, socket, sys, time
+import socket
+import time
+import urllib.error
+import urllib.request
 
-CANDIDATES = {
+CANDIDATES: dict[str, str] = {
     "Stooq daily CSV":        "https://stooq.com/q/d/l/?s=aapl.us&i=d",
     "Yahoo chart API":        "https://query1.finance.yahoo.com/v8/finance/chart/AAPL?range=5d&interval=1d",
     "Tiingo (needs token)":   "https://api.tiingo.com/tiingo/daily/aapl/prices?startDate=2024-01-02&endDate=2024-01-03",
@@ -16,21 +19,29 @@ CANDIDATES = {
     "PyPI":                   "https://pypi.org/pypi/polars/json",
 }
 
-def probe(name, url):
+
+def probe(url: str) -> str:
+    """One GET of `url`, its outcome as a line: reachable, reachable with an HTTP error, or refused."""
     req = urllib.request.Request(url, headers={"User-Agent": "neon-rain-probe/0.1 (ghost-in-the-kernel)"})
-    t = time.time()
+    started = time.time()
     try:
-        with urllib.request.urlopen(req, timeout=20) as r:
-            body = r.read(200)
-            return f"reachable (HTTP {r.status}, {len(body)}+ bytes, {time.time()-t:.1f}s)"
+        with urllib.request.urlopen(req, timeout=20) as response:
+            body = response.read(200)
+            return f"reachable (HTTP {response.status}, {len(body)}+ bytes, {time.time() - started:.1f}s)"
     except urllib.error.HTTPError as e:
         return f"host reachable, HTTP {e.code} ({e.reason})"
     except urllib.error.URLError as e:
         return f"refused: {e.reason}"
     except (socket.timeout, TimeoutError):
         return "refused: timeout"
-    except Exception as e:
+    except Exception as e:  # a probe reports every failure as a line rather than stopping
         return f"refused: {type(e).__name__}: {e}"
 
-for name, url in CANDIDATES.items():
-    print(f"{name:24} {probe(name, url)}")
+
+def main() -> None:
+    for name, url in CANDIDATES.items():
+        print(f"{name:24} {probe(url)}")
+
+
+if __name__ == "__main__":
+    main()
