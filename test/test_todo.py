@@ -1,7 +1,7 @@
 """TODO.md is a chain in order with a check on its first item, sharing nothing with DONE.md (TODO 0.5)."""
 from pathlib import Path
 
-from checks import todo
+from scripts.checks import todo
 
 CHAIN = "## Phase 0\n\n### 0.2 a\n\nCheck: x\n\n### 0.5 b\n\nCheck: y\n\n## Phase 1\n\n### 1.1 c\n"
 

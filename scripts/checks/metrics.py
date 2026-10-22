@@ -2,7 +2,7 @@
 import re
 from pathlib import Path
 
-from checks import ghost, results
+from scripts.checks import ghost, results
 
 SOURCE_DIRS: tuple[str, ...] = ("neonrain", "scripts", "test")
 TIMED: tuple[str, ...] = ("Fast loop (s)", "Full check, `precommit.sh` (min)")

@@ -2,7 +2,7 @@
 
 [tool.pytest.ini_options]
 testpaths = ["test"]
-pythonpath = ["scripts"]
+pythonpath = ["."]
 addopts = "-q"
 
 [tool.ruff]
@@ -22,3 +22,5 @@ select = ["E4", "E7", "E9", "F", "ANN", "B"]
 [tool.mutmut]
 # R-015(a): every line the tests are trusted to hold. neonrain/ joins when its first module exists.
 source_paths = ["scripts/checks/"]
+# The doc tests read the documents themselves, so the copy mutmut tests in carries them.
+also_copy = ["docs/", "data/", "harness/", "theGhost.md", "TODO.md", "CLAUDE.md", "README.md", "requirements.lock", "scripts/probe/", "scripts/metrics.py"]

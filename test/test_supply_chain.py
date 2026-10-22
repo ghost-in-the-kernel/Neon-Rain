@@ -2,7 +2,7 @@
 import shutil
 from pathlib import Path
 
-from checks import supply_chain
+from scripts.checks import supply_chain
 
 
 def plant(tmp_path: Path, root: Path, files: dict[str, str]) -> Path:

@@ -3,7 +3,7 @@ import ast
 import json
 from pathlib import Path
 
-from checks import imports
+from scripts.checks import imports
 
 MODEL_CLIENTS: frozenset[str] = frozenset({"anthropic", "openai", "cohere", "mistralai", "groq", "litellm", "langchain"})
 BROKERS: frozenset[str] = frozenset({

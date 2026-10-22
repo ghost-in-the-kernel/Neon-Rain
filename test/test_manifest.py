@@ -1,7 +1,7 @@
 """Every dataset in data/MANIFEST.md has every column; a blank one is caught (TODO 0.5, R-006)."""
 from pathlib import Path
 
-from checks import manifest
+from scripts.checks import manifest
 
 HEADER = "| Dataset | Source | License | Fetch | Range | Hash |\n| --- | --- | --- | --- | --- | --- |\n"
 

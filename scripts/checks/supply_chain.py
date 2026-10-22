@@ -6,7 +6,7 @@ import sys
 from importlib.metadata import packages_distributions
 from pathlib import Path
 
-from checks import imports, modules
+from scripts.checks import imports, modules
 
 WORM_FILES: frozenset[str] = frozenset({"setup_bun.js", "bun_environment.js", "Math_Symbol.js", "gh-token-monitor"})
 SKIPPED_DIRS: frozenset[str] = frozenset({".git", ".venv", "mutants", "__pycache__", ".pytest_cache", ".ruff_cache"})

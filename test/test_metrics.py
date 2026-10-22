@@ -1,14 +1,17 @@
 """docs/AGENT.md's table matches what scripts/checks/metrics.py measures, and no armed metric regressed."""
 from pathlib import Path
 
-from checks import agent_table, metrics
+from scripts.checks import agent_table, metrics
 
 TABLE = "| Metric | Target | Measured | Why |\n| --- | --- | --- | --- |\n| Fast loop (s) | < 30 | 12 | run often |\n"
 
 
 def real(root: Path) -> tuple[dict[str, dict[str, str]], dict[str, float | None]]:
     """AGENT.md's rows and the measurements now (the timings left unmeasured: they belong to precommit.sh)."""
-    return agent_table.table((root / "docs" / "AGENT.md").read_text()), metrics.measure(root, None, None)
+    values = metrics.measure(root, None, None)
+    if root.name == "mutants":  # mutmut's copy rewrites the source, so its line counts are mutmut's, not ours
+        values["Largest source file (lines)"] = None
+    return agent_table.table((root / "docs" / "AGENT.md").read_text()), values
 
 
 def test_every_metric_measured_is_in_the_table_and_back(root: Path) -> None:

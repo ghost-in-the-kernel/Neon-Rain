@@ -2,7 +2,7 @@
 import shutil
 from pathlib import Path
 
-from checks import modules
+from scripts.checks import modules
 
 
 def plant(tmp_path: Path, root: Path, files: dict[str, str]) -> Path:

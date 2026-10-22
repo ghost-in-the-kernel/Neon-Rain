@@ -8,9 +8,9 @@ import argparse
 import sys
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from checks import agent_table, metrics  # noqa: E402
+from scripts.checks import agent_table, metrics  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 AGENT = ROOT / "docs" / "AGENT.md"

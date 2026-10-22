@@ -1,7 +1,7 @@
 """Our Python reads as R-015(b) asks; and each rule, broken on purpose, is caught (TODO 0.5)."""
 from pathlib import Path
 
-from checks import readability
+from scripts.checks import readability
 
 
 def test_our_code_holds(root: Path) -> None:

@@ -1,7 +1,7 @@
 """theGhost.md holds its shape; and each way it can break, planted, is caught (TODO 0.5)."""
 from pathlib import Path
 
-from checks import ghost
+from scripts.checks import ghost
 
 
 def entry(rid: str, status: str = "in force", subject: str = "method", extra: str = "") -> str:

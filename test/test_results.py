@@ -1,7 +1,7 @@
 """Every number in docs/RESULTS.md has a trials line, both dispersions and a finding; a bare one is caught."""
 from pathlib import Path
 
-from checks import results
+from scripts.checks import results
 
 HEADER = "| Run | Horizon | Folds: mean ± sd [min, max] | Groups: mean ± sd [min, max] | Findings |\n| --- | --- | --- | --- | --- |\n"
 TRIALS = "\t".join(results.TRIALS_COLUMNS) + "\nab12\t2026-11-01\t5\tIC\t0.02\t0.01\t3\t\n"

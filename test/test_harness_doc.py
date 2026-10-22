@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from checks import harness_doc
+from scripts.checks import harness_doc
 
 ROOT = Path(__file__).resolve().parent.parent
 DOC = "## HAR-01 One\n\n## HAR-02 Two\n"

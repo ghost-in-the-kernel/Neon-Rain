@@ -1,7 +1,7 @@
 """No document uses an enforced alias; and a planted one is caught (TODO 0.5)."""
 from pathlib import Path
 
-from checks import glossary
+from scripts.checks import glossary
 
 TABLE = "| Term | Means | Not |\n| --- | --- | --- |\n| **horizon** | a window | period, `timeframe` |\n"
 
