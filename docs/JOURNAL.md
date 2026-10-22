@@ -342,3 +342,33 @@ failure), **Cost**, **Class** (`contradiction`, `ambiguity`, `failure-caught`, `
   test/test_portfolio.py, docs/modules.json, TODO.md, docs/HANDOFF.md.
 - **Caught by:** writing the code against the contract (a); mutmut (b to d).
 - **Class:** ambiguity
+
+### J-017 Step 1.4b: the metrics, and a deflated Sharpe that was undefined on the first run
+- **Who:** Ghost, Claude Opus.
+- **Intent:** ROADMAP 1.4, second part: HAR-07's accuracy, balanced accuracy, IC, Sharpe and DSR in
+  `neonrain/harness/metrics.py`. Every ambiguity is settled in HAR-07's text, not only in the code,
+  because 1.4c's mirror is written from that text alone.
+- **Found:** (a) HAR-07's DSR formula is undefined at `N = 1`: `Z⁻¹(1 − 1/N)` is `Z⁻¹(0) = −∞`, so
+  the first run of every project would have had no DSR. (b) It did not say whether `V` is the
+  variance of annualized or daily Sharpes (it must be daily, the unit of `SR`), which skewness and
+  kurtosis estimators, or which divisor for any standard deviation. (c) Accuracy did not say what a
+  tie row (no direction label) does, or a score of exactly 0.5; balanced accuracy is undefined with
+  an empty class; the IC had no rule for a date whose scores or labels are all equal, and a fixed 20
+  where HAR-02 now has `min_tickers`. (d) Worked by hand, the DSR's square root
+  `1 − skew·SR + (kurt − 1)/4·SR²` is never negative for real data (kurt − 1 ≥ skew², so it is at
+  least `(1 − skew·SR/2)²`): its "undefined" branch is a float-error guard. (e) Mutation: no test
+  had two thin or two flat IC dates, a dropped date before a good one, a two-day Sharpe, or a root
+  between 0 and 1.
+- **Options:** (a) the formula as written with `N ≥ 2` required (refused: the first run is real);
+  `SR₀ = 0` at `N = 1`, so the DSR is then the probabilistic Sharpe ratio (taken: nothing was
+  selected, so nothing is deflated).
+- **Resolved:** HAR-07 states each choice: labelled rows only, 0.5 predicts 0; undefined metrics are
+  reported as undefined (`None` in code, never a stand-in number); IC by Pearson on average ranks,
+  thin and flat dates dropped and counted, `min_tickers` from HAR-02; every `sd` with divisor
+  `n − 1`; moments with divisor `T`; `V` over daily Sharpes; `SR₀ = 0` at `N = 1`. The DSR's
+  arithmetic is its own function, so the guard is tested on chosen numbers. HAR-07's `SR₀` is
+  checked against the true expected maximum of 10 and 100 normals (1.5388, 2.5076) within 0.05.
+- **Touched:** docs/HARNESS.md (HAR-07), `neonrain/harness/metrics.py`, test/test_metrics_har07.py,
+  docs/modules.json, TODO.md, docs/HANDOFF.md.
+- **Caught by:** writing the code against the contract and the hand examples (a to d); mutmut (e).
+- **Class:** ambiguity

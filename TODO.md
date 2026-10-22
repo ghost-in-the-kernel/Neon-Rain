@@ -28,7 +28,7 @@ Nothing under `neonrain/models/` or `neonrain/baselines/` begins until 1.6 passe
 Check: a zero-edge strategy on the synthetic market reports a deflated Sharpe inside its noise band
 after costs across 100 seeds. Taken in three parts (J-016):
 - 1.4a, HAR-06's answers (R-021) and the long–short decile portfolio after costs — done (J-016).
-- 1.4b, accuracy, balanced accuracy, IC, Sharpe and the deflated Sharpe (HAR-07).
+- 1.4b, accuracy, balanced accuracy, IC, Sharpe and the deflated Sharpe (HAR-07) — done (J-017).
 - 1.4c, HAR-08's dispersion over both axes, the 100-seed check above, and the mirror of HAR-07
   written blind (R-015c).
 

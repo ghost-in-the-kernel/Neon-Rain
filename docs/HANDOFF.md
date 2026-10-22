@@ -8,9 +8,10 @@ finished. This file says what the next session should actually do, and what it m
 Phase 0 is done but for Ghost's items (0.2, 0.4). Phase 1: **1.1, the synthetic market** (J-013),
 **1.2, the targets** (J-014) and **1.3, the splits** (J-015) are done, each with its contract made
 exact before the code. `theGhost.md` holds R-001 to R-021. **1.4 is in three parts (TODO.md); 1.4a,
-the portfolio after costs, is done** (J-016, R-021). **Next is 1.4b**, the metrics of HAR-07 in
-`neonrain/harness/metrics.py`; then 1.4c, whose mirror is written blind from HAR-07 (R-015c), so
-read that paragraph before starting either. No real data, no model, no result.
+the portfolio after costs, and 1.4b, the metrics, are done** (J-016, J-017; R-021). **Next is
+1.4c**: HAR-08's dispersion, the 100-seed zero-edge check, and the mirror of HAR-07 written blind
+(R-015c): the mirror's agent gets HAR-07's text and the synthetic market's interface, never
+`neonrain/harness/metrics.py` or `portfolio.py`. No real data, no model, no result.
 
 Two decisions are `proposed` and must not be built on (`TODO.md` 0.2): **R-011** (license, Ghost's
 alone) and **R-016** (data and artifacts through a second GitHub repository, from 0.3's measurement).

@@ -142,14 +142,20 @@ portfolio metrics carry costs.
 Let a run produce, for each horizon, a set of test-set predictions: for direction, a score in [0, 1]
 per (i, t); for rank, a real-valued score per (i, t) whose order is what matters.
 
-- **Accuracy**: over test rows, the fraction where `(score > 0.5) == (d == 1)`.
-- **Balanced accuracy**: the mean of the two per-class recalls, `(TP/(TP+FN) + TN/(TN+FP)) / 2`.
-  Reported alongside accuracy always, because the direction classes are near but not exactly
-  balanced by construction.
+- **Accuracy**: over test rows that have a direction label (a tie has none, HAR-02), the fraction
+  where `(score > 0.5) == (d == 1)`. A score of exactly 0.5 predicts 0.
+- **Balanced accuracy**: the mean of the two per-class recalls, `(TP/(TP+FN) + TN/(TN+FP)) / 2`, the
+  prediction being `score > 0.5` as above. Reported alongside accuracy always, because the direction
+  classes are near but not exactly balanced by construction. With no rows of one class it is
+  undefined (reported as such, never as a number). Accuracy over no rows is undefined too.
 - **Information coefficient (IC)**: for each test date *t*, the Spearman rank correlation between
-  the predicted scores and `q(i,t,h)` over the tickers tested on that date; a date with fewer than
-  20 tested tickers is dropped. The run's IC is the mean over dates, reported with the standard
-  error of that mean and `IC_t = mean / (sd / √n_dates)`.
+  the predicted scores and `q(i,t,h)` over the tickers tested on that date: the Pearson correlation
+  of their ranks, ties taking the average rank. A date with fewer than `min_tickers` (HAR-02, 20 by
+  default) tested tickers is dropped, and so is a date whose scores, or whose labels, are all equal
+  (no correlation exists); both are counted. The run's IC is the mean over the remaining `n_dates`,
+  reported with the standard error of that mean `sd / √n_dates` and `IC_t = mean / (sd / √n_dates)`,
+  where `sd` is the sample standard deviation (divisor `n_dates − 1`). With fewer than two dates
+  the standard error and `IC_t` are undefined.
 - **Long–short decile return**: on each test date, sort the tested tickers by predicted score; long
   the top decile and short the bottom decile, equal-weighted within each leg, gross exposure 1 per
   leg. The position is held `h` trading days, so `h` overlapping portfolios run in parallel and the
@@ -171,6 +177,8 @@ per (i, t); for rank, a real-valued score per (i, t) whose order is what matters
     still open on the calendar's last date is closed there and pays.
 - **Sharpe**: `mean(daily) / sd(daily) · √252`, on the after-cost daily series, excess of zero (not
   of a risk-free rate; the comparison is to not trading, and the series is already long–short).
+  `sd` is the sample standard deviation (divisor `T − 1`); a series with fewer than two days, or
+  with `sd = 0`, has no Sharpe.
 - **Deflated Sharpe ratio (DSR)**, after Bailey & López de Prado (2014), the one number that
   accounts for how many things were tried:
 
@@ -183,10 +191,14 @@ per (i, t); for rank, a real-valued score per (i, t) whose order is what matters
   DSR = Z[ (SR − SR₀)·√(T − 1) / √(1 − skew·SR + ((kurt − 1)/4)·SR²) ]
   ```
 
-  where `SR` is the non-annualized Sharpe of the `T` daily returns and `skew`, `kurt` are their
-  sample skewness and kurtosis (kurtosis not excess). `DSR` is the probability the true Sharpe
-  exceeds zero given the selection. A result whose `DSR < 0.95` is not evidence of an edge, and is
-  written up as such.
+  where `SR` is the non-annualized Sharpe of the `T` daily returns (`mean / sd`, `sd` with divisor
+  `T − 1`) and `skew`, `kurt` are their moment estimates with divisor `T`: `skew = m₃ / m₂^1.5`,
+  `kurt = m₄ / m₂²` (kurtosis not excess), `mₖ` the mean of `(x − mean)ᵏ`. `V` is the sample variance
+  (divisor `N − 1`) of the trials' **non-annualized** Sharpes, the same unit as `SR`. With `N = 1`
+  nothing was selected: `SR₀ = 0` and `V` is not needed (the formula's `Z⁻¹(0)` is −∞; J-017), so the
+  DSR is then the probabilistic Sharpe ratio. If the term under the square root is not positive the
+  DSR is undefined. `DSR` is the probability the true Sharpe exceeds zero given the selection. A
+  result whose `DSR < 0.95` is not evidence of an edge, and is written up as such.
 
 ## HAR-08 Every number carries its dispersion (R-014, P-07)
 
