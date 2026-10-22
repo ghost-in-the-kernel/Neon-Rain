@@ -1,0 +1,24 @@
+# Tool configuration only: Neon Rain is not a package to install (R-001, R-017).
+
+[tool.pytest.ini_options]
+testpaths = ["test"]
+pythonpath = ["scripts"]
+addopts = "-q"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 120
+
+[tool.ruff.lint]
+# R-015(b), the part a linter can say: type hints on every function (ANN), no bare except (E722),
+# the common bug patterns (B). The rest of R-015(b) (functions under 40 lines, comprehensions of at
+# most three clauses, no *args or **kwargs) is scripts/checks/readability.py, held by
+# test/test_readability.py.
+select = ["E4", "E7", "E9", "F", "ANN", "B"]
+
+[tool.ruff.lint.per-file-ignores]
+"scripts/probe/reachability.py" = ["E501"]
+
+[tool.mutmut]
+# R-015(a): every line the tests are trusted to hold. neonrain/ joins when its first module exists.
+source_paths = ["scripts/checks/"]
