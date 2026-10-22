@@ -108,3 +108,16 @@ failure), **Cost**, **Class** (`contradiction`, `ambiguity`, `failure-caught`, `
 - **Touched:** docs/GLOSSARY.md, docs/HANDOFF.md.
 - **Caught by:** reading the documents against the tests specified for them, before writing any.
 - **Class:** contradiction
+
+### J-007 Three counts of the open decisions, none agreeing
+- **Who:** Ghost, Claude Opus.
+- **Intent:** The same read as J-006.
+- **Found:** HANDOFF.md said four decisions were `proposed` and named two; TODO.md and ROADMAP.md
+  0.2 were titled "three decisions" when one of the three was in force and another superseded.
+  theGhost.md was right: R-011 and R-016 are the two proposed.
+- **Options:** Keep a count in each title (refused: it goes stale at every decision); name the
+  decisions and drop the count (taken).
+- **Resolved:** 0.2 is "Ghost's founding decisions" in both files; HANDOFF.md says two.
+- **Touched:** docs/HANDOFF.md, TODO.md, docs/ROADMAP.md.
+- **Caught by:** reading the documents against theGhost.md.
+- **Class:** contradiction

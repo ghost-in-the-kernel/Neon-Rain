@@ -10,7 +10,7 @@ and step 0.3 has been measured. **There is no Python in the repository yet** —
 one test. The first code written is phase 0.5's doc tests, then phase 1's harness. No model, no
 data, no result.
 
-Four decisions are `proposed` and must not be built on (`TODO.md` 0.2): **R-011** (license, Ghost's
+Two decisions are `proposed` and must not be built on (`TODO.md` 0.2): **R-011** (license, Ghost's
 alone) and **R-016** (data and artifacts through a second GitHub repository, from 0.3's measurement).
 R-001 (Python) and R-002 (harness first) are in force; R-010 is superseded by R-016.
 

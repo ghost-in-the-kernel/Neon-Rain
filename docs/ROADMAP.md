@@ -234,9 +234,9 @@ working with agents in cloud sessions, and are the team's own.
 0.1 **Repository and documents.** This commit: `README.md`, `CLAUDE.md`, `theGhost.md` (R-001 to
     R-014), this roadmap, `GLOSSARY.md`, `AGENT.md`, `JOURNAL.md`, `TODO.md`, `.gitignore`.
     *Check:* `git log` shows Ghost as author; the files exist.
-0.2 **Ghost's three decisions.** R-001 (Python), R-010 (artifact store, after 0.3) and R-011
-    (license) move from `proposed` to `in force` or are replaced. Nothing in phase 1 starts on a
-    `proposed` entry.
+0.2 **Ghost's founding decisions.** R-001 (Python), R-010 (artifact store, after 0.3; since
+    superseded by R-016) and R-011 (license) move from `proposed` to `in force` or are replaced.
+    Nothing in phase 1 starts on a `proposed` entry.
     *Check:* `test/test_ghost.py` passes and no phase-1 step cites a `proposed` decision.
 0.3 **Reachability.** From this workspace, with the shell: `pip install` from the lockfile; fetch one
     day of daily prices from each candidate source (Stooq, Yahoo via `yfinance`, Tiingo free tier,

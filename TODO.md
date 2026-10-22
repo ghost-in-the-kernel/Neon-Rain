@@ -8,10 +8,11 @@ and the first open item has a check.
 
 ## Phase 0: founding
 
-### 0.2 Ghost's three decisions
+### 0.2 Ghost's founding decisions
 
 Check: `test/test_ghost.py` passes and no phase-1 step cites a `proposed` decision. Waiting on
-Ghost: R-011 (license). R-001 is in force (Python, 2026-10-22). R-016 (data and artifacts through GitHub) is proposed from 0.3's measurement.
+Ghost: R-011 (license) and R-016 (data and artifacts through GitHub, proposed from 0.3's
+measurement; it supersedes R-010). R-001 is in force (Python, 2026-10-22).
 
 ### 0.4 Artifact store and data repository (R-016, waiting on Ghost)
 
