@@ -153,3 +153,20 @@ failure), **Cost**, **Class** (`contradiction`, `ambiguity`, `failure-caught`, `
   (download.pytorch.org) is refused from this session.
 - **Touched:** theGhost.md, docs/HANDOFF.md, docs/SUPPLY-CHAIN.md, requirements.in.
 - **Class:** decision
+
+### J-010 The first lock
+- **Who:** Ghost, Claude Opus.
+- **Intent:** 0.5's first step: compile and install `requirements.lock`.
+- **Found:** Eight direct dependencies resolve to 27 packages; mutmut brings most of the rest
+  (textual, rich, libcst, click, setproctitle). Every one has a cp312 Linux wheel, so the install
+  runs with `--only-binary :all:` and no package builds or runs a script. The venv is 662 MB.
+  The first install also upgraded the venv's pip from PyPI, outside the lock; caught on reading
+  the output, the venv was rebuilt without it.
+- **Options:** Drop mutmut for something lighter (refused: R-015a names it, and nothing lighter
+  does the job); accept (taken).
+- **Resolved:** R-018 (torch and anthropic wait for their phases; seven-day cooldown);
+  `requirements.lock` committed; CLAUDE.md's install line is the full command.
+- **Touched:** requirements.in, requirements.lock, theGhost.md, CLAUDE.md, docs/SUPPLY-CHAIN.md,
+  docs/HANDOFF.md.
+- **Caught by:** reading the install's output (the pip upgrade).
+- **Class:** decision

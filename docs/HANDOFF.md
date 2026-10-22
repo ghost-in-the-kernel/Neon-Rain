@@ -5,7 +5,7 @@ finished. This file says what the next session should actually do, and what it m
 
 ## Where the project stands (2026-10-22)
 
-Phase 0 is most of the way done: every founding document exists, `theGhost.md` holds R-001 to R-017,
+Phase 0 is most of the way done: every founding document exists, `theGhost.md` holds R-001 to R-018,
 and step 0.3 has been measured. **There is no Python in the repository yet** — not one module, not
 one test. The first code written is phase 0.5's doc tests, then phase 1's harness. No model, no
 data, no result.
@@ -48,8 +48,8 @@ The documents exist and nothing holds them. Write `test/` and `scripts/precommit
 founding documents cannot rot silently. No data, no model, no network: the fast loop must run under
 30 seconds (AGT-02) on a clean clone with only `requirements.lock` installed.
 
-Compile the lock first: `uv pip compile --generate-hashes --python-version 3.12 requirements.in -o
-requirements.lock` (R-017), then `pip install --require-hashes -r requirements.lock`. The ten direct dependencies
+Compile the lock first with the command in docs/SUPPLY-CHAIN.md rule 2 (R-017, R-018), then
+`pip install --require-hashes -r requirements.lock`. The ten direct dependencies
 and their reasons are in `requirements.in`; adding an eleventh is a decision, not an import.
 
 Each test below names what it holds and **the mutation that must turn it red**. A test whose red

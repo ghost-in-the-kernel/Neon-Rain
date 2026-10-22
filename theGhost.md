@@ -328,3 +328,21 @@ it is `in force`.
 - **Status:** in force
 - **See also:** R-001, R-003
 - **subject:** toolchain
+
+### R-018: A dependency enters the lock in the phase that first imports it, and no version younger than seven days
+- **Decision:** (a) `requirements.in` keeps all ten direct dependencies with their reasons, but a
+  dependency is commented out, and so absent from `requirements.lock`, until the phase that first
+  imports it: torch at phase 4, anthropic at phase 5. Uncommenting one is that phase's first commit
+  and recompiles the lock. (b) The lock is compiled with `--exclude-newer` seven days before the
+  compile date, so no release younger than a week enters it.
+- **Why:** (a) PyPI's Linux torch wheel brings about 3 GB of CUDA libraries and the CPU-only index
+  is refused from the session (J-009); carrying them from 0.5 costs every session's disk and
+  install time for nothing, and every package not installed is one not attacking us. (b) A
+  malicious release is usually found and pulled within days; the cooldown is Suite Builder's
+  G-256 carried over.
+- **Held by:** `requirements.in`; docs/SUPPLY-CHAIN.md rule 2; `test/test_supply_chain.py` (an
+  import under `neonrain/` that the lock lacks fails it).
+- **Source:** proposed by Claude Opus, 2026-10-22; Ghost, 2026-10-22: "go with your calls".
+- **Status:** in force
+- **See also:** R-001, R-017
+- **subject:** toolchain

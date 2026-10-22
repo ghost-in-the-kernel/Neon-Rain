@@ -23,8 +23,10 @@ document did not say whose repository it was about. This document is about `neon
    approval.** A dependency is an architecture decision with a supply-chain cost, not an import.
 2. **Install only from `requirements.lock`.** The lock pins versions and hashes;
    `requirements.in` holds the direct dependencies and one line of reason each; the lock is compiled
-   from it by `uv pip compile --generate-hashes` (R-017) and installed by `pip install
-   --require-hashes -r requirements.lock`. Never `pip install <name>` in a session, which resolves
+   from it by `uv pip compile --generate-hashes --python-version 3.12 --exclude-newer "$(date -u -d
+   '7 days ago' +%F)" requirements.in -o requirements.lock` (R-017; the cooldown is R-018: no version
+   published in the last seven days enters) and installed by `pip install --only-binary :all:
+   --require-hashes -r requirements.lock` into a fresh `python3.12 -m venv .venv`. Never `pip install <name>` in a session, which resolves
    whatever is newest at that moment, including whatever was published an hour ago.
 3. **Never run a package's install or post-install scripts.** Prefer wheels; a package that needs to
    execute code at install time is a decision, not a convenience.

@@ -1,6 +1,6 @@
 # Direct dependencies, one line of reason each (supply-chain rule 1, R-001).
-# requirements.lock is compiled from this with hashes (`uv pip compile`, R-017) and is the only thing
-# ever installed:
+# requirements.lock is compiled from this with hashes (`uv pip compile`, R-017; the command is in
+# docs/SUPPLY-CHAIN.md rule 2, with R-018's cooldown) and is the only thing ever installed:
 #   pip install --require-hashes -r requirements.lock
 # Adding a line here is a decision in theGhost.md with Ghost's approval, never an agent's import.
 
@@ -9,8 +9,8 @@ numpy           # arrays; every metric in docs/HARNESS.md is written over these
 scipy           # Spearman correlation, the normal CDF for the deflated Sharpe (HAR-07)
 pyarrow         # parquet, for both ledgers and the feature cache
 lightgbm        # the tree baseline the network must beat (R-007)
-torch           # the network (R-009); CPU build is enough until a phase-4 measurement says otherwise
+# torch         # the network (R-009); in the lock from phase 4 (R-018): PyPI's Linux wheel brings ~3 GB of CUDA
 pytest          # the fast loop
 mutmut          # mutation testing; the tests are the audit (R-015a)
 ruff            # the readability rules of R-015b, enforced not hoped for
-anthropic       # the scorer only; no other module may import it (modules.json MOD-01)
+# anthropic     # the scorer only; no other module may import it (modules.json MOD-01); in the lock from phase 5 (R-018)

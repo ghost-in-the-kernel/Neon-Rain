@@ -34,7 +34,8 @@ at the plan.
 
 ## Commands
 
-`pip install -r requirements.lock` once per session (lockfile only). `pytest test/ -q` is the fast
+`python3.12 -m venv .venv && .venv/bin/pip install --only-binary :all: --require-hashes -r
+requirements.lock` once per session (lockfile only, wheels only, pip as the venv ships it). `pytest test/ -q` is the fast
 loop: doc tests and unit tests, no data, no model, no network. `scripts/precommit.sh` is the check
 before a push: the fast loop, the import rule, the mutation score (R-015), the metrics line; quote
 its last line in the commit.
