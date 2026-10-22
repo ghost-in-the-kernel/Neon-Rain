@@ -141,3 +141,15 @@ failure), **Cost**, **Class** (`contradiction`, `ambiguity`, `failure-caught`, `
 - **Caught by:** the probe, re-run as R-016's `Held by` asks.
 - **Cost:** a few minutes.
 - **Class:** measurement
+
+### J-009 The lock's compiler
+- **Who:** Ghost, Claude Opus.
+- **Intent:** Settle how `requirements.lock` is compiled before 0.5 compiles it.
+- **Found:** The handoff named `pip-compile` (pip-tools), which no file declares.
+- **Options:** Add pip-tools to `requirements.in` (an eleventh dependency to build the lock of ten);
+  `uv pip compile`, already in the session (taken by Ghost).
+- **Resolved:** R-017; HANDOFF.md, SUPPLY-CHAIN.md and `requirements.in` name it. Still open for 0.5:
+  PyPI's Linux torch wheel brings the CUDA libraries, and the CPU-only index
+  (download.pytorch.org) is refused from this session.
+- **Touched:** theGhost.md, docs/HANDOFF.md, docs/SUPPLY-CHAIN.md, requirements.in.
+- **Class:** decision

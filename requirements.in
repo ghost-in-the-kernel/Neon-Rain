@@ -1,5 +1,6 @@
 # Direct dependencies, one line of reason each (supply-chain rule 1, R-001).
-# requirements.lock is compiled from this with hashes and is the only thing ever installed:
+# requirements.lock is compiled from this with hashes (`uv pip compile`, R-017) and is the only thing
+# ever installed:
 #   pip install --require-hashes -r requirements.lock
 # Adding a line here is a decision in theGhost.md with Ghost's approval, never an agent's import.
 

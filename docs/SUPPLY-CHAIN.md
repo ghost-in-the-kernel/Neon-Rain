@@ -22,7 +22,8 @@ document did not say whose repository it was about. This document is about `neon
 1. **No dependency added, changed or removed without a one-line reason in `theGhost.md` and Ghost's
    approval.** A dependency is an architecture decision with a supply-chain cost, not an import.
 2. **Install only from `requirements.lock`.** The lock pins versions and hashes;
-   `requirements.in` holds the direct dependencies and one line of reason each. `pip install
+   `requirements.in` holds the direct dependencies and one line of reason each; the lock is compiled
+   from it by `uv pip compile --generate-hashes` (R-017) and installed by `pip install
    --require-hashes -r requirements.lock`. Never `pip install <name>` in a session, which resolves
    whatever is newest at that moment, including whatever was published an hour ago.
 3. **Never run a package's install or post-install scripts.** Prefer wheels; a package that needs to

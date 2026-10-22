@@ -312,3 +312,19 @@ it is `in force`.
 - **Status:** proposed
 - **See also:** R-003, R-006, R-010
 - **subject:** environment
+
+### R-017: The lock is compiled by `uv pip compile`; `pip` installs it
+- **Decision:** `requirements.lock` is compiled from `requirements.in` with `uv pip compile
+  --generate-hashes --python-version 3.12`, and installed with `pip install --require-hashes -r
+  requirements.lock`. uv is a tool the session already carries, not a dependency of the project:
+  it is in neither file, and nothing under `neonrain/` or `test/` needs it.
+- **Why:** The handoff named `pip-compile`, which is pip-tools, a package in neither file; adding
+  it would have been an eleventh dependency to compile the other ten. uv is preinstalled in the
+  cloud sessions and writes the same hashed format, which plain `pip` installs, so the install
+  path of R-001 and docs/SUPPLY-CHAIN.md rule 2 is unchanged.
+- **Held by:** docs/SUPPLY-CHAIN.md rule 2; the comment at the head of `requirements.in`;
+  `test/test_supply_chain.py` (phase 0.5).
+- **Source:** Ghost, 2026-10-22: "use uv pip compile".
+- **Status:** in force
+- **See also:** R-001, R-003
+- **subject:** toolchain
