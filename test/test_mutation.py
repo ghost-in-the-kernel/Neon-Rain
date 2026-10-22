@@ -24,3 +24,7 @@ def test_the_placeholder_row_explains_nothing() -> None:
 def test_an_explanation_for_a_mutant_that_no_longer_survives_is_stale() -> None:
     assert mutation.stale("    a.x_f__mutmut_2: killed\n", DOC) == ["a.x_f__mutmut_2"]
     assert mutation.stale(RESULTS, DOC) == []
+
+
+def test_a_line_that_is_not_a_result_is_ignored() -> None:
+    assert mutation.survivors("Running mutation testing\n\n    a.x_f__mutmut_1: survived\n") == ["a.x_f__mutmut_1"]

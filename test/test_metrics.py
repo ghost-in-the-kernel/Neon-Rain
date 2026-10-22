@@ -140,3 +140,11 @@ def test_docs_per_source_waits_for_source(tmp_path: Path) -> None:
     assert metrics.docs_per_source(tmp_path) == 1.0
     (tmp_path / "neonrain" / "c.py").write_text("w = 4\n" * 5)
     assert metrics.docs_per_source(tmp_path) == 0.38
+
+
+def test_shown_values() -> None:
+    assert [agent_table.shown(v) for v in (None, 785.0, 0.375, 3)] == ["—", "785", "0.38", "3"]
+
+
+def test_a_zero_target_recorded_at_zero_is_armed() -> None:
+    assert agent_table.verdict("0", "0", 1) == "regressed"

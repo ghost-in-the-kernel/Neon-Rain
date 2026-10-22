@@ -46,3 +46,15 @@ def test_an_alias_in_capitals_matches_only_in_capitals() -> None:
 
 def test_a_word_containing_the_alias_is_not_it(tmp_path: Path) -> None:
     assert glossary.problems(plant(tmp_path, "timeframes and subtimeframe\n")) == []
+
+
+def test_aliases_in_root_documents_are_caught_and_the_glossary_itself_is_not(tmp_path: Path) -> None:
+    root = plant(tmp_path, "Each timeframe.\n")
+    (root / "docs" / "GLOSSARY.md").write_text(TABLE + "\nNever write timeframe.\n")
+    (root / "README.md").write_text("A timeframe and a timeframe.\n")
+    (root / "GLOSSARY.md").write_text("timeframe\n")
+    assert glossary.problems(root) == ["README.md uses 'timeframe' 2 times", "ROADMAP.md uses 'timeframe' 1 times"]
+
+
+def test_a_lowercase_alias_matches_any_case() -> None:
+    assert glossary.uses("Timeframe TIMEFRAME timeframe", "timeframe") == 3

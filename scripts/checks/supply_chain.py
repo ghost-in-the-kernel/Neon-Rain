@@ -70,7 +70,7 @@ def import_problems(root: Path) -> list[str]:
             found += [f"{path.relative_to(root)} imports {n}, which requirements.lock does not pin" for n in names]
     for path in sorted(root.glob("scripts/**/*.py")) + sorted(root.glob("test/**/*.py")):
         for node in imports.statements(path.read_text()):
-            found += modules.external_problems(str(path.relative_to(root)), "", imports.external(node))
+            found += modules.external_problems(str(path.relative_to(root)), False, imports.external(node))
     return found
 
 

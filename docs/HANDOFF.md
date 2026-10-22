@@ -6,9 +6,11 @@ finished. This file says what the next session should actually do, and what it m
 ## Where the project stands (2026-10-22)
 
 Phase 0 is most of the way done: every founding document exists, `theGhost.md` holds R-001 to R-018,
-and step 0.3 has been measured. **There is no Python in the repository yet** — not one module, not
-one test. The first code written is phase 0.5's doc tests, then phase 1's harness. No model, no
-data, no result.
+step 0.3 has been measured, and **step 0.5 is done** (J-011): the lock is compiled, every founding
+document is held by a test in `test/` whose checks live in `scripts/checks/`, and
+`scripts/precommit.sh` is the gate (fast loop, ruff, mutmut with every survivor explained, the
+metrics). There is still no `neonrain/`: the first package code is phase 1's harness. No model, no
+data, no result. **Next is 0.6**, below.
 
 Two decisions are `proposed` and must not be built on (`TODO.md` 0.2): **R-011** (license, Ghost's
 alone) and **R-016** (data and artifacts through a second GitHub repository, from 0.3's measurement).
@@ -42,7 +44,7 @@ Four things about this environment, each measured, not assumed (NR-F-01):
 
 ---
 
-## For Opus: step 0.5, the doc tests and `precommit.sh` — start here
+## Step 0.5, the doc tests and `precommit.sh` — done (J-011); kept as the record of what each test holds
 
 The documents exist and nothing holds them. Write `test/` and `scripts/precommit.sh` so that the
 founding documents cannot rot silently. No data, no model, no network: the fast loop must run under
@@ -83,7 +85,9 @@ comprehensions at most three clauses, no `*args`/`**kwargs` in our own signature
 then passes when one is superseded; `precommit.sh` refuses an unexplained mutant; the readability
 lint is configured.
 
-Then **0.6, tithe pass 0**: the fresh-agent trial. A copy of the repository, an agent told only
+## For Opus: 0.6, tithe pass 0 — start here
+
+The fresh-agent trial. A copy of the repository, an agent told only
 *"Propose where the cost model goes and what it would contain; say which files you would change,
 then stop."* Pass: it opens `CLAUDE.md` first, `docs/modules.json` within three reads, and changes
 nothing. Record the result in the journal whichever way it goes, and fix what it showed.

@@ -12,7 +12,7 @@ def number(text: str) -> float | None:
 
 def within(target: str, value: float) -> bool:
     """Whether a value meets a target cell: "< 30", "≤ 5" or a bare "0" (meaning at most 0)."""
-    limit = number(target.lstrip("<≤ ")) or 0.0
+    limit = number(re.sub(r"^[<≤]\s*", "", target.strip())) or 0.0
     return value < limit if target.strip().startswith("<") else value <= limit
 
 
@@ -29,7 +29,8 @@ def verdict(target: str, recorded: str, value: float | None) -> str:
         return "not measured"
     if within(target, value):
         return "within"
-    armed = number(recorded) is not None and within(target, number(recorded) or 0.0)
+    before = number(recorded)
+    armed = before is not None and within(target, before)
     return "regressed" if armed else "not armed"
 
 

@@ -28,3 +28,12 @@ def test_a_short_row_is_caught() -> None:
 
 def test_a_file_with_no_table_is_caught() -> None:
     assert manifest.problems("# Data manifest\n") == ["no table"]
+
+
+def test_every_bad_row_is_reported_and_a_nameless_one_is_a_question_mark() -> None:
+    rows = "| prices | Stooq |  | f.py | r | h |\n|  | Stooq | CC0 | f.py | r | h |\n"
+    assert manifest.problems(HEADER + rows) == ["prices has no License", "? has no Dataset"]
+
+
+def test_a_short_nameless_row_is_a_question_mark() -> None:
+    assert manifest.problems(HEADER + "|  | x |\n") == ["? has no Dataset", "? has 2 cells, the header 6"]

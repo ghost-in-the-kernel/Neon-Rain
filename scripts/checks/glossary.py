@@ -10,7 +10,7 @@ def enforced_aliases(glossary: str) -> list[str]:
     aliases = []
     for line in glossary.splitlines():
         cells = line.split("|")
-        if len(cells) >= 5 and not line.startswith("| ---"):
+        if len(cells) >= 5:
             aliases += re.findall(r"`([^`]+)`", cells[3])
     return aliases
 
@@ -21,8 +21,9 @@ def uses(text: str, alias: str) -> int:
     Case is ignored unless the alias is in capitals: `NN` matches "NN" but not "HAR-nn".
     """
     prose = CODE_SPAN.sub(" ", text)
-    flags = 0 if alias.isupper() else re.IGNORECASE
-    return len(re.findall(rf"\b{re.escape(alias)}\b", prose, flags=flags))
+    if not alias.isupper():
+        prose, alias = prose.lower(), alias.lower()
+    return len(re.findall(rf"\b{re.escape(alias)}\b", prose))
 
 
 def documents(root: Path) -> list[Path]:

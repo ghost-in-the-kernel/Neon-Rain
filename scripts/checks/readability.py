@@ -12,10 +12,11 @@ def clauses(node: ast.ListComp | ast.SetComp | ast.DictComp | ast.GeneratorExp) 
     return sum(1 + len(generator.ifs) for generator in node.generators)
 
 
-def node_problems(node: ast.AST, where: str) -> list[str]:
-    """One syntax node against the rules; `where` is "path:line" for the message."""
+def node_problems(node: ast.AST, path: str) -> list[str]:
+    """One syntax node against the rules; each message starts "path:line"."""
     found = []
     if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+        where = f"{path}:{node.lineno}"
         length = (node.end_lineno or node.lineno) - node.lineno + 1
         if length >= MAX_FUNCTION_LINES:
             found.append(f"{where} {node.name} is {length} lines, at most {MAX_FUNCTION_LINES - 1}")
@@ -23,7 +24,7 @@ def node_problems(node: ast.AST, where: str) -> list[str]:
             found.append(f"{where} {node.name} takes *args or **kwargs")
     if isinstance(node, (ast.ListComp, ast.SetComp, ast.DictComp, ast.GeneratorExp)):
         if clauses(node) > MAX_COMPREHENSION_CLAUSES:
-            found.append(f"{where} a comprehension has {clauses(node)} clauses, at most {MAX_COMPREHENSION_CLAUSES}")
+            found.append(f"{path}:{node.lineno} a comprehension has {clauses(node)} clauses, at most {MAX_COMPREHENSION_CLAUSES}")
     return found
 
 
@@ -31,7 +32,7 @@ def source_problems(source: str, path: str) -> list[str]:
     """Every rule broken in one file's source text."""
     found = []
     for node in ast.walk(ast.parse(source)):
-        found += node_problems(node, f"{path}:{getattr(node, 'lineno', 0)}")
+        found += node_problems(node, path)
     return found
 
 

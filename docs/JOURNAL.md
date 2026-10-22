@@ -170,3 +170,32 @@ failure), **Cost**, **Class** (`contradiction`, `ambiguity`, `failure-caught`, `
   docs/HANDOFF.md.
 - **Caught by:** reading the install's output (the pip upgrade).
 - **Class:** decision
+
+### J-011 Step 0.5: the documents held, and what holding them found
+- **Who:** Ghost, Claude Opus.
+- **Intent:** TODO 0.5: a test for every founding document, `precommit.sh`, the readability lint.
+- **Found:** Writing each red condition as a permanent test (a planted break the check must report)
+  rather than breaking a document once by hand made the handoff's "watch it fail" repeatable. The
+  checks then caught, on their first runs: the handoff's own example writing an enforced alias
+  outside backticks; "HAR-nn" matching the alias `NN` (an alias in capitals now matches only in
+  capitals); AGENT.md recording 2 files for the widest routing row when it was 3. Mutation testing
+  over `scripts/checks/` left 139 survivors of 1,133. Most were unreachable defaults and
+  `zip(strict=)` flips, designed out rather than explained (B905 off, its reason in
+  `pyproject.toml`); the rest were real gaps: a `continue` no test told from a `break`, a
+  `conflicts-with:` naming no entry passing silently, and **`neonrain/__init__.py` skipped by the
+  module check, so an `import anthropic` there would have passed MOD-01**. Three equivalent
+  mutants are explained in `docs/MUTATION.md`.
+- **Options:** `test_harness_doc`'s code-reference half, which must fail until phase 1: leave it
+  red (refused: the gate would refuse every push until phase 1), skip it (refused: weakening), a
+  strict xfail conditioned on `neonrain/harness/` not existing (taken: it fails now, the loop goes
+  red if it ever passes without the folder, and it runs for real once the folder exists).
+- **Resolved:** 0.5 done (DONE.md). Friction worth Ghost's eye: AGENT.md's "Largest source file"
+  is stale-checked, so every commit that grows the largest file must rerun `scripts/metrics.py
+  --write`; it happened five times this step. Recording it only at tithe passes would end that.
+  Two "Unsure" lines are in the code (MOD-04's static check; which RESULTS.md tables are held).
+- **Touched:** `pyproject.toml`, `scripts/checks/`, `scripts/metrics.py`, `scripts/survivors.py`,
+  `scripts/precommit.sh`, `test/`, docs/AGENT.md, docs/MUTATION.md, docs/DONE.md, TODO.md,
+  docs/HANDOFF.md, CLAUDE.md.
+- **Caught by:** the tests' first runs, and mutmut.
+- **Cost:** one session.
+- **Class:** measurement

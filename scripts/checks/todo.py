@@ -31,7 +31,9 @@ def first_item_problems(todo: str) -> list[str]:
     match = ITEM.search(todo)
     if match is None:
         return []
-    body = re.split(r"^#{2,3} ", todo[match.end():], maxsplit=1, flags=re.MULTILINE)[0]
+    rest = todo[match.end():]
+    following = re.search(r"^#{2,3} ", rest, flags=re.MULTILINE)
+    body = rest[: following.start()] if following else rest
     if re.search(r"^Check:", body, flags=re.MULTILINE):
         return []
     return [f"the first open item, {match.group(1)}.{match.group(2)}, has no Check: line"]

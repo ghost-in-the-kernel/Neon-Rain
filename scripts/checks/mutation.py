@@ -2,15 +2,16 @@
 import re
 
 UNFINISHED: tuple[str, ...] = ("survived", "no tests", "timeout", "suspicious", "segfault", "not checked")
+LINE = re.compile(r"^\s*(\S+): (.+)$")
 
 
 def survivors(results: str) -> list[str]:
     """The mutants `mutmut results` lists as anything but killed: "    a.b__mutmut_3: survived" gives ["a.b__mutmut_3"]."""
     found = []
     for line in results.splitlines():
-        name, _, status = line.strip().rpartition(": ")
-        if name and status in UNFINISHED:
-            found.append(name)
+        match = LINE.match(line)
+        if match and match.group(2) in UNFINISHED:
+            found.append(match.group(1))
     return found
 
 

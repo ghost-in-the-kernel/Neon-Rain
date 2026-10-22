@@ -20,3 +20,15 @@ the proxy; PyPI and GitHub (git, read-only REST) open; GitHub Releases, Git LFS 
 writes refused for this session type; a plain 1 MB git blob pushes. Produced NR-F-01 and R-016;
 superseded R-010.
 Check: `docs/FINDINGS.md` NR-F-01 lists every candidate as reachable or refused. ✓
+
+### 0.5 The doc tests and `precommit.sh` — done 2026-10-22 (J-010, J-011)
+
+`requirements.lock` (R-017, R-018); `pyproject.toml` (ruff for R-015b's type hints and bare excepts,
+pytest, mutmut); `scripts/checks/` and a test for each of theGhost.md, the glossary, TODO.md, the
+module rules, the manifest, the supply chain, HARNESS.md, RESULTS.md, AGENT.md's metrics, R-015(b)'s
+readability and the survivor rule; `scripts/metrics.py`, `scripts/survivors.py`, `scripts/precommit.sh`.
+Check: every doc test passes (137, and `test_harness_doc`'s code-reference test a strict xfail until
+`neonrain/harness/` exists); `test_ghost` failed on a conflicting in-force pair planted in the real
+file and passed once one side was superseded; `precommit.sh` refused 139 unexplained survivors, then
+passed with 1,096 of 1,099 killed and 3 explained in `docs/MUTATION.md`; the readability lint is
+configured. ✓

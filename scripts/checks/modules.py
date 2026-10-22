@@ -15,10 +15,10 @@ CLOCK_FUNCTIONS: frozenset[str] = frozenset({"time", "time_ns"})
 
 
 # Decision: R-008 (MOD-01), R-013 (MOD-03)
-def external_problems(where: str, module: str, names: list[str]) -> list[str]:
-    """MOD-01 and MOD-03 for one file's outside imports."""
+def external_problems(where: str, is_scorer: bool, names: list[str]) -> list[str]:
+    """MOD-01 and MOD-03 for one file's outside imports; `is_scorer` is whether the file is in neonrain/scorer/."""
     found = [f"{where} imports {name}: only scorer imports a model client (MOD-01)"
-             for name in names if name in MODEL_CLIENTS and module != "scorer"]
+             for name in names if name in MODEL_CLIENTS and not is_scorer]
     found += [f"{where} imports {name}: no broker or order client, ever (MOD-03)" for name in names if name in BROKERS]
     return found
 
@@ -60,7 +60,7 @@ def file_problems(path: Path, package: Path, allowed: dict[str, list[str]]) -> l
     for node in imports.statements(source):
         reached = [name for name in imports.ours(node, module) if name not in (module, *allowed[module])]
         found += [f"{where} imports {name}: {module} may import only {allowed[module]}" for name in reached]
-        found += external_problems(where, module, imports.external(node))
+        found += external_problems(where, module == "scorer", imports.external(node))
     return found + body_problems(where, module, source)
 
 

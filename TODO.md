@@ -19,12 +19,6 @@ measurement; it supersedes R-010). R-001 is in force (Python, 2026-10-22).
 Check: `ghost-in-the-kernel/neon-rain-data` and `neon-rain-artifacts` exist; `scripts/fetch/artifacts.py`
 round-trips a 1 MB file by content hash through the artifacts repository.
 
-### 0.5 The doc tests and `precommit.sh`
-
-Check: every doc test passes on the empty project; `test_ghost` fails on a deliberately conflicting
-pair, then passes when one is superseded; `precommit.sh` runs `mutmut` and refuses an unexplained
-survivor (R-015); the readability lint of R-015(b) is configured.
-
 ### 0.6 Tithe pass 0
 
 Check: the fresh-agent trial opens `CLAUDE.md` first, `docs/modules.json` within three reads, and

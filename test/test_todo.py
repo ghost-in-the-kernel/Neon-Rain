@@ -43,3 +43,14 @@ def test_an_item_in_both_files_is_caught() -> None:
 
 def test_an_empty_chain_holds() -> None:
     assert todo.problems("## Phase 0\n", "") == []
+
+
+def test_a_check_after_the_next_heading_does_not_count() -> None:
+    assert todo.problems("## Phase 0\n\n### 0.2 a\n\nNote.\n\n### 0.5 b\n\nCheck: y\n\n### 0.6 c\n", "") == [
+        "the first open item, 0.2, has no Check: line"
+    ]
+
+
+def test_a_last_item_reads_to_the_end_of_the_file() -> None:
+    assert todo.problems("## Phase 0\n\n### 0.2 a\n\nCheck: x\n", "") == []
+    assert todo.problems("## Phase 0\n\n### 0.2 a\n\nNote.\n", "") == ["the first open item, 0.2, has no Check: line"]
