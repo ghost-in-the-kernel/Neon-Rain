@@ -2,19 +2,21 @@
 
 The canonical word for each concept, what it means, and the words *not* to write. An alias in
 backticks is enforced: `test/test_glossary.py` fails when it appears in a document outside this file.
-An alias without backticks is a review guide. Add a term before using a new word for a concept
-(Katana R-039's rule).
+An alias without backticks is a review guide. Enforce an alias only when it has no other honest use
+here: "prediction" (the network's output), "signal" (what daily returns carry little of) and
+"oracle" (Katana's P-01, cited) are right words for other things, and a test cannot tell the uses
+apart. Add a term before using a new word for a concept (Katana R-039's rule).
 
 | Term | Means | Not |
 | --- | --- | --- |
 | **universe** | the set of tickers eligible on a given date, with dates in and out | watchlist, basket, index (an index is a published one) |
 | **horizon** | one of the four forward windows: 3, 5, 21, 63 trading days | window (a window looks back), period, `timeframe` |
-| **target** | the label for one ticker, one date, one horizon: direction or rank (R-004) | `prediction` (that is the model's output), outcome, y |
+| **target** | the label for one ticker, one date, one horizon: direction or rank (R-004) | prediction (that is the network's output), outcome, y |
 | **direction** | the sign of the horizon's excess return over the universe median | up/down, class |
 | **rank** | the percentile of the horizon's return within the universe that day | score (that is the scorer's), ordering |
-| **feature** | one input column of the feature table, per ticker per day | `signal` (a signal is a trading rule's output), input, indicator (an indicator is one family of features) |
+| **feature** | one input column of the feature table, per ticker per day | signal (a signal is a trading rule's output), input, indicator (an indicator is one family of features) |
 | **feature family** | features that share a source and an ablation: price-derived, indicator, news | feature group, feature set |
-| **harness** | the evaluation code: splits, cost model, metrics, trials file (R-002, frozen) | backtester, framework, `oracle` (Katana's word; here the harness has no oracle but the future) |
+| **harness** | the evaluation code: splits, cost model, metrics, trials file (R-002, frozen) | backtester, framework, oracle (Katana's word; here the harness has no oracle but the future) |
 | **fold** | one walk-forward step: its training span, embargo and test span | split (a split is the whole grid), slice |
 | **group** | one of *k* seeded partitions of the universe by ticker, held out in turn (R-014) | cluster, bucket |
 | **dispersion** | the spread of a metric across folds and across groups: standard deviation and range | variance (a statistic, not the report), error bars |

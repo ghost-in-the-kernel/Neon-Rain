@@ -90,3 +90,21 @@ failure), **Cost**, **Class** (`contradiction`, `ambiguity`, `failure-caught`, `
   until phase 1 exists, deliberately, rather than being written weak.
 - **Touched:** every document named above; DONE.md 0.1 and 0.3.
 - **Class:** direction
+
+### J-006 The glossary would have failed its own first test
+- **Who:** Ghost, Claude Opus.
+- **Intent:** Read the founding documents before 0.5 and find what the doc tests would trip on.
+- **Found:** Three enforced aliases had honest uses elsewhere: `prediction` in nine documents
+  (the prediction ledger, the network's output, the glossary's own definition of ledger), `signal`
+  and `oracle` in theGhost.md, ROADMAP.md and GHOST-IN-THE-KERNEL.md, each in its right sense.
+  `test_glossary.py` as specified would have been red on the empty project. The handoff's red
+  condition for that test ("backtester" in ROADMAP.md) named an unenforced alias, so it would not
+  have turned the test red either.
+- **Options:** Rewrite nine documents around the word (refused: the word is right there); enforce
+  aliases only by whole phrase (refused: the test grows a parser for no gain); unenforce the three
+  and say when an alias may be enforced (taken).
+- **Resolved:** GLOSSARY.md's three aliases lose their backticks and its preamble gives the rule;
+  HANDOFF.md's red condition uses `timeframe`.
+- **Touched:** docs/GLOSSARY.md, docs/HANDOFF.md.
+- **Caught by:** reading the documents against the tests specified for them, before writing any.
+- **Class:** contradiction
