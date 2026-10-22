@@ -29,7 +29,7 @@ until a metric is first measured within its target it is "not armed" and not com
 | Mandatory context (words) | < 1,200 | 785 | every task pays it |
 | Fast loop (s) | < 30 | 2.45 | run after every edit |
 | Full check, `precommit.sh` (min) | < 10 | — | paid before every push while there is no CI |
-| Largest source file (lines) | < 400 | 84 | fits a read without paging |
+| Largest source file (lines) | < 400 | 142 | fits a read without paging |
 | Files a routing row opens | ≤ 5 | 3 | first five reads decide the task |
 | Decisions without `See also` | 0 | 0 | links find what grep misses |
 | Results without a trials line | 0 | 0 | P-07 |

@@ -40,4 +40,49 @@ def test_a_table_without_a_run_column_is_not_a_reported_number() -> None:
 
 
 def test_a_wrong_trials_header_is_caught() -> None:
-    assert results.problems(HEADER, "hash\tmean\n") == ["harness/trials.tsv's header is ['hash', 'mean'], not HAR-09's"]
+    assert results.problems(HEADER, "hash\tmean\n") == ["harness/trials.tsv's header is 'hash\\tmean', not HAR-09's"]
+
+
+def test_an_empty_trials_file_is_caught() -> None:
+    assert results.problems(HEADER, "") == ["harness/trials.tsv's header is '', not HAR-09's"]
+
+
+def test_every_bad_row_is_reported() -> None:
+    rows = GOOD.replace("ab12", "cd34") + GOOD.replace("ab12", "ef56")
+    assert results.problems(HEADER + rows, TRIALS) == [
+        "cd34 has no line in harness/trials.tsv", "ef56 has no line in harness/trials.tsv"
+    ]
+
+
+def test_a_row_with_no_run_is_named_by_a_question_mark() -> None:
+    found = results.problems(HEADER + GOOD.replace("| ab12 |", "|  |"), TRIALS)
+    assert found == ["? has no line in harness/trials.tsv"]
+
+
+def test_a_table_without_a_groups_or_findings_column_is_caught() -> None:
+    table = "| Run | Folds: mean ± sd [min, max] |\n| --- | --- |\n| ab12 | 0.02 ± 0.01 [0.00, 0.04] |\n"
+    assert results.problems(table, TRIALS) == [
+        "ab12 has no dispersion on the groups axis (mean ± sd [min, max])", "ab12 cites no finding (NR-F-nn)"
+    ]
+
+
+def test_a_short_row_reads_its_missing_cells_as_empty() -> None:
+    assert results.reported_rows(HEADER + "| ab12 | 5 |\n") == [{"Run": "ab12", "Horizon": "5"}]
+
+
+def test_tables_are_read_separately() -> None:
+    text = "| Scorer | x |\n| --- | --- |\n| a | b |\n\nprose\n\n" + HEADER + GOOD
+    assert [row["Run"] for row in results.reported_rows(text)] == ["ab12"]
+
+
+def test_cells_are_trimmed_and_the_outer_bars_dropped() -> None:
+    assert results.cells("  | a |  b c |  |\n") == ["a", "b c", ""]
+
+
+def test_trial_hashes_are_the_first_column_without_the_header() -> None:
+    assert results.trial_hashes(TRIALS + "cd 34\tx\n") == {"ab12", "cd 34"}
+
+
+def test_rows_of_every_run_table_are_read() -> None:
+    text = HEADER + GOOD + "\n" + HEADER + GOOD.replace("ab12", "cd34")
+    assert [row["Run"] for row in results.reported_rows(text)] == ["ab12", "cd34"]

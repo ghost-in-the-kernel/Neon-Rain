@@ -10,7 +10,7 @@ the tests hold the code, and a long one means they do not.
 
 | Id | File : line | The mutation | Why it is harmless | Date |
 | --- | --- | --- | --- | --- |
-| *(none yet)* | | | | |
+| `scripts.checks.results.x_cell__mutmut_2` | scripts/checks/results.py : `cell` | joins matching cells with "XX XX" instead of " " | Equivalent under every reachable input: the patterns read from the joined text (a ± with [min, max], an NR-F-nn, a config hash) never span two cells, and no separator text can form one. | 2026-10-22 |
 
 ## What counts as harmless
 

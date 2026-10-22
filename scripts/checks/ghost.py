@@ -5,6 +5,7 @@ FIELDS: tuple[str, ...] = ("Decision", "Why", "Held by", "Source", "Status", "Se
 PLAIN_STATUSES: tuple[str, ...] = ("proposed", "in force", "withdrawn", "refused")
 HEADING = re.compile(r"^### (R-\d{3}): ", re.MULTILINE)
 FIELD_LINE = re.compile(r"^- \*\*([^*]+):\*\* ?(.*)$", re.MULTILINE)
+CONFLICTS = re.compile(r"^- \*\*conflicts-with:\*\* (.*)$", re.MULTILINE)
 SUPERSEDED = re.compile(r"^superseded by (R-\d{3})$")
 
 
@@ -13,9 +14,9 @@ def split_entries(text: str) -> dict[str, str]:
 
     For "### R-001: a\\nbody\\n### R-002: b\\n" it returns {"R-001": "### R-001: a\\nbody\\n", "R-002": ...}.
     """
-    starts = [(m.group(1), m.start()) for m in HEADING.finditer(text)]
-    ends = [start for _, start in starts[1:]] + [len(text)]
-    return {rid: text[start:end] for (rid, start), end in zip(starts, ends, strict=True)}
+    headings = list(HEADING.finditer(text))
+    bounds = [m.start() for m in headings] + [len(text)]
+    return {m.group(1): text[bounds[i]:bounds[i + 1]] for i, m in enumerate(headings)}
 
 
 def fields_of(entry: str) -> dict[str, str]:
@@ -55,24 +56,24 @@ def entry_problems(entries: dict[str, str]) -> list[str]:
     for rid, entry in entries.items():
         fields = fields_of(entry)
         problems += [f"{rid} has no {name} line" for name in FIELDS if name not in fields]
-        problem = status_problem(rid, fields.get("Status", ""), entries)
-        if "Status" in fields and problem is not None:
-            problems.append(problem)
+        problem = status_problem(rid, fields["Status"], entries) if "Status" in fields else None
+        problems += [problem] if problem else []
     return problems
 
 
 # Decision: P-05 (two in-force decisions on one subject that say they conflict cannot both stand)
 def conflict_problems(entries: dict[str, str]) -> list[str]:
-    """In-force pairs on one subject where one names the other on a `conflicts-with:` line."""
+    """In-force pairs on one subject where one names the other on a `conflicts-with:` line; a name that is no entry."""
     problems = []
     for rid, entry in entries.items():
         fields = fields_of(entry)
-        if fields.get("Status") != "in force":
-            continue
-        for other in re.findall(r"R-\d{3}", fields.get("conflicts-with", "")):
-            other_fields = fields_of(entries.get(other, ""))
-            same_subject = other_fields.get("subject") == fields.get("subject")
-            if other_fields.get("Status") == "in force" and same_subject:
+        named = [other for line in CONFLICTS.findall(entry) for other in re.findall(r"R-\d{3}", line)]
+        for other in named:
+            if other not in entries:
+                problems.append(f"{rid} conflicts with {other}, which does not exist")
+                continue
+            both = fields.get("Status") == fields_of(entries[other]).get("Status") == "in force"
+            if both and fields_of(entries[other]).get("subject") == fields.get("subject"):
                 problems.append(f"{rid} and {other} are both in force on {fields.get('subject')!r} and conflict")
     return problems
 

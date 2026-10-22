@@ -14,9 +14,17 @@ def python_lines(root: Path, tops: tuple[str, ...]) -> list[int]:
 
 
 def routing_files(claude: str) -> int:
-    """The most files one routing row of CLAUDE.md opens: backticked names in its "Start here" cell."""
-    rows = [line.split("|") for line in claude.splitlines() if line.startswith("| ") and not line.startswith("| Task")]
-    return max((len(re.findall(r"`[^`]+`", row[2])) for row in rows if len(row) > 3), default=0)
+    """The most files one routing row of CLAUDE.md opens: backticked names in its "Start here" cell; 0 with no table."""
+    for table in results.TABLE.findall(claude):
+        lines = table.splitlines()
+        if results.cells(lines[0])[:2] == ["Task", "Start here"]:
+            return max(len(re.findall(r"`[^`]+`", results.cells(line)[1])) for line in lines[2:])
+    return 0
+
+
+def largest(root: Path) -> int:
+    """The longest of our .py files in lines; 0 when there is none."""
+    return max(python_lines(root, SOURCE_DIRS), default=0)
 
 
 def without_see_also(ghost_text: str) -> int:
@@ -35,7 +43,7 @@ def results_lacking(root: Path, phrase: str) -> int:
 def unlisted_datasets(root: Path) -> int:
     """Entries under data/ but MANIFEST.md that no manifest row names."""
     manifest = (root / "data" / "MANIFEST.md").read_text()
-    named = {line.split("|")[1].strip() for line in manifest.splitlines()[2:] if line.startswith("| ")}
+    named = {results.cells(line)[0] for line in manifest.splitlines()[2:] if line.startswith("|")}
     present = {p.name.split(".")[0] for p in (root / "data").iterdir() if p.name != "MANIFEST.md"}
     return len(present - named)
 
@@ -55,7 +63,7 @@ def measure(root: Path, fast_loop: float | None, full_check: float | None) -> di
         "Mandatory context (words)": len((root / "CLAUDE.md").read_text().split()),
         "Fast loop (s)": fast_loop,
         "Full check, `precommit.sh` (min)": full_check,
-        "Largest source file (lines)": max(python_lines(root, SOURCE_DIRS), default=0),
+        "Largest source file (lines)": largest(root),
         "Files a routing row opens": routing_files((root / "CLAUDE.md").read_text()),
         "Decisions without `See also`": without_see_also((root / "theGhost.md").read_text()),
         "Results without a trials line": results_lacking(root, "trials.tsv"),

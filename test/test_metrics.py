@@ -63,14 +63,68 @@ def test_the_table_is_rewritten_in_place() -> None:
 
 
 def test_routing_rows_count_their_files() -> None:
-    claude = "| Task | Start here | Contract | Tests |\n| A | `a.md`, `b/` | `c.md` | |\n| B | `d.md` | | |\n"
+    other = "| Name | Files |\n| --- | --- |\n| x | `1`, `2`, `3`, `4` |\n\n"
+    claude = other + "| Task | Start here | Contract | Tests |\n| --- | --- | --- | --- |\n| A | `a.md`, `b/` | `c.md` | |\n| B | `d.md` | | |\n"
     assert metrics.routing_files(claude) == 2
+
+
+def test_no_routing_table_opens_nothing() -> None:
+    assert metrics.routing_files("# CLAUDE.md\n") == 0
+
+
+def plant(tmp_path: Path) -> Path:
+    """A root whose every metric is known: two result rows without a trials line, one without dispersion, one decision
+    without See also, thirteen lines of .md (root and docs/) over two of neonrain/."""
+    files = {
+        "CLAUDE.md": "one two three\n",
+        "README.md": "a\n",
+        "docs/A.md": "b\n",
+        "theGhost.md": "### R-001: a\n- **See also:** R-002\n### R-002: b\n- **Status:** x\n",
+        "docs/RESULTS.md": "| Run | Folds | Groups | Findings |\n| --- | --- | --- | --- |\n| zz | 1 | 1 | NR-F-01 |\n"
+        + "| ab | 1 ± 1 [0, 2] | 1 ± 1 [0, 2] | NR-F-01 |\n| cd | 1 ± 1 [0, 2] | 1 ± 1 [0, 2] | NR-F-01 |\n"
+        + "| ef | 1 ± 1 [0, 2] | 1 ± 1 [0, 2] | NR-F-01 |\n",
+        "harness/trials.tsv": "config_hash\tdate\nab\tx\nzz\tx\n",
+        "data/MANIFEST.md": "| Dataset | Hash |\n| --- | --- |\n",
+        "neonrain/a.py": "x = 1\ny = 2\n",
+        "test/t.py": "z = 1\n",
+    }
+    for name, text in files.items():
+        (tmp_path / name).parent.mkdir(parents=True, exist_ok=True)
+        (tmp_path / name).write_text(text)
+    return tmp_path
+
+
+def test_every_metric_is_measured_on_a_planted_root(tmp_path: Path) -> None:
+    assert metrics.measure(plant(tmp_path), 1.5, None) == {
+        "Mandatory context (words)": 3,
+        "Fast loop (s)": 1.5,
+        "Full check, `precommit.sh` (min)": None,
+        "Largest source file (lines)": 2,
+        "Files a routing row opens": 0,
+        "Decisions without `See also`": 1,
+        "Results without a trials line": 2,
+        "Results without dispersion": 1,
+        "Datasets without a manifest line": 0,
+        "Docs lines per source line": 6.5,
+    }
+
+
+def test_two_decisions_without_see_also_count_two() -> None:
+    assert metrics.without_see_also("### R-001: a\n- **Why:** w\n### R-002: b\n- **See also:**\n") == 2
+
+
+def test_nothing_to_measure_is_zero_lines(tmp_path: Path) -> None:
+    assert metrics.largest(tmp_path) == 0
+    (tmp_path / "scripts").mkdir()
+    (tmp_path / "scripts" / "a.py").write_text("1\n2\n3\n")
+    (tmp_path / "scripts" / "b.txt").write_text("1\n2\n3\n4\n")
+    assert metrics.largest(tmp_path) == 3
 
 
 def test_a_dataset_without_a_manifest_line_is_counted(tmp_path: Path) -> None:
     (tmp_path / "data").mkdir()
-    (tmp_path / "data" / "MANIFEST.md").write_text("| Dataset | Hash |\n| --- | --- |\n| prices | ab |\n")
-    (tmp_path / "data" / "prices.parquet").write_text("")
+    (tmp_path / "data" / "MANIFEST.md").write_text("| Dataset | Hash |\n| --- | --- |\n| daily prices | ab |\n")
+    (tmp_path / "data" / "daily prices.parquet").write_text("")
     assert metrics.unlisted_datasets(tmp_path) == 0
     (tmp_path / "data" / "news.parquet").write_text("")
     assert metrics.unlisted_datasets(tmp_path) == 1
@@ -82,3 +136,7 @@ def test_docs_per_source_waits_for_source(tmp_path: Path) -> None:
     (tmp_path / "neonrain").mkdir()
     (tmp_path / "neonrain" / "a.py").write_text("x = 1\ny = 2\n")
     assert metrics.docs_per_source(tmp_path) == 1.5
+    (tmp_path / "neonrain" / "b.py").write_text("z = 3\n")
+    assert metrics.docs_per_source(tmp_path) == 1.0
+    (tmp_path / "neonrain" / "c.py").write_text("w = 4\n" * 5)
+    assert metrics.docs_per_source(tmp_path) == 0.38
