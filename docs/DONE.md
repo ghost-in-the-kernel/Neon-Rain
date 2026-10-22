@@ -52,3 +52,12 @@ seed another market); the planted edge is recovered by a least-squares line at �
 within 0.015 (five standard errors) and nothing at ρ = 0. One return is rebuilt from HAR-10's text
 alone, and with ρ = 1 every return equals σ_x times the previous edge (R-015d). 146 of 146 mutants
 killed. ✓
+
+### 1.2 Targets — done 2026-10-22 (J-014)
+
+`neonrain/targets.py` to R-004 and HAR-02, which was made exact first (ties, the calendar's end,
+`min_tickers`); NR-F-02 written before any result. `test/test_targets.py`.
+Check: the hand-built ten-day, three-ticker series gives the hand-computed forward returns, excess
+returns, directions, ranks and the three dropped counts at horizons 3, 5 and 9. On the synthetic
+market every label is well formed at the four horizons, and the planted edge's rank correlation
+thins as HAR-10 predicts (about ρ/√h at 3 and 21 days). 278 of 278 mutants killed. ✓

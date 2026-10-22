@@ -5,10 +5,10 @@ finished. This file says what the next session should actually do, and what it m
 
 ## Where the project stands (2026-10-22)
 
-Phase 0 is done but for Ghost's items (0.2, 0.4), and **phase 1 has begun: 1.1, the synthetic
-market, is done** (J-013): `neonrain/harness/synthetic.py`, its model written exactly into HAR-10
-first. `theGhost.md` holds R-001 to R-020. **Next is 1.2, targets** (`neonrain/targets.py`, R-004,
-HAR-02), tested on a hand-built ten-day, three-ticker series. No real data, no model, no result.
+Phase 0 is done but for Ghost's items (0.2, 0.4). Phase 1: **1.1, the synthetic market** (J-013)
+and **1.2, the targets** (J-014) are done, each with its contract made exact before the code.
+`theGhost.md` holds R-001 to R-020. **Next is 1.3, the splits** (`neonrain/harness/split.py`, R-005,
+R-014, HAR-03 to HAR-05). No real data, no model, no result.
 
 Two decisions are `proposed` and must not be built on (`TODO.md` 0.2): **R-011** (license, Ghost's
 alone) and **R-016** (data and artifacts through a second GitHub repository, from 0.3's measurement).
@@ -132,11 +132,15 @@ Three things about phase 1 that are easy to get wrong:
    created by you (this session type cannot create repositories). Then phase 2 can start.
 3. **Delete the `probe-plain` branch** on GitHub.
 4. **Approve `pip install` if the classifier blocks it**, or say how you would rather it be done.
-5. **Phase 5's news feed is blocked on you** (NR-F-01): a dataset with publish timestamps, obtained
+5. **NR-F-02, delisting windows** (J-014): HAR-02 drops a cell with no price at *t+h*, so the
+   windows in which names fall to delisting, the worst returns, leave the labels. The usual remedy
+   is a delisting return (the last price as the value at *t+h*). Built as written; yours (or
+   Fable's, as the contract's author) to decide, before 1.6's survivorship test is read.
+6. **Phase 5's news feed is blocked on you** (NR-F-01): a dataset with publish timestamps, obtained
    where there is network access and pushed to `neon-rain-data`. FNSPID on Hugging Face is the
    leading candidate — 15M+ timestamped items with tickers — and its license is yours to check
    before it enters. Phases 1 to 4 do not wait on this.
-6. **The calibration set, phase 5.3**: 200 news stories hand-labelled by you (bullish / bearish /
+7. **The calibration set, phase 5.3**: 200 news stories hand-labelled by you (bullish / bearish /
    neutral, and which ticker), which is what the scorer's own accuracy is measured against. You are
    the first reviewer here as you are on Katana.
 

@@ -259,3 +259,30 @@ failure), **Cost**, **Class** (`contradiction`, `ambiguity`, `failure-caught`, `
 - **Caught by:** writing the code against the contract (a, b); mutmut, then running its mutants by
   hand (c, d).
 - **Class:** ambiguity
+
+### J-014 Step 1.2: the targets, and a bias written into the contract
+- **Who:** Ghost, Claude Opus.
+- **Intent:** ROADMAP 1.2 / R-004 / HAR-02: direction and rank labels at the four horizons.
+- **Found:** (a) With an odd number of tickers the median is one ticker's own return, so that
+  ticker's excess is exactly 0 every date: "dropped ties" is about 1/N of the direction cells, not a
+  rare event, and HAR-02 did not say whether the tied row keeps its rank. (b) HAR-02 did not say
+  whether the last *h* dates (no *t+h* on the calendar) count as missing; counted, every run would
+  carry 63 days of "missing" cells. (c) The fixed `N(t) < 20` made the step's own check impossible:
+  a three-ticker series is thin on every date. (d) A ticker delisted inside a window has no price at
+  *t+h*, so HAR-02 drops exactly the windows in which names fall to delisting: survivorship bias in
+  the labels themselves, on an honest universe. (e) Mutation: the joins' `validate=` guards were
+  redundant with each other, so no single one could be shown to matter; the output's order was
+  unpinned; and an eligible ticker with no price on the day itself had no test, so an inner join
+  could have hidden it.
+- **Options:** (d) build a delisting return now (refused: it changes the contract, the author's
+  call); build as written and record it first (taken, P-03).
+- **Resolved:** HAR-02: a tie loses its direction label and keeps its rank; the last *h* dates make
+  no cells and are not counted; `min_tickers` is config, 20 by default. NR-F-02 written; with Ghost
+  in HANDOFF.md. The redundant guards replaced by one check at the entry (no (ticker, date) twice in
+  prices or universe, a strictly increasing calendar, `min_tickers` ≥ 2), naming every reason; tests
+  for the order and the missing-at-*t* case. The planted edge's rank correlation thins with the
+  horizon as HAR-10 says, which checks 1.1 and 1.2 against each other.
+- **Touched:** docs/HARNESS.md (HAR-02), docs/FINDINGS.md (NR-F-02), `neonrain/targets.py`,
+  test/test_targets.py, docs/modules.json, TODO.md, docs/DONE.md, docs/HANDOFF.md.
+- **Caught by:** writing the code against the contract (a to d); mutmut (e).
+- **Class:** ambiguity

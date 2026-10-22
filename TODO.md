@@ -23,10 +23,6 @@ round-trips a 1 MB file by content hash through the artifacts repository.
 
 Nothing under `neonrain/models/` or `neonrain/baselines/` begins until 1.6 passes (R-002).
 
-### 1.2 Targets
-
-Check: `test/test_targets.py` on a hand-built ten-day, three-ticker series.
-
 ### 1.3 Splits
 
 Check: no training label's horizon window overlaps any test date; every ticker is in exactly one

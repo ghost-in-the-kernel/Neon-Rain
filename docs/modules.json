@@ -12,7 +12,7 @@
   "modules": {
     "universe":  { "purpose": "Which tickers exist on which dates; delistings where known.", "mayImport": [], "entryPoints": [] },
     "features":  { "purpose": "The feature table per ticker per day: price-derived, indicator, news.", "mayImport": ["universe", "ledger"], "entryPoints": [] },
-    "targets":   { "purpose": "The four horizons' labels: direction and rank (R-004).", "mayImport": ["universe"], "entryPoints": [] },
+    "targets":   { "purpose": "The four horizons' labels: direction and rank (R-004).", "mayImport": ["universe"], "entryPoints": ["neonrain.targets.labels"] },
     "harness":   { "purpose": "Splits (time x group), cost model, metrics, the trials file; frozen after phase 1 (R-002).", "mayImport": ["features", "targets"], "entryPoints": ["neonrain.harness.synthetic.generate"] },
     "baselines": { "purpose": "Zero, momentum, reversal, LightGBM (R-007).", "mayImport": ["harness"], "entryPoints": [] },
     "models":    { "purpose": "The one network (R-009).", "mayImport": ["harness"], "entryPoints": [] },

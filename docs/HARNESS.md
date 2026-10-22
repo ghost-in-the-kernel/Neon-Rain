@@ -50,14 +50,19 @@ For ticker *i*, date *t* and horizon *h* ∈ {3, 5, 21, 63} trading days:
   after *t* on the calendar and `P` is adjusted close.
 - **Excess return** `x(i,t,h) = r(i,t,h) − median{ r(j,t,h) : j ∈ universe(t) }`, the median taken
   over the tickers eligible on *t* that have a price at both *t* and *t+h*.
-- **Direction label** `d(i,t,h) = 1` if `x(i,t,h) > 0`, else `0`. A row with `x` exactly `0` is
-  dropped and counted in the run's `dropped_ties`.
+- **Direction label** `d(i,t,h) = 1` if `x(i,t,h) > 0`, else `0`. A row with `x` exactly `0` has
+  no direction label and is counted in the run's `dropped_ties`; it keeps its rank label. With an
+  odd number of tickers the median is one ticker's own return, so about one direction cell in
+  `N(t)` is a tie every date: expected, not a fault (J-014).
 - **Rank label** `q(i,t,h) = (rank(i) − 1) / (N(t) − 1)` ∈ [0, 1], where `rank` is the ascending
   rank of `x(i,t,h)` among the `N(t)` eligible, priced tickers on *t*, ties taking the average rank.
-  `N(t) < 20` makes the date unusable: it is dropped and counted in `dropped_thin_dates`.
+  `N(t) < min_tickers` makes the date unusable: it is dropped and counted in `dropped_thin_dates`.
+  `min_tickers` is part of the run's config, 20 unless a test says otherwise.
 
-A ticker missing a price at *t* or at *t+h* is excluded from that (i,t,h) cell and counted in
-`dropped_missing`. The three dropped counts appear in every result; a run that drops more than 5% of
+The cells are the (ticker, date) pairs of the universe frame whose date has an *h*-th trading date
+after it on the calendar; the last *h* dates have none, make no cells and are not counted. A ticker
+missing a price at *t* or at *t+h* is excluded from that (i,t,h) cell and counted in
+`dropped_missing` (but see NR-F-02: a delisting is a missing *t+h*). The three dropped counts appear in every result; a run that drops more than 5% of
 its cells is reported with that fact beside its numbers.
 
 The harness predicts nothing else. There is no price-level and no raw-return target (R-004).
