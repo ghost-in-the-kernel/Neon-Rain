@@ -14,7 +14,7 @@ at the plan.
 
 | Task | Start here | Contract | Tests |
 | --- | --- | --- | --- |
-| A decision, a plan, what to work on | `theGhost.md`, `TODO.md` | `theGhost.md` | `test/test_ghost.py` |
+| A decision, a plan, what to work on | `docs/HANDOFF.md`, `theGhost.md`, `TODO.md` | `theGhost.md` | `test/test_ghost.py` |
 | Writing down what happened | `docs/JOURNAL.md` (one entry, its fields) | | |
 | A word | `docs/GLOSSARY.md` | | `test/test_glossary.py` |
 | Why a rule is what it is | `docs/GHOST-IN-THE-KERNEL.md` | | |

@@ -72,3 +72,21 @@ failure), **Cost**, **Class** (`contradiction`, `ambiguity`, `failure-caught`, `
 - **Caught by:** the probe, by design of 0.3 (F-07).
 - **Cost:** about twenty minutes.
 - **Class:** measurement
+
+### J-005 The handoff, for a long-form Opus project
+- **Who:** Ghost, Claude Opus 5.
+- **Intent:** Ghost is starting this as a long-form coding project and wants everything an Opus
+  session needs to take over cold.
+- **Found:** Seven routing rows in `CLAUDE.md` pointed at documents that did not exist, `HARNESS.md`
+  among them — and `HARNESS.md` is load-bearing before any code, because R-015(c)'s mirror is
+  written from it blind. A handoff alone would have pointed at holes.
+- **Options:** Write the handoff only (refused: the rows still dangle); write the handoff plus every
+  contract an agent must read before coding, leaving 0.5's tests and the lock for Opus as its first
+  real work (taken); write the tests too (refused: it takes the first task away and the handoff is
+  the thing that was asked for).
+- **Resolved:** `HARNESS.md` (HAR-01 to HAR-13), `GHOST-IN-THE-KERNEL.md`, `LEDGER.md`,
+  `SUPPLY-CHAIN.md`, `RESULTS.md`, `MUTATION.md`, `DONE.md`, `requirements.in`, `HANDOFF.md`;
+  `CLAUDE.md`'s planning row now opens the handoff first. `test_harness_doc.py` is specified to fail
+  until phase 1 exists, deliberately, rather than being written weak.
+- **Touched:** every document named above; DONE.md 0.1 and 0.3.
+- **Class:** direction
