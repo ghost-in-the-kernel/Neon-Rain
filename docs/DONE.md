@@ -71,3 +71,14 @@ Check: no training label's horizon window overlaps any test date, at all four ho
 fold on a 1,300-day synthetic market, checked by brute force from the calendar independently of
 `split.py`; every ticker is in exactly one group; the grid is reproducible from a seed (and another
 seed gives another). Folds and purging by hand. 178 of 178 mutants killed. ✓
+
+### 1.4 Cost model and metrics — done 2026-10-23 (J-016 to J-018)
+
+In three parts: 1.4a the portfolio after costs (R-021), 1.4b HAR-07's metrics, 1.4c HAR-08's
+dispersion, the mirror and the noise band. `neonrain/harness/portfolio.py`, `metrics.py`,
+`dispersion.py`; `test/mirror_har07.py`, written blind by another agent from HAR-06 and HAR-07's
+text alone, standard library only, agreeing with the code to 1e-12 on every metric, at all three
+cost levels, through 30+ held delistings; three deliberate breaks of the code each turn it red.
+Check: a zero-edge strategy reports a deflated Sharpe inside its noise band across 100 seeds: 3 of
+100 at or above 0.95 before costs (band: at most 12), mean 0.471 (0.4 to 0.6); after 10 bps, 0 and
+0.012. With an edge of ρ = 0.1 all 100 are above 0.95, so the band check fails as it must. ✓

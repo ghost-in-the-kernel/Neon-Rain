@@ -155,23 +155,31 @@ per (i, t); for rank, a real-valued score per (i, t) whose order is what matters
   (no correlation exists); both are counted. The run's IC is the mean over the remaining `n_dates`,
   reported with the standard error of that mean `sd / √n_dates` and `IC_t = mean / (sd / √n_dates)`,
   where `sd` is the sample standard deviation (divisor `n_dates − 1`). With fewer than two dates
-  the standard error and `IC_t` are undefined.
+  the standard error and `IC_t` are undefined; with `sd = 0` the standard error is 0 and `IC_t` is
+  undefined.
 - **Long–short decile return**: on each test date, sort the tested tickers by predicted score; long
   the top decile and short the bottom decile, equal-weighted within each leg, gross exposure 1 per
   leg. The position is held `h` trading days, so `h` overlapping portfolios run in parallel and the
   day's return is their average (this is the standard overlapping-portfolio construction; it keeps
   the daily series i.i.d.-ish rather than counting the same bet `h` times). Exactly (J-016):
+  - The portfolio is scored on **every universe row of the test date** that has its features, never
+    only on the rows that have a label: a label needs a price at *t+h* (HAR-02), so trading only
+    labelled rows would keep out every name about to delist, a choice on *t* made with *t+h*'s
+    knowledge (J-018, NR-F-02). Accuracy and IC, which need the label, use the labelled rows.
   - A leg holds `n = ⌊N(t)/10⌋` names of the `N(t)` tickers with a score and a price on *t*; with
-    `n = 0` the date opens no sleeve. Ties in score are broken by ticker, ascending, so the order is
-    total and the same every run.
+    `n = 0` the date opens no sleeve. The tickers are ordered ascending by (score, ticker), so the
+    order is total and the same every run: the short leg is the first `n`, the long leg the last `n`
+    (J-018: at a tie the earlier ticker goes short).
   - A **sleeve** opened at the close of *t* earns on each of the next `h` trading dates `d` the mean
     daily return `P(i,d)/P(i,d−1) − 1` of its long names minus that of its short names: equal
     weights, held through the `h` days. The day's portfolio return is the sum over the sleeves open
     that day of `1/h` times the sleeve's return, less the costs of HAR-06 paid that day; a sleeve
     that does not exist yet (the first `h − 1` days of a span) is cash, earning 0.
   - A name that has no price on a day of its hold was delisted: its last return is the one up to its
-    last price, it is closed there and pays its cost (HAR-06), and its slot earns 0 for the rest of
-    the sleeve, so the leg's mean still divides by `n`.
+    last price, it is closed there and pays its cost (HAR-06) on the date of that last price, and its
+    slot earns 0 for the rest of the sleeve, so the leg's mean still divides by `n`; a price that
+    returns later does not reopen it. (The cost is booked a day before the missing price is seen:
+    a look-ahead in the daily timing that moves no total, J-018.)
   - Sleeves open on test dates only; a sleeve opened on the span's last dates runs past it into the
     next span's dates, so the daily series covers the test dates plus up to `h` after. A sleeve
     still open on the calendar's last date is closed there and pays.
@@ -210,7 +218,10 @@ group axis  : mean ± sd over groups, [min, max],  n_groups
 ```
 
 where the fold-axis statistics average over groups within each fold first, and the group axis
-averages over folds within each group first. The **group-axis spread is the memorization test**: a
+averages over folds within each group first. Exactly (J-018): `sd` has divisor `n − 1` and is
+undefined for a single value; a grid cell whose metric is undefined (HAR-07) is left out of both its
+fold's and its group's average and counted as `undefined_cells`; a fold or group with no defined
+cell is left out of its axis, so `n_folds` and `n_groups` count what was averaged. The **group-axis spread is the memorization test**: a
 model whose group-axis sd exceeds its group-axis mean in absolute value is reported as *fits names,
 not an algorithm*, and does not count as beating a baseline however good its mean (R-014).
 

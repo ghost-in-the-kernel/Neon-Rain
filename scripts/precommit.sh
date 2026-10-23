@@ -12,6 +12,10 @@ loop_started=$(date +%s.%N)
 $bin/pytest || stop "the fast loop"
 fast_loop=$(python3 -c "print(round($(date +%s.%N) - $loop_started, 2))")
 
+slow_started=$(date +%s)
+$bin/pytest -m slow || stop "the slow tests (the harness on the synthetic market)"
+slow=$(( $(date +%s) - slow_started ))
+
 $bin/ruff check . || stop "ruff (R-015b)"
 
 rm -rf mutants
@@ -24,4 +28,4 @@ $bin/python scripts/survivors.py <<< "$results" || stop "an unexplained survivor
 full_check=$(python3 -c "print(round(($(date +%s) - $started) / 60, 2))")
 $bin/python scripts/metrics.py --fast-loop "$fast_loop" --full-check "$full_check" || stop "a metric that regressed"
 
-echo "precommit: passed; fast loop ${fast_loop}s, mutants ${killed}/${total} killed, the rest explained, ${full_check} min"
+echo "precommit: passed; fast loop ${fast_loop}s, slow ${slow}s, mutants ${killed}/${total} killed, the rest explained, ${full_check} min"

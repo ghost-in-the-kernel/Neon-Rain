@@ -372,3 +372,34 @@ failure), **Cost**, **Class** (`contradiction`, `ambiguity`, `failure-caught`, `
   docs/modules.json, TODO.md, docs/HANDOFF.md.
 - **Caught by:** writing the code against the contract and the hand examples (a to d); mutmut (e).
 - **Class:** ambiguity
+
+### J-018 Step 1.4c: the blind mirror, a leak it uncovered by agreeing, and the noise band
+- **Who:** Ghost, Claude Opus; a second agent for the mirror.
+- **Intent:** ROADMAP 1.4, last part: HAR-08's dispersion, the mirror of HAR-07 (R-015c), and 1.4's
+  check (a zero-edge strategy inside its noise band across 100 seeds).
+- **Found:** (a) The mirror, written from HAR-06 and HAR-07's text with no file read, agreed with
+  the code to 1e-12 at once. Breaking the code three ways to see it fail, one break (a delisting's
+  cost booked a day late) was not caught: no held name ever delisted in the comparison. (b) The
+  reason was a leak, not a test gap: the scores had been built from label rows, and a label needs a
+  price at *t+h* (NR-F-02), so every name about to delist had been kept out of the tradable set by
+  knowledge of day *t+h*. (c) The mirror's own list of ambiguities found four places HAR-07 left to
+  the reader (which leg takes the earlier ticker at a tie, the day a delisting's cost is booked, a
+  price that returns, an IC with zero spread); code and mirror had chosen alike, by luck of reading.
+  The mirror also noted that booking a delisting's cost on its last price day is a look-ahead in the
+  daily timing (no total moves). (d) HAR-08 did not say what an undefined cell does to the averages.
+  (e) The 100-seed check costs 45 s, over the fast loop's budget.
+- **Options:** (b) score the portfolio on every universe row with features (taken; written into
+  HAR-07 and NR-F-02). (e) run fewer seeds (refused: the band is about the 5% tail) or mark it slow
+  and run it in `precommit.sh` (taken, AGENT.md: the harness on the synthetic market has its own
+  budget).
+- **Resolved:** HAR-07 states the four, and the scoring rule; HAR-08 leaves undefined cells out of
+  both averages and counts them. `test/test_mirror.py` asserts at least 20 held delistings and shows
+  that scoring labelled rows holds none; with it, all three breaks turn the mirror red. Noise band,
+  `pytest -m slow`: 3 of 100 seeds ≥ 0.95 at zero cost, mean 0.471; after 10 bps 0 and 0.012; at
+  ρ = 0.1 all 100, so the check discriminates. 1.4 done.
+- **Touched:** docs/HARNESS.md (HAR-07, HAR-08), docs/FINDINGS.md (NR-F-02),
+  `neonrain/harness/dispersion.py`, test/mirror_har07.py (the mirror's, unchanged), test/test_mirror.py,
+  test/test_dispersion.py, test/test_noise_band.py, `pyproject.toml` (the slow marker),
+  `scripts/precommit.sh`, docs/modules.json, TODO.md, docs/DONE.md, docs/HANDOFF.md.
+- **Caught by:** breaking the code on purpose to watch the mirror fail (a, b); the mirror's report (c).
+- **Class:** failure-caught
