@@ -56,5 +56,12 @@ def test_aliases_in_root_documents_are_caught_and_the_glossary_itself_is_not(tmp
     assert glossary.problems(root) == ["README.md uses 'timeframe' 2 times", "ROADMAP.md uses 'timeframe' 1 times"]
 
 
+def test_documents_in_subfolders_of_docs_are_governed(tmp_path: Path) -> None:
+    root = plant(tmp_path, "fine\n")
+    (root / "docs" / "rules").mkdir()
+    (root / "docs" / "rules" / "x.md").write_text("a timeframe\n")
+    assert glossary.problems(root) == ["x.md uses 'timeframe' 1 times"]
+
+
 def test_a_lowercase_alias_matches_any_case() -> None:
     assert glossary.uses("Timeframe TIMEFRAME timeframe", "timeframe") == 3

@@ -51,25 +51,19 @@ file, grepped for failures (`FAILED`, `Error`, `refused`, `unexplained`); read t
 there are some.
 Data and artifacts are fetched, never committed (R-006, R-010).
 
-## If you are a Claude Sonnet model: one attempt, then escalate (R-022)
+## When X happens, read Y
 
-Your system prompt names your model. If it is Sonnet: a fix you can see, or an easy one, you make; no
-escalation. Any other code change gets **one** attempt. If the fast loop, ruff or `precommit.sh` is
-still red after it: when the output names the cause (a `NameError`, a typo), fix that and run again;
-when it does not, do not try again: invoke a Claude
-Opus instance (the Agent tool, model `opus`) with the task, the routing row you started from, your
-diff and the failing output, and continue from its answer. If you cannot invoke one, stop and say so.
-Name the escalation in the journal entry.
+Each line is the situation, then the file to read then and not before.
 
-## When another agent's work conflicts with yours: stop, and ask Ghost
-
-If another agent's work breaks yours, contradicts your task, or keeps changing what you just changed,
-stop at once; there is no retry and no count. Assume a conflict of objectives, never sabotage. Write
-a journal entry of class `conflict` stating both objectives plainly as you understand them (**Mine**,
-**Theirs**), with no guess at intent; list it under HANDOFF.md's "For Ghost"; ask Ghost to resolve
-it. Never touch what you did not start: never kill or stop a process another agent or person
-started; never revert, force-push over or rewrite another agent's commit; never edit the journal or
-`theGhost.md` to get around a conflict.
+- You are a Claude Sonnet model and a check is still red after your first attempt at a change:
+  `docs/rules/escalation.md` (R-022).
+- Another agent's work breaks yours, contradicts your task, or keeps changing what you just changed:
+  stop, and read `docs/rules/conflict.md`. Whatever happens, never stop a process or rewrite a
+  commit you did not start.
+- You finish a task: debrief as `docs/NAVIGATION-LOG.md`'s header says (J-027).
+- A result surprises you by being good: distrust the harness first (`docs/GHOST-IN-THE-KERNEL.md`).
+- A contract in `docs/HARNESS.md` is not precise enough to build from: make the document precise
+  before the code (`docs/HANDOFF.md`, phase 1).
 
 ## Before calling work done
 
@@ -77,8 +71,7 @@ The fast loop always; `scripts/precommit.sh` before a push. A refactor changes n
 number without a trials line and a dispersion does not exist (P-07). A bias or a leak is a finding
 before it is a footnote (P-03). A function that holds a decision cites it, `# Decision: R-005`. Every
 eighth commit is a tithe (R-012). A finished step is merged to `main` at once. A new task goes to a
-fresh Claude Sonnet agent, reviewed before it is pushed; done, it debriefs in `docs/NAVIGATION-LOG.md`
-(J-027).
+fresh Claude Sonnet agent, reviewed before it is pushed (J-027).
 
 ## Two rules
 

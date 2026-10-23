@@ -27,8 +27,8 @@ def uses(text: str, alias: str) -> int:
 
 
 def documents(root: Path) -> list[Path]:
-    """The documents the glossary governs: every .md at the root and under docs/, but the glossary."""
-    found = sorted(root.glob("*.md")) + sorted((root / "docs").glob("*.md"))
+    """The documents the glossary governs: every .md at the root and anywhere under docs/, but the glossary."""
+    found = sorted(root.glob("*.md")) + sorted((root / "docs").rglob("*.md"))
     return [path for path in found if path.name != "GLOSSARY.md"]
 
 

@@ -592,3 +592,25 @@ shared classes). `test/test_journal.py` holds this.
 - **Touched:** docs/NAVIGATION-LOG.md, `scripts/checks/navigation.py`, test/test_navigation.py,
   `scripts/precommit.sh`, CLAUDE.md, docs/HANDOFF.md, docs/AGENT.md.
 - **Class:** decision
+
+### J-028 CLAUDE.md's conditionals become pointers: when X happens, read Y
+- **Who:** Ghost, Claude Opus.
+- **Intent:** Ghost, 2026-10-23: memory management in CLAUDE.md. A rule that applies only in a
+  situation is a one-line pointer, "when X occurs, read Y", so an agent loads it when it needs it
+  instead of carrying it in every task's context.
+- **Found:** Two whole sections were conditional (the Sonnet escalation rule, the conflict rule) and
+  CLAUDE.md stood at 1,198 of AGT-03's 1,200 words. Two other situations had their rule only in long
+  documents (a result too good to trust; a contract too vague to build from).
+- **Options:** Move everything situational out, the binding supply-chain rules included (refused:
+  an agent must obey them before it knows it is in their situation, and the worm warning is only
+  useful already loaded); move the two sections and keep inline the one line an agent can break
+  before it recognises a conflict, "never stop a process or rewrite a commit you did not start"
+  (taken).
+- **Resolved:** CLAUDE.md's "When X happens, read Y": five lines, pointing at `docs/rules/escalation.md`
+  (R-022), `docs/rules/conflict.md` (J-023), the navigation log's header (J-027),
+  GHOST-IN-THE-KERNEL.md and HANDOFF.md. CLAUDE.md from 1,198 words to 1,075.
+  `scripts/checks/pointers.py` refuses a pointer to a file that does not exist; the glossary check
+  now governs documents in docs/'s subfolders too.
+- **Touched:** CLAUDE.md, docs/rules/escalation.md, docs/rules/conflict.md, `scripts/checks/pointers.py`,
+  test/test_pointers.py, `scripts/checks/glossary.py`, test/test_glossary.py, docs/AGENT.md.
+- **Class:** direction
