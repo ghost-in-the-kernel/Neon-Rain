@@ -40,7 +40,7 @@ at the plan.
 | A bias, a leak, a failed hypothesis | `docs/FINDINGS.md` | P-03 | |
 | The agent's environment: metrics | `docs/AGENT.md`, `scripts/metrics.py` | AGT-01 to AGT-08 (AGENT.md) | `test/test_metrics.py` |
 | A document's test: what it holds | `scripts/checks/<check>.py`, `test/test_<check>.py` | the check's docstring | that test |
-| A surviving mutant | `docs/MUTATION.md` | R-015 | `scripts/precommit.sh` |
+| A surviving mutant, the full check's cost | `docs/MUTATION.md`, `pyproject.toml` (`[tool.mutmut]`) | R-015, R-024 | `scripts/precommit.sh` |
 | The supply chain: a dependency, a config | `requirements.lock`, `docs/SUPPLY-CHAIN.md` | the binding rules below | `test/test_supply_chain.py` |
 
 ## Commands

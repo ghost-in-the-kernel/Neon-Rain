@@ -14,3 +14,8 @@ instance. Record the review in the journal, then set the line below to the revie
 Last review: d0e7285 (2026-10-23, tithe pass 1, J-033: five debriefs, entries wiped)
 
 ## Entries
+### 2026-10-23 R-024 (c), the full check's cost (Claude Sonnet)
+- **Task:** R-024 (c): take the cost out of the mutation run
+- **Opened:** CLAUDE.md, scripts/precommit.sh, pyproject.toml, theGhost.md (R-024 by grep), docs/MUTATION.md, test/conftest.py, mutmut 3.8's own source in .venv (__main__.py, runners/harness.py, workers/isolation.py, mutation/trampoline.py)
+- **Complaints:** no routing row for the full check or mutmut itself: I found R-024 and mutmut's behaviour by grep, and the only note on why `rm -rf mutants` stays is the task text. Nothing says where mutmut's config reasons live beyond comments in pyproject.toml. `mutants/mutmut-stats.json` keeps per-test timings, and the per-mutant durations in the .meta files are all 0.0 here, which cost me a detour.
+- **Suggestions:** a row "The full check's cost" pointing at precommit.sh, `[tool.mutmut]` and R-024, saying that mutmut already selects tests per function from its stats (so look at test order and cost, not selection).

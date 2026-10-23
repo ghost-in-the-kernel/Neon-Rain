@@ -5,6 +5,10 @@ was changed and every test still passed — means the tests do not hold that lin
 either a test that kills it, or one line here saying why it is harmless, and the push is refused
 until it has one. Suite Builder does the same with Stryker.
 
+mutmut runs only the tests that reached the mutated function (its stats run), cheapest first
+(`test/conftest.py`, R-024); the gate clears `mutants/` first because mutmut keeps a cached verdict
+when only the tests change. A slow check is a dear test reached by many mutants, not selection.
+
 A survivor in a file you did not touch is still yours: `scripts/precommit.sh` refuses the push for it all
 the same, so kill it with a test or explain it here.
 

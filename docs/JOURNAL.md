@@ -788,3 +788,20 @@ shared classes). `test/test_journal.py` holds this.
 - **Touched:** theGhost.md (R-024), `scripts/checks/metrics.py`, test/test_metrics.py, docs/AGENT.md,
   docs/ROADMAP.md §5, docs/GHOST-IN-THE-KERNEL.md, docs/HANDOFF.md.
 - **Class:** decision
+
+### J-035 The full check from 9.5 to 6 minutes: mutmut's tests run cheapest first (R-024 c)
+- **Who:** Ghost, Claude Opus (reviewing), a fresh Claude Sonnet agent (under J-027).
+- **Intent:** R-024 (c): take the full check's cost out of the mutation run, the 10 minutes kept.
+- **Found:** mutmut 3.8 already runs only the tests that reached a mutant's function (its stats
+  run, `runners/harness.py` and `__main__.py`); 149 functions map to 4 to 40 tests each. The waste
+  was order: each mutant's tests run with `-x` in a set's order, so a mutant a cheap test kills often
+  waited on a 2 to 4 s one first. The cache: mutmut resets a cached verdict only when pytest's or
+  the timeout's config changes, so the gate's `rm -rf mutants` stays.
+- **Resolved:** `test/conftest.py` sorts a mutant's own run's tests by mutmut's recorded seconds
+  (`test/test_mutant_order.py`). Counts unchanged (3387/3394, 7 explained); the bare mutation run
+  392 s to 234 s; the full check 6.05 min. Not taken: more workers than the 4 cores; cheaper dear
+  tests (`test_the_freeze`, the real-repository checks), which would change tests. MUTATION.md says
+  how mutmut selects and why `mutants/` is cleared; the CLAUDE.md row for a survivor names the cost.
+- **Touched:** test/conftest.py, test/test_mutant_order.py, docs/MUTATION.md, CLAUDE.md,
+  docs/NAVIGATION-LOG.md, docs/AGENT.md.
+- **Class:** measurement
