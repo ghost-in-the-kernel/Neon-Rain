@@ -124,7 +124,7 @@ def test_every_metric_is_measured_on_a_planted_root(tmp_path: Path) -> None:
         "Results without a trials line": 2,
         "Results without dispersion": 1,
         "Datasets without a manifest line": 0,
-        "Docs lines per source line": 6.5,
+        "Docs lines per source line": 4.5,  # theGhost.md is a record, left out (R-024)
     }
 
 
@@ -167,3 +167,15 @@ def test_shown_values() -> None:
 
 def test_a_zero_target_recorded_at_zero_is_armed() -> None:
     assert agent_table.verdict("0", "0", 1) == "regressed"
+
+
+def test_docs_per_source_leaves_the_records_out(tmp_path: Path) -> None:
+    (tmp_path / "neonrain").mkdir()
+    (tmp_path / "neonrain" / "a.py").write_text("x = 1\ny = 2\n")
+    (tmp_path / "docs").mkdir()
+    (tmp_path / "README.md").write_text("a\n")
+    for record in ("theGhost.md", "docs/JOURNAL.md", "docs/NAVIGATION-LOG.md"):
+        (tmp_path / record).write_text("r\n" * 50)
+    assert metrics.docs_per_source(tmp_path) == 0.5
+    (tmp_path / "docs" / "HARNESS.md").write_text("h\n" * 3)
+    assert metrics.docs_per_source(tmp_path) == 2.0

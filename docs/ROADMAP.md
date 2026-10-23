@@ -220,7 +220,7 @@ separate fresh-agent trial of R-020 is retired (R-023).
 | Results without a trials line | 0 | P-07 |
 | Results without dispersion | 0 | R-014 |
 | Datasets without a manifest line | 0 | R-006 |
-| Docs lines per source line | < 0.35 | Suite Builder reached 0.37 and it hurt |
+| Docs lines per source line | < 1.5 | records left out; arms as phases 2 to 4 add source (R-024) |
 
 ---
 

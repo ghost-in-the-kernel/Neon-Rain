@@ -767,3 +767,24 @@ shared classes). `test/test_journal.py` holds this.
   TODO.md, docs/DONE.md, docs/HANDOFF.md, docs/AGENT.md, docs/MUTATION.md, docs/NAVIGATION-LOG.md.
 - **Cost:** the tithe agent 15 min; the trial 25 s and $0.20 (its follow-up more); Fable 3 min.
 - **Class:** trial
+
+### J-034 The metric targets re-based (R-024), and a correction to J-033
+- **Who:** Ghost, Claude Opus, Claude Fable (the recommendations).
+- **Intent:** HANDOFF's item 7 from tithe pass 1: AGT-04's 400 lines against long documents, docs
+  per source line at 2.8 against 0.35, the full check at 9.53 of 10 minutes.
+- **Found:** (a) Leaving the records out, docs per source line is 1.67: still past 1.5, so it stays
+  "not armed" until phase 2 and later add source, as Fable meant by "armed at phase 3", with no
+  new logic. (b) A correction to J-033: `scripts/precommit.sh` already ran `rm -rf mutants` before
+  every mutation run, so there was no result cache for the tithe agent's deletion to discard; the
+  revert was harmless and the reason given was wrong. The cache is no lever while the gate starts
+  from nothing on purpose (a cache kept when only the tests changed would keep stale verdicts).
+- **Resolved:** Ghost: "go with fable's recommendations on item 7". R-024: AGT-04 holds source files
+  to 400 lines and documents to being pointed at by section; `RECORDS` leaves theGhost.md, the
+  journal and the navigation log out of the ratio, target < 1.5 (AGENT.md, ROADMAP §5); the full
+  check keeps 10 minutes and its cost comes out of the mutation run first, a task for a fresh
+  agent; a split gate only if that is not enough, back to Ghost. The planted root's ratio in
+  `test_every_metric_is_measured_on_a_planted_root` moved from 6.5 to 4.5 because its theGhost.md
+  is now a record; a new test holds `RECORDS`.
+- **Touched:** theGhost.md (R-024), `scripts/checks/metrics.py`, test/test_metrics.py, docs/AGENT.md,
+  docs/ROADMAP.md §5, docs/GHOST-IN-THE-KERNEL.md, docs/HANDOFF.md.
+- **Class:** decision

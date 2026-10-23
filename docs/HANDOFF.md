@@ -79,11 +79,6 @@ J-018). Nothing under `neonrain/models/` or `neonrain/baselines/` exists yet; 1.
 6. **The calibration set, phase 5.3**: 200 news stories hand-labelled by you (bullish / bearish /
    neutral, and which ticker), which is what the scorer's own accuracy is measured against. You are
    the first reviewer here as you are on Katana.
-7. **Three metric targets from tithe pass 1** (J-033; Claude Fable's recommendations, yours to take):
-   (a) AGT-04: 400 lines for source only, a document over 400 lines pointed at by section;
-   (b) docs per source line, 2.76 against 0.35: re-base, records (journal, log, theGhost.md) left
-   out, armed at phase 3; (c) the full check, 9.53 of 10 minutes: mutmut's per-mutant test
-   selection and its result cache first; only then split the gate (AGT-07).
 
 ## Waiting on a run
 

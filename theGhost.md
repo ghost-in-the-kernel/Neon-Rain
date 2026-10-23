@@ -436,3 +436,24 @@ it is `in force`.
 - **Status:** in force
 - **See also:** R-012, R-020, R-022
 - **subject:** agent environment
+
+### R-024: The metric targets re-based after phase 1: source lines, docs per source, the full check
+- **Decision:** (a) AGT-04: a routing row opens at most five files; the 400-line limit is for
+  source files; a document over 400 lines is pointed at by section (HARNESS.md, theGhost.md and
+  JOURNAL.md are read by section and grep, never whole). (b) Docs per source line leaves the records
+  out (`theGhost.md`, `docs/JOURNAL.md`, `docs/NAVIGATION-LOG.md`: written, not read whole) and its
+  target is < 1.5, armed when first measured within it, which phases 2 to 4 bring as they add
+  source. (c) The full check keeps its 10 minutes: its cost is taken out of the mutation run first;
+  only if a step still breaches it is the gate split (mutation once per step before merge), which
+  is an AGT-07 change and comes back here.
+- **Why:** Tithe pass 1 (J-033): three rows point at documents over 400 lines, and splitting them
+  would break every `R-nnn` and `J-nnn` grep; 0.35 came from Suite Builder, a large tool whose
+  docs were overhead, while R-002 puts this project's contracts before its code, so the ratio was
+  2.8 by design; the full check stood at 9.53 of 10 minutes with phase 2 to add tests.
+- **Held by:** docs/AGENT.md (AGT-04, the table); `scripts/checks/metrics.py` (`RECORDS`);
+  `test/test_metrics.py`.
+- **Source:** recommended by Claude Fable, 2026-10-23 (J-033); Ghost, 2026-10-23: "go with fable's
+  recommendations on item 7".
+- **Status:** in force
+- **See also:** R-012, R-019, R-023
+- **subject:** agent environment

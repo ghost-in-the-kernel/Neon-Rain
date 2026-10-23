@@ -61,12 +61,16 @@ def unlisted_datasets(root: Path) -> int:
     return len(present - named)
 
 
+# Decision: R-024 (records are written, not read whole: they do not count as documents to navigate)
+RECORDS: tuple[str, ...] = ("theGhost.md", "JOURNAL.md", "NAVIGATION-LOG.md")
+
+
 def docs_per_source(root: Path) -> float | None:
-    """Lines of the documents (root and docs/ .md) per line of neonrain/; None while there is no neonrain/."""
+    """Lines of the documents (root and docs/ .md, but RECORDS) per line of neonrain/; None while there is no neonrain/."""
     source = sum(python_lines(root, ("neonrain",)))
     if source == 0:
         return None
-    documents = sorted(root.glob("*.md")) + sorted((root / "docs").glob("*.md"))
+    documents = [p for p in sorted(root.glob("*.md")) + sorted((root / "docs").glob("*.md")) if p.name not in RECORDS]
     return round(sum(len(p.read_text().splitlines()) for p in documents) / source, 2)
 
 
