@@ -8,11 +8,6 @@ and the first open item has a check.
 
 ## Phase 0: founding
 
-### 0.4 Artifact store and data repository (R-016)
-
-Check: `ghost-in-the-kernel/neon-rain-data` and `neon-rain-artifacts` exist; `scripts/fetch/artifacts.py`
-round-trips a 1 MB file by content hash through the artifacts repository.
-
 ## Phase 1: the harness
 
 Nothing under `neonrain/models/` or `neonrain/baselines/` begins until 1.6 passes (R-002).

@@ -30,4 +30,4 @@ source_paths = ["scripts/checks/", "neonrain/"]
 # survive a fork, and forked mutants of the synthetic market deadlocked into timeouts (J-013).
 process_isolation = "forkserver"
 # The doc tests read the documents themselves, so the copy mutmut tests in carries them.
-also_copy = ["docs/", "data/", "harness/", "theGhost.md", "TODO.md", "CLAUDE.md", "README.md", "requirements.lock", "scripts/probe/", "scripts/metrics.py"]
+also_copy = ["docs/", "data/", "harness/", "theGhost.md", "TODO.md", "CLAUDE.md", "README.md", "requirements.lock", "scripts/probe/", "scripts/fetch/", "scripts/metrics.py"]

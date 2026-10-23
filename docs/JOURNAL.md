@@ -840,3 +840,21 @@ shared classes). `test/test_journal.py` holds this.
 - **Touched:** theGhost.md (R-011, R-025), CLAUDE.md, TODO.md, docs/DONE.md, docs/HANDOFF.md,
   docs/SUPPLY-CHAIN.md, docs/ROADMAP.md.
 - **Class:** decision
+
+### J-038 Step 0.4: the artifact store, and its first live round trip
+- **Who:** Ghost, Claude Opus (reviewing, the live check), a fresh Claude Sonnet agent (under J-027).
+- **Intent:** TODO 0.4: a content-addressed store in the private artifacts repository (R-016 b).
+- **Found:** The agent built `scripts/fetch/artifacts.py` and 15 tests against a local bare
+  repository, pushed nothing (as briefed), and handed back the live command. Its choices: blobs at
+  `<hash[:2]>/<hash>` on `main`; the clone a cache at `~/.cache/neon-rain/artifacts`, reset hard
+  to the remote on every use; files over 100 MB refused; commits as Ghost by `git -c`, no config
+  changed. `pyproject.toml`'s `also_copy` gained `scripts/fetch/`, which mutmut's copy needs to
+  import the tests. Open, by its own account: no retry on a concurrent push; a corrupted blob is
+  repaired only by putting the right bytes again.
+- **Resolved:** The live round trip, run by the reviewer: a 1 MB random file put
+  (9001d51432be…), the clone deleted, fetched fresh, byte-identical and hash-equal; a second put
+  of the same bytes made no commit. MANIFEST's "models" corrected to large weights (R-025). 0.4 done;
+  phase 0 is done.
+- **Touched:** scripts/fetch/artifacts.py, test/test_artifacts.py, data/MANIFEST.md, pyproject.toml,
+  docs/NAVIGATION-LOG.md, TODO.md, docs/DONE.md, docs/HANDOFF.md.
+- **Class:** measurement

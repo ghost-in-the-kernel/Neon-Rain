@@ -28,6 +28,15 @@ writes refused for this session type; a plain 1 MB git blob pushes. Produced NR-
 superseded R-010.
 Check: `docs/FINDINGS.md` NR-F-01 lists every candidate as reachable or refused. ✓
 
+### 0.4 Artifact store and data repository — done 2026-10-23 (J-038)
+
+`scripts/fetch/artifacts.py`: `put FILE` stores a file in the private `neon-rain-artifacts` under
+its SHA-256 (`<hash[:2]>/<hash>` on `main`, committed as Ghost, pushed), `get HASH DEST` copies it
+out and refuses bytes that do not hash to the name; the clone is a cache outside this repository
+(`data/MANIFEST.md`). 15 tests against a local bare repository. Built by a fresh Claude Sonnet
+agent under J-027. Check: a 1 MB file round-trips by content hash through the real artifacts
+repository (9001d514…, one commit; a second put of the same bytes, none). ✓
+
 ### 0.5 The doc tests and `precommit.sh` — done 2026-10-22 (J-010, J-011)
 
 `requirements.lock` (R-017, R-018); `pyproject.toml` (ruff for R-015b's type hints and bare excepts,

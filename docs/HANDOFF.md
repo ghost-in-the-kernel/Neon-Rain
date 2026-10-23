@@ -11,8 +11,8 @@ metrics with HAR-07's mirror written blind, and the trials file with HAR-01's co
 `neonrain/harness/market.py`, the frame layouts and HAR-12's stamp refusal (J-029); and 1.6, the
 adversarial tests (J-030, J-031); 1.7, the freeze (J-032): the harness is frozen, and a change
 that moves a golden needs a decision in force; and 1.8, tithe pass 1 (J-033). Phase 1 is done.
-**Next is 0.4**, the artifacts round trip through the two private repositories Ghost created,
-then phase 2. Its trading calendar is the exact NYSE
+Phase 0 is done (0.4, J-038). **Next is phase 2**, real data: its items are written into `TODO.md`
+from ROADMAP phase 2 when it opens. Its trading calendar is the exact NYSE
 calendar, derived in the repository from a holiday data file, no new dependency (Ghost, 2026-10-23;
 J-033). The slow tests (`pytest -m slow`) run in `precommit.sh`. No real data, no
 model, no result.

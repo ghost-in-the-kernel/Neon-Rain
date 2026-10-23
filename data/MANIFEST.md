@@ -4,3 +4,14 @@ Every dataset: source, license, fetch command, date range, hash as last fetched 
 
 | Dataset | Source | License | Fetch | Range | Hash |
 | --- | --- | --- | --- | --- | --- |
+
+## The artifact store (R-016 b)
+
+Artifacts (large weights, R-025; anything a run produces that is too big for this repository) live in the
+private repository `ghost-in-the-kernel/neon-rain-artifacts`, one plain git file each, named by its SHA-256:
+`<first two hex characters>/<64-character hash>` on branch `main`. This repository records the hash a result depends
+on, never the bytes. The clone is a cache at `$NEONRAIN_ARTIFACTS_CLONE` or `~/.cache/neon-rain/artifacts`, outside
+this repository; the remote is `$NEONRAIN_ARTIFACTS_REMOTE` or the GitHub URL. `scripts/fetch/artifacts.py put FILE`
+stores a file (commit as Ghost, push) and prints its hash; storing bytes already there is no commit.
+`scripts/fetch/artifacts.py get HASH DEST` copies a file out and refuses, writing nothing, if the bytes do not hash to
+the name. Files are under 100 MB (R-016 a). Held by `test/test_artifacts.py`.
