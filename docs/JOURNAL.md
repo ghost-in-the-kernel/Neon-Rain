@@ -669,3 +669,28 @@ shared classes). `test/test_journal.py` holds this.
 - **Touched:** test/test_harness_adversarial.py, docs/HARNESS.md, docs/NAVIGATION-LOG.md, CLAUDE.md,
   TODO.md, docs/AGENT.md.
 - **Class:** trial
+
+### J-031 Step 1.6 done: HAR-12's label-shuffle test
+- **Who:** Ghost, Claude Opus (reviewing), a fresh Claude Sonnet agent (building, under J-027).
+- **Intent:** The last of 1.6 (J-030): HAR-12's label-shuffle test, "permute labels within each date;
+  every metric must collapse to chance".
+- **Found:** "Every metric" could not hold as written: the portfolio is scored on prices, which a
+  shuffle of labels does not touch, so a model reading the real edge would still earn it. The agent
+  made HAR-12 precise: the shuffle moves `forward`, `excess`, `direction` and `rank` together within
+  each date, seeded; a linear stand-in carries accuracy, balanced accuracy and IC; a name memorizer,
+  which can only learn what the labels say, carries the portfolio's DSR; collapse is accuracy and
+  balanced accuracy within 0.02 of 0.5, |IC| under 0.03, and DSR ≥ 0.95 on at most 2 of 8 seeds
+  (its bands, from measurement: honest shuffled IC reached 0.013, no seed's DSR reached 0.95). The
+  test is red in itself on the unshuffled labels and on a shuffle of direction alone. 19 tool calls,
+  14 minutes, no escalation. Its portfolio in the test trades only labelled test rows, not every
+  universe row as HAR-07 has it: harmless for a test of chance, noted.
+- **Options:** The agent left unconfirmed whether its portfolio sabotage tripped the portfolio
+  metric. Review by Claude Opus forced the DSR to 0.99 in the repository: the test failed at
+  `assert at_chance(honest)` with only the DSR changed, so that arm is wired; making the IC absolute
+  failed it too. Restored from a copy.
+- **Resolved:** 1.6 done (DONE.md). For Ghost: the bands of J-030 and these (0.02, 0.03, 2 of 8) are
+  test parameters chosen by agents from measurement, written in HARNESS.md HAR-12. The slow suite is
+  now about 104 s.
+- **Touched:** test/test_harness_adversarial.py, docs/HARNESS.md (HAR-12), docs/NAVIGATION-LOG.md,
+  TODO.md, docs/DONE.md, docs/HANDOFF.md.
+- **Class:** trial

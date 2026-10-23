@@ -106,3 +106,15 @@ Check: every harness run appends to `harness/trials.tsv` through `append_trial` 
 gets its header; another header, or a last line with no line break, is refused); `docs/RESULTS.md`'s
 test refuses a number with no line (`test/test_results.py`, as before). The real `harness/trials.tsv`
 is unchanged. ✓
+
+### 1.6 Adversarial tests — done 2026-10-23 (J-030, J-031)
+
+`test/test_harness_adversarial.py`, eleven tests, by two fresh Claude Sonnet agents under J-027,
+reviewed by Claude Opus: the planted leak (refused by the stamp check; with a lying stamp, caught
+by the leak check), survivorship (a universe without its delisted names inflates), a label reaching
+the embargo (none on the purged grid, at every horizon), a short embargo refused, the name memorizer
+(R-014's signature), HAR-12's label shuffle (every metric at chance; red when the shuffle never
+reaches the metrics, or reaches only direction), and the mirror (`test/test_mirror.py`, 1.4c).
+Check: every test red on its broken input, green on the honest one: seen by the agents on scratch
+copies of the harness, and by the reviewer in the repository (purge removed, stamp refusal off,
+`fits_names` never raised, DSR forced to 0.99, IC made absolute): each turned its test red. ✓

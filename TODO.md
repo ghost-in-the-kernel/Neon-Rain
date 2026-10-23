@@ -23,13 +23,6 @@ round-trips a 1 MB file by content hash through the artifacts repository.
 
 Nothing under `neonrain/models/` or `neonrain/baselines/` begins until 1.6 passes (R-002).
 
-### 1.6 Adversarial tests
-
-Check: every test of ROADMAP 1.6 red on the broken input, green on the honest one; the mirror written
-blind (R-015c). Done (J-030): the planted leak (stamp refusal and leak check), survivorship, the embargo,
-the name memorizer, and the mirror (1.4c). Left: HAR-12's label-shuffle test (permute labels within each
-date; every metric collapses to chance), which HAR-12 names among 1.6's checks.
-
 ### 1.7 Freeze
 
 Check: `harness/goldens/` written from the synthetic market; a harness change after it is a commit

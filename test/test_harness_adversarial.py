@@ -5,14 +5,16 @@ answer is known, and asserts that the harness catches the first and passes the s
 shown to catch (the memorizer) lives here, never under neonrain/models/ (R-002). The mirror test of ROADMAP 1.6
 is test/test_mirror.py (HAR-07's metrics against test/mirror_har07.py, written blind, R-015c).
 """
+from collections.abc import Callable
 from datetime import date
+from typing import NamedTuple
 
 import numpy as np
 import polars as pl
 import pytest
 
 from neonrain import targets
-from neonrain.harness import dispersion, market, metrics, split, synthetic
+from neonrain.harness import dispersion, market, metrics, portfolio, split, synthetic
 from neonrain.harness.market import Market, StampRefused
 from neonrain.harness.split import Fold
 
@@ -193,15 +195,20 @@ NAMES = 100
 SEEDS = range(6)
 
 
-def named_rows(seed: int) -> tuple[pl.DataFrame, list[date]]:
-    """Labels and the edge on a market where names matter: each ticker gets its own steady drift (sd 0.3% a day, drawn
-    from `seed`), which the edge feature knows nothing about, so a table of name → mean return can profit from it."""
+def named_market(seed: int) -> tuple[Market, pl.DataFrame]:
+    """The market and its prices where names matter: each ticker gets its own steady drift (sd 0.3% a day, drawn from
+    `seed`), which the edge feature knows nothing about, so a table of name → mean return can profit from it."""
     m = synthetic.generate(synthetic.MarketConfig(tickers=NAMES, days=GRID_DAYS, rho=0.3, seed=seed))
     drifts = np.random.default_rng(10_000 + seed).normal(0, 0.003, NAMES)
     drift = pl.DataFrame({"ticker": synthetic.tickers(NAMES), "drift": drifts})
     steady = (pl.col("drift") * pl.col("position")).exp()
     prices = m.prices.join(drift, on="ticker").join(positions(m.calendar), on="date")
-    prices = prices.select(*KEYS, (pl.col("close") * steady).alias("close"))
+    return m, prices.select(*KEYS, (pl.col("close") * steady).alias("close"))
+
+
+def named_rows(seed: int) -> tuple[pl.DataFrame, list[date]]:
+    """Labels and the edge on the market where names matter (`named_market`)."""
+    m, prices = named_market(seed)
     labels = targets.labels(prices, m.universe, m.calendar, HORIZON, min_tickers=10).frame
     return labels.join(m.features.select(*KEYS, "edge"), on=KEYS), m.calendar
 
@@ -261,3 +268,116 @@ def test_a_name_memorizer_shows_the_group_dispersion_signature_and_a_real_edge_d
         assert edge.groups.mean > 0.05 and not edge.fits_names  # the honest model passes at every seed
         flagged += held.fits_names
     assert flagged >= len(SEEDS) / 2  # R-014's flag, HAR-08: group-axis sd above the group-axis mean
+
+
+# --- Labels permuted within each date (HAR-12) -----------------------------------------------------------------
+
+LABEL_COLUMNS = ["forward", "excess", "direction", "rank"]  # a cell's label: moved together, never one by one
+SHUFFLE_SEEDS = range(8)
+ACCURACY_BAND = 0.02  # HAR-12: |accuracy − 0.5| and |balanced accuracy − 0.5|, pooled over the grid, per seed
+IC_BAND = 0.03  # HAR-12: |IC| pooled over the grid, per seed
+DSR_FLAGS = 2  # HAR-12: seeds out of SHUFFLE_SEEDS whose deflated Sharpe may reach 0.95 by chance
+
+
+def shuffled(rows: pl.DataFrame, seed: int, columns: list[str] = LABEL_COLUMNS) -> pl.DataFrame:
+    """HAR-12's label shuffle: on each date the `columns` of the rows are permuted among that date's rows, together
+    (a cell keeps its ticker, its date and its features, and takes another ticker's whole label)."""
+    ordered = rows.sort("date", "ticker")
+    rng = np.random.default_rng(seed)
+    dates = ordered["date"].to_numpy()
+    source = np.arange(ordered.height)
+    for day in np.unique(dates):
+        at = np.flatnonzero(dates == day)
+        source[at] = rng.permutation(at)
+    return ordered.with_columns(*(pl.Series(name, ordered[name].to_numpy()[source], dtype=ordered[name].dtype)
+                                  for name in columns))
+
+
+Fit = Callable[[pl.DataFrame, pl.DataFrame], pl.DataFrame]
+
+
+def linear_probability(train: pl.DataFrame, test: pl.DataFrame) -> pl.DataFrame:
+    """The honest stand-in for direction and rank: the mean rank label plus the least-squares slope on the edge,
+    fitted pooled over the training rows (so its score sits around 0.5, the direction threshold of HAR-07)."""
+    x, y = train["edge"].to_numpy(), train["rank"].to_numpy()
+    slope = float(np.cov(x, y)[0, 1] / np.var(x, ddof=1))
+    return test.with_columns((pl.lit(float(y.mean())) + (pl.col("edge") - float(x.mean())) * slope).alias("score"))
+
+
+def scored_folds(rows: pl.DataFrame, calendar: list[date], fit: Fit, seen: bool) -> list[pl.DataFrame]:
+    """Each fold's test rows, every group scored by `fit` (trained without it unless `seen`): ticker, date, score,
+    direction, rank."""
+    groups = split.ticker_groups(synthetic.tickers(NAMES), 5, 0)
+    found = []
+    for fold in split.folds(len(calendar)):
+        parts = []
+        for held_out in range(5):
+            train, test = cell_rows(rows, fold, calendar, groups, held_out, seen)
+            parts.append(fit(train, test).select(*KEYS, "score", "direction", "rank"))
+        found.append(pl.concat(parts))
+    return found
+
+
+class Chance(NamedTuple):
+    """What one seed's pipeline reported, to be compared with chance."""
+
+    accuracy: float
+    balanced: float
+    ic: float
+    dsr: float
+
+
+def reported(labels: pl.DataFrame, m: Market, prices: pl.DataFrame) -> Chance:
+    """HAR-12's pipeline on one seed with `labels` as the labels handed to it. Accuracy, balanced accuracy and IC
+    are those of the linear stand-in, scored on the grid pooled over cells; the deflated Sharpe (one trial, after
+    the default cost) is that of the long–short portfolio of the name memorizer's scores, every ticker trained
+    (the broken protocol of the memorizer test, the one on which it profits when the labels are real)."""
+    rows = labels.join(m.features.select(*KEYS, "edge"), on=KEYS)
+    pooled = pl.concat(scored_folds(rows, m.calendar, linear_probability, False))
+    accuracy, balanced = metrics.accuracy(pooled), metrics.balanced_accuracy(pooled)
+    ic = metrics.information_coefficient(pooled, min_tickers=10).mean
+    assert accuracy is not None and balanced is not None and ic is not None
+    nets = [portfolio.daily(fold.select(*KEYS, "score"), prices, m.calendar, HORIZON)["net"].to_numpy()
+            for fold in scored_folds(rows, m.calendar, memorizer, True)]
+    dsr = metrics.deflated_sharpe(np.concatenate(nets), 1, None)
+    assert dsr is not None
+    return Chance(accuracy, balanced, ic, dsr)
+
+
+def at_chance(found: list[Chance]) -> bool:
+    """HAR-12's collapse: on every seed accuracy and balanced accuracy within ACCURACY_BAND of 0.5 and |IC| within
+    IC_BAND of 0, and the deflated Sharpe reaching 0.95 on at most DSR_FLAGS of the seeds."""
+    flat = all(abs(c.accuracy - 0.5) < ACCURACY_BAND and abs(c.balanced - 0.5) < ACCURACY_BAND
+               and abs(c.ic) < IC_BAND for c in found)
+    return flat and sum(c.dsr >= 0.95 for c in found) <= DSR_FLAGS
+
+
+def test_shuffling_the_labels_within_each_date_keeps_each_dates_labels_and_moves_them() -> None:
+    rows, _ = named_rows(0)
+    mixed = shuffled(rows, 1)
+    assert mixed.select(*KEYS, "edge").equals(rows.sort("date", "ticker").select(*KEYS, "edge"))
+    original = rows.sort("date", "ticker")
+    for name in LABEL_COLUMNS:  # each date holds the same labels, in another order
+        same = original.group_by("date").agg(pl.col(name).sort()).sort("date")
+        assert same.equals(mixed.group_by("date").agg(pl.col(name).sort()).sort("date"))
+    assert (mixed["rank"] != original["rank"]).sum() > 0.95 * original.height  # nearly every cell takes another's label
+    assert set(zip(mixed["rank"].to_list(), mixed["direction"].to_list())) <= set(
+        zip(original["rank"].to_list(), original["direction"].to_list()))  # whole labels moved, none torn
+    assert shuffled(rows, 1).equals(mixed) and not shuffled(rows, 2).equals(mixed)  # seeded (HAR-11)
+
+
+@pytest.mark.slow
+def test_every_metric_collapses_to_chance_on_shuffled_labels_and_does_not_on_broken_ones() -> None:
+    honest, unshuffled, partial = [], [], []
+    for seed in SHUFFLE_SEEDS:
+        m, prices = named_market(seed)
+        rows = targets.labels(prices, m.universe, m.calendar, HORIZON, min_tickers=10).frame
+        honest.append(reported(shuffled(rows, seed), m, prices))
+        unshuffled.append(reported(rows, m, prices))  # broken: the shuffle never reached the metrics
+        partial.append(reported(shuffled(rows, seed, ["direction"]), m, prices))  # broken: the rank is left as it was
+    assert at_chance(honest)
+    assert not at_chance(unshuffled) and not at_chance(partial)
+    # Each metric is the one that moves: the real labels show an edge in every one of the four.
+    assert all(c.accuracy > 0.52 and c.balanced > 0.52 and c.ic > 0.03 for c in unshuffled)
+    assert sum(c.dsr >= 0.95 for c in unshuffled) > len(SHUFFLE_SEEDS) / 2
+    assert all(c.ic > IC_BAND for c in partial)  # the half-shuffle fixed accuracy and left the IC standing

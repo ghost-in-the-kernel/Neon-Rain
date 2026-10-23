@@ -8,8 +8,9 @@ finished. This file says what the next session should actually do, and what it m
 Phase 0 is done but for Ghost's items (0.2, 0.4). Phase 1: 1.1 to 1.5 are done (J-013 to J-018,
 J-026): the synthetic market, the targets (delisting ends, J-024), the splits, the cost model and
 metrics with HAR-07's mirror written blind, and the trials file with HAR-01's config hash; then
-`neonrain/harness/market.py`, the frame layouts and HAR-12's stamp refusal (J-029). **Next is 1.6**,
-the adversarial tests, which call `market.check_stamps`. The slow tests (`pytest -m slow`) run in `precommit.sh`. No real data, no
+`neonrain/harness/market.py`, the frame layouts and HAR-12's stamp refusal (J-029); and 1.6, the
+adversarial tests (J-030, J-031). **Next is 1.7, the freeze**: the goldens from the synthetic market,
+and `trials.HARNESS_VERSION` to "1". The slow tests (`pytest -m slow`) run in `precommit.sh`. No real data, no
 model, no result.
 
 Two decisions are `proposed` and must not be built on (`TODO.md` 0.2): **R-011** (license, Ghost's

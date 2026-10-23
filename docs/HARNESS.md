@@ -411,6 +411,33 @@ cells)`). "The check disabled" is a stamp that lies: `peek` stamped with the cel
 
 An honest feature is not flagged: the planted edge at ρ = 0.3 stays under the ceiling.
 
+**The label-shuffle test, exactly** (ROADMAP 1.6; the test `test_harness_adversarial.py` runs). It asks whether a
+metric can report skill that no label gave it.
+
+- **The shuffle**: on each date, the rows' label columns (`forward`, `excess`, `direction`, `rank` of HAR-02) are
+  permuted among that date's rows, **together**, by a permutation drawn from a seed (HAR-11). A cell keeps its
+  ticker, date and features and takes another ticker's whole label, so each date holds exactly the labels it held
+  before and a label is never torn between two cells. Permuting one column alone is a broken shuffle.
+- **The pipeline** on the synthetic market with names that matter (the memorizer test's: ρ = 0.3, 100 tickers,
+  1140 dates, horizon 5, each ticker with its own steady drift): the labels are shuffled, then the grid of HAR-05
+  is run over both folds. A **linear stand-in** (mean rank label plus the pooled slope on the edge, scores around
+  0.5) gives the label metrics, pooled over all cells of the grid: accuracy, balanced accuracy and IC (HAR-07,
+  `min_tickers` 10). A **name memorizer** with every ticker trained gives the portfolio metrics: HAR-07's
+  long–short portfolio, held 5 days, after the default cost, on its scores, and the DSR of that series with one
+  trial. The two stand-ins live in the test (R-002). The portfolio is scored on prices, which the shuffle does
+  not touch, so a model that still reads the planted edge through a pooled slope would earn the market's edge
+  with a random sign after training on shuffled labels: the portfolio metrics are therefore judged on a model
+  whose only information about the target is the shuffled labels.
+- **Collapse to chance**, on each of 8 seeds: accuracy and balanced accuracy within 0.02 of 0.5 and the IC
+  within 0.03 of 0 (a band for the market it uses, as the 0.60 above is: the bands measured on it reach 0.006 and
+  0.013), and the DSR reaching 0.95 on at most 2 of the 8 seeds (about 5% of seeds reach it by chance, HAR-07).
+  The same pipeline on the real labels shows an accuracy above 0.52 and an IC above 0.03 on every seed and
+  a DSR of 0.95 or more on most.
+- **The test is red on**: the shuffle left out (the labels handed over unshuffled), and a half-shuffle that moves
+  `direction` and leaves `rank` (accuracy collapses, the IC stands); and, in the metric code, an IC that averages
+  absolute values, a balanced accuracy that is only the first class's recall, and a portfolio that orders by the
+  realized return.
+
 ## HAR-13 What makes a result reportable
 
 All of: a trials line (HAR-09); both axes' dispersion (HAR-08); the three cost levels (HAR-06); the
