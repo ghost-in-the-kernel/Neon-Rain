@@ -2,9 +2,9 @@
 (test/test_results.py; P-07, R-014, HAR-13)."""
 import re
 
+from neonrain.harness.trials import TRIALS_COLUMNS
 from scripts.checks.tables import TABLE, cells
 
-TRIALS_COLUMNS: list[str] = ["config_hash", "date", "horizon", "metric", "mean", "dispersion", "trials_so_far", "note"]
 DISPERSION = re.compile(r"±.*\[.*,.*\]")
 FINDING = re.compile(r"\bNR-F-\d{2}\b")
 

@@ -23,11 +23,6 @@ round-trips a 1 MB file by content hash through the artifacts repository.
 
 Nothing under `neonrain/models/` or `neonrain/baselines/` begins until 1.6 passes (R-002).
 
-### 1.5 The trials file
-
-Check: every harness run appends to `harness/trials.tsv`; `docs/RESULTS.md`'s test refuses a number
-with no line.
-
 ### 1.6 Adversarial tests
 
 Check: every test of ROADMAP 1.6 red on the broken input, green on the honest one; the mirror written
@@ -36,7 +31,8 @@ blind (R-015c).
 ### 1.7 Freeze
 
 Check: `harness/goldens/` written from the synthetic market; a harness change after it is a commit
-with every golden identical or a decision saying why not.
+with every golden identical or a decision saying why not; `trials.HARNESS_VERSION` becomes `"1"`
+(HAR-01).
 
 ### 1.8 Tithe pass 1
 

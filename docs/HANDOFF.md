@@ -5,11 +5,12 @@ finished. This file says what the next session should actually do, and what it m
 
 ## Where the project stands (2026-10-23)
 
-Phase 0 is done but for Ghost's items (0.2, 0.4). Phase 1: 1.1 to 1.4 are done (J-013 to J-018):
-the synthetic market, the targets, the splits, and the cost model and metrics, with HAR-07's mirror
-written blind and agreeing to 1e-12. `theGhost.md` holds R-001 to R-022. **Next is 1.5, the trials
-file** (HAR-09). The slow tests (`pytest -m slow`, the 100-seed check) run in `precommit.sh`, not
-the fast loop. No real data, no model, no result.
+Phase 0 is done but for Ghost's items (0.2, 0.4). Phase 1: 1.1 to 1.5 are done (J-013 to J-018,
+J-026): the synthetic market, the targets (delisting ends, J-024), the splits, the cost model and
+metrics with HAR-07's mirror written blind, and the trials file with HAR-01's config hash. **Next is
+`neonrain/harness/market.py`** (Ghost approved it: what the harness is given, and HAR-12's stamp
+refusal), **then 1.6**. The slow tests (`pytest -m slow`) run in `precommit.sh`. No real data, no
+model, no result.
 
 Two decisions are `proposed` and must not be built on (`TODO.md` 0.2): **R-011** (license, Ghost's
 alone) and **R-016** (data and artifacts through a second GitHub repository, from 0.3's measurement).
@@ -41,13 +42,11 @@ Four things about this environment, each measured, not assumed (NR-F-01):
 **make the document precise rather than deciding in code** (every step so far found gaps: J-013 to
 J-018). Nothing under `neonrain/models/` or `neonrain/baselines/` exists until 1.6 passes (R-002).
 
-- **1.5, the trials file** (HAR-09, HAR-01): its header is defined today in the doc check
-  `scripts/checks/results.py`, not in the harness that will write the file; where it should live is
-  waiting on Ghost (J-020).
 - **1.6 needs HAR-12's stamp check, and nothing enforces it yet.** The stamp is the primary leak
   defence (a leaking feature refused by construction, not noticed by a metric); today `edge_stamp`
-  is only produced. 1.6's planted-leak test needs the refusal to exist. Where it lives is waiting on
-  Ghost (J-020).
+  is only produced. It goes in `neonrain/harness/market.py`, approved (J-025), before 1.6.
+- **A DSR's `N` is `trials_so_far + 1`** from the trials file (HAR-09), counting every earlier line
+  of the same metric at any horizon (J-026).
 - **1.7 writes the goldens, not before.** A golden recorded while the harness changes records a bug
   as the expected answer.
 - **The portfolio is scored on every universe row, never only labelled rows** (HAR-07, J-018).

@@ -13,6 +13,7 @@ the tests hold the code, and a long one means they do not.
 | `scripts.checks.results.x_cell__mutmut_2` | scripts/checks/results.py : `cell` | joins matching cells with "XX XX" instead of " " | Equivalent under every reachable input: the patterns read from the joined text (a ± with [min, max], an NR-F-nn, a config hash) never span two cells, and no separator text can form one. | 2026-10-22 |
 | `scripts.checks.glossary.x_uses__mutmut_6` | scripts/checks/glossary.py : `uses` | blanks a code span with "XX XX" instead of " " | Equivalent under every reachable input: the filler only has to keep the words on either side of a span apart, and "XX" is no enforced alias, so no filler text can form one. Revisit if an alias containing XX is ever enforced. | 2026-10-22 |
 | `scripts.checks.supply_chain.x_import_problems__mutmut_37` | scripts/checks/supply_chain.py : `import_problems` | passes None instead of False as `is_scorer` | Equivalent under every reachable input: the flag is only read as `not is_scorer`, and `not None` is `not False`; the type hint says bool. | 2026-10-22 |
+| `neonrain.harness.trials.x_config_hash__mutmut_30` | neonrain/harness/trials.py : `config_hash` | passes allow_nan=None instead of False to json.dumps | Equivalent under every reachable input: json.dumps reads the flag only as `not allow_nan`, and `not None` is `not False`, so NaN and infinity are still refused (tested). | 2026-10-23 |
 
 ## What counts as harmless
 

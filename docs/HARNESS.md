@@ -35,12 +35,33 @@ or `neonrain.baselines` (modules.json MOD-02).
 
 ## HAR-01 One run, one row
 
-Every evaluation produces exactly one row in `harness/trials.tsv` and one result object. A run is
-identified by its **config hash**: the SHA-256, truncated to 16 hex digits, of the canonical JSON of
-{feature columns used, target definition, split parameters, cost parameters, model name and its
-hyperparameters, data manifest hashes, harness version}. Two runs with the same config hash must
-produce identical numbers; a run whose hash matches an earlier row but whose numbers differ is a
-failure, reported, never averaged away.
+Every evaluation produces one result object and appends its lines to `harness/trials.tsv`: one line
+for each (horizon, metric) pair the run reports (HAR-09), all carrying the run's config hash. A run is
+identified by its **config hash**: the SHA-256, truncated to its first 16 lowercase hex digits, of the
+canonical JSON of the object
+
+```
+{"feature_columns": [...], "target": {...}, "split": {...}, "cost": {...},
+ "model": {"name": "...", "hyperparameters": {...}}, "data_manifest": {...}, "harness_version": "..."}
+```
+
+- `feature_columns`: the names of the feature columns used, as a list sorted ascending (so their
+  order cannot change the hash); a name twice is refused.
+- `target`: the target definition, including `min_tickers` (HAR-02). `split`: the split parameters,
+  including `E`, the step, the rolling window or its absence, the `k` and `seed` of HAR-05. `cost`:
+  the cost parameters of HAR-06. `data_manifest`: dataset name to its manifest hash. Each is a JSON
+  object whose values are strings, numbers, booleans, null, lists or objects.
+- `harness_version`: the string `"0"` while phase 1 builds; the freeze (ROADMAP 1.7) sets it to `"1"`.
+- **Canonical JSON** is exactly: keys sorted ascending at every depth, no whitespace (separators `,`
+  and `:`), non-ASCII characters escaped as `\uXXXX`, UTF-8 bytes, NaN and infinity refused. A number
+  is written as the shortest text that reads back as itself (`0.1`, `1.0`, `3`); the integer `1` and
+  the float `1.0` are different texts and so hash differently, so a caller gives each parameter the
+  same type every run.
+
+Two runs with the same config hash must produce identical numbers; a line whose hash, horizon and
+metric match an earlier line that has a mean, but whose mean or dispersion text differs, is a failure:
+it is still appended (the trial happened), with `CONFLICT: numbers differ from an earlier line with
+this hash` at the start of its note, and reported as an error, never averaged away.
 
 ## HAR-02 The four horizons and their two labels
 
@@ -195,7 +216,7 @@ per (i, t); for rank, a real-valued score per (i, t) whose order is what matters
   ```
   γ   = 0.5772156649                      (Euler–Mascheroni)
   Z   = standard normal CDF, Z⁻¹ its inverse
-  N   = the number of trials (HAR-09), ≥ 1
+  N   = the number of trials, ≥ 1: HAR-09's trials_so_far + 1
   V   = the variance of the Sharpe ratios across those trials
   SR₀ = √V · [ (1 − γ)·Z⁻¹(1 − 1/N) + γ·Z⁻¹(1 − 1/(N·e)) ]
   DSR = Z[ (SR − SR₀)·√(T − 1) / √(1 − skew·SR + ((kurt − 1)/4)·SR²) ]
@@ -229,11 +250,34 @@ not an algorithm*, and does not count as beating a baseline however good its mea
 
 ## HAR-09 The trials file
 
-Every run appends one tab-separated line to `harness/trials.tsv`, which is git-tracked and
+Every run appends tab-separated lines to `harness/trials.tsv`, which is git-tracked and
 append-only: `config_hash`, `date`, `horizon`, `metric`, `mean`, `dispersion`, `trials_so_far`,
-`note`. `trials_so_far` is the count of lines before this one that share the metric — it is the `N`
-of HAR-07's DSR, so the deflation grows as the project searches. A number quoted in
-`docs/RESULTS.md` with no line here does not exist (`test/test_results.py`).
+`note`. The first line of the file is these eight names joined by tabs. A run appends one line for
+each (horizon, metric) pair it reports (HAR-01). `trials_so_far` is the count of lines before this one
+that share the metric, whatever their hash or horizon and whether they failed or not — a run's own
+earlier lines count, and so does a repeat of an earlier run. The `N` of HAR-07's DSR is
+`trials_so_far + 1`: this line counts as a trial too, so `N ≥ 1` on the first. The deflation grows as
+the project searches. A number quoted in `docs/RESULTS.md` with no line here does not exist
+(`test/test_results.py`).
+
+Each field, exactly. Every line ends with `\n` (never `\r\n`), the file is UTF-8, and no field holds a
+tab or a line break (in `note` each is replaced by one space; in any other field it is refused).
+
+- `config_hash`: the 16 hex digits of HAR-01. `date`: the run's date as `YYYY-MM-DD`, given by the
+  caller, since the harness never reads the clock.
+- `horizon`: the number of trading days, e.g. `5`; empty when the run failed before it had one.
+- `metric`: the metric's name, e.g. `IC`, free text without a tab or line break.
+- `mean`: the fold-axis mean of HAR-08, as the shortest text that reads back as itself (`0.02`);
+  NaN and infinity are refused; empty when the run has no number, in which case `note` is not empty.
+- `dispersion`: both axes of HAR-08, as `folds: M ± S [LOW, HIGH] n=K; groups: M ± S [LOW, HIGH] n=K;
+  undefined_cells=U`, numbers written as in `mean`, an axis with no defined value as `folds:
+  undefined`, an sd that is undefined as `undefined`, and `; fits names` appended when R-014's flag is
+  set. Empty when the run has no number.
+- `trials_so_far`: the integer above. `note`: free text, empty for an ordinary run.
+
+A line is appended after the file's header and last line break are checked: a file with another
+header, or whose last line has no line break, is refused and left as it was. A missing file is
+created with its header.
 
 Runs that fail, crash or are abandoned still append a line, with the failure in `note`. A deleted
 line is a falsified trial count; the file's history is the record.

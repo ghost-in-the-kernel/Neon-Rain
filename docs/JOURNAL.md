@@ -544,3 +544,32 @@ shared classes). `test/test_journal.py` holds this.
   modules waits on Ghost. ROADMAP §3.3's "adding a module is a decision" still holds as written.
 - **Touched:** docs/modules.json.
 - **Class:** decision
+
+### J-026 Trial: a Claude Sonnet agent builds 1.5, the trials file
+- **Who:** Ghost, Claude Opus (running and reviewing), a Claude Sonnet agent (the subject).
+- **Intent:** Ghost, 2026-10-23: have a Sonnet agent attempt 1.5. Given: the step, the approved
+  place (`harness/trials.py` owning the header, the append and HAR-01's config hash), the rule to
+  make HARNESS.md precise rather than decide in code, and that tests never write the real file.
+- **Found:** HAR-01 and HAR-09 contradicted each other twice: "exactly one row per evaluation"
+  against columns for `horizon` and `metric`; and `trials_so_far`, 0 on the first line, called "the
+  N of HAR-07's DSR", which needs N ≥ 1. HAR-01's hash named its parts but not their shape, and
+  "a failure, reported" did not say what is written. The agent settled each in the text: a line per
+  (horizon, metric); `N = trials_so_far + 1`; `trials_so_far` counting every earlier line of the
+  metric at any horizon, failed or not (the conservative reading: more deflation); the hash's JSON
+  object, canonical form and `harness_version`; a conflicting repeat appended, marked `CONFLICT:` and
+  raised; every field's format. 19 tool calls, 19 minutes, about 21 files opened (the routing row
+  named one, then the contracts, the checks a new file must pass, and the conventions). Two red runs,
+  each naming its cause (a `**kwargs` helper against R-015(b); 29 survivors, fixed by tests that
+  match whole messages and by bytes I/O): no escalation, rightly under R-022. Real trials.tsv
+  checked byte-identical with `cmp`; a backup it wrote outside the repository for that check, then
+  deleted, should have gone to a scratch directory.
+- **Options:** Reviewed by Claude Opus: the contract changes kept as written; of the six survivors
+  it explained, five (the codec name, `ensure_ascii`) designed out by not naming defaults, as J-015
+  did; one (`allow_nan=None`) stays explained. `trials.HARNESS_VERSION` becomes "1" at 1.7, now in
+  TODO.md, which the agent noted nothing assigned.
+- **Resolved:** 1.5 done. For Ghost: `trials_so_far` counts across horizons, so a four-horizon run
+  adds four trials to every later DSR of that metric; the contract's author may prefer per horizon.
+- **Touched:** `neonrain/harness/trials.py`, test/test_trials.py, `scripts/checks/results.py`,
+  docs/HARNESS.md (HAR-01, HAR-07, HAR-09), docs/MUTATION.md, docs/modules.json, CLAUDE.md, TODO.md,
+  docs/DONE.md, docs/HANDOFF.md.
+- **Class:** trial

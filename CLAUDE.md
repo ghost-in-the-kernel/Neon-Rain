@@ -25,7 +25,7 @@ at the plan.
 | The portfolio and its costs | `neonrain/harness/portfolio.py` | HAR-06, HAR-07, R-021 | `test/test_portfolio.py`, `test/test_mirror.py` |
 | Accuracy, IC, Sharpe, DSR | `neonrain/harness/metrics.py` | HAR-07 | `test/test_metrics_har07.py`, `test/test_mirror.py` |
 | Dispersion over folds and groups | `neonrain/harness/dispersion.py` | HAR-08 | `test/test_dispersion.py` |
-| The trials file (TODO 1.5) | `TODO.md` 1.5, `scripts/checks/results.py` (its header) | HAR-09, HAR-01 | `test/test_results.py` |
+| The trials file, a run's config hash | `neonrain/harness/trials.py` | HAR-01, HAR-09 | `test/test_trials.py` |
 | The adversarial tests (TODO 1.6) | `TODO.md` 1.6, `test/mirror_har07.py` (written blind; never edit) | `docs/HARNESS.md` HAR-12 | `test/test_harness_adversarial.py` (1.6 writes it) |
 | A dataset: fetch, manifest, universe | `scripts/fetch/`, `data/MANIFEST.md` (phase 2) | R-006 | `test/test_manifest.py` |
 | A feature family (phase 2) | `docs/modules.json` (`features`), `neonrain/harness/synthetic.py` (`Market.features`) | HAR-12; `docs/GLOSSARY.md` (its term first) | one unit test per feature |

@@ -96,3 +96,13 @@ cost levels, through 30+ held delistings; three deliberate breaks of the code ea
 Check: a zero-edge strategy reports a deflated Sharpe inside its noise band across 100 seeds: 3 of
 100 at or above 0.95 before costs (band: at most 12), mean 0.471 (0.4 to 0.6); after 10 bps, 0 and
 0.012. With an edge of ρ = 0.1 all 100 are above 0.95, so the band check fails as it must. ✓
+
+### 1.5 The trials file — done 2026-10-23 (J-026)
+
+`neonrain/harness/trials.py`: HAR-09's header (which `scripts/checks/results.py` now imports), the
+append, and HAR-01's config hash; HAR-01 and HAR-09 made exact first. Built by a Claude Sonnet agent
+under R-022, reviewed by Claude Opus. `test/test_trials.py` writes only to temporary files.
+Check: every harness run appends to `harness/trials.tsv` through `append_trial` (a missing file
+gets its header; another header, or a last line with no line break, is refused); `docs/RESULTS.md`'s
+test refuses a number with no line (`test/test_results.py`, as before). The real `harness/trials.tsv`
+is unchanged. ✓
