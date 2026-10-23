@@ -57,8 +57,8 @@ document did not say whose repository it was about. This document is about `neon
 Code, documents, tests, manifests, the scorer's prompt, and what training and test runs produce:
 results, the trials file, the goldens, run records. Never market data: nothing a data source gave us
 and nothing it can be read back from (a feature cache, a ledger snapshot); no parquet, no API key, no
-customer-equivalent material (R-006, R-016, P-13; Ghost, J-032). Weights go to the artifacts
-repository by R-016, for their size.
+customer-equivalent material (R-006, R-016, P-13; Ghost, J-032). Weights go to the private artifacts
+repository (R-016) until this repository is private, then beside the network's code (R-025).
 
 ## The one API key
 

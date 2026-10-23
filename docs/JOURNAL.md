@@ -805,3 +805,25 @@ shared classes). `test/test_journal.py` holds this.
 - **Touched:** test/conftest.py, test/test_mutant_order.py, docs/MUTATION.md, CLAUDE.md,
   docs/NAVIGATION-LOG.md, docs/AGENT.md.
 - **Class:** measurement
+
+### J-036 The network lives here and lifts out one way; the project is protective (R-011, R-025)
+- **Who:** Ghost, Claude Opus.
+- **Intent:** Ghost: the neural network should live in this repository, separable from the tooling
+  built to make it, with no redocking as Suite Builder's suites have; and the project is meant,
+  eventually, for economic gain.
+- **Found:** The repository is public, while R-011's own text said "until decided, the repository
+  is private". Phase 3 onward writes what could show an edge (baseline results, the network's
+  shape, trials, weights), so publication, not only the weights, was the risk. `models` was allowed
+  to import `harness`, so a lifted-out network would have carried the tooling with it. R-016(d)
+  checked a dataset's licence, but not for commercial use.
+- **Options:** Weights here at once, or in the private artifacts repository until this one is
+  private (taken). R-011's three options: protective (taken), research-open, fully private.
+- **Resolved:** Ghost: "yes record them". R-011 in force, protective, `LICENSE` all rights
+  reserved; until Ghost makes the repository private, phase 3 does not begin and no weights or
+  results enter (CLAUDE.md, HANDOFF item 1). R-025: `neonrain/models/` imports nothing of ours,
+  the new `training` module is the only one that imports it (MOD-06, held by two new tests);
+  MOD-02 covers `training`. R-016(d): a dataset's licence must allow commercial use. R-013 stands:
+  whatever trades does so outside this repository, from a lifted-out copy.
+- **Touched:** theGhost.md (R-011, R-016, R-025), `LICENSE`, docs/modules.json, test/test_modules.py,
+  docs/ROADMAP.md (§3.3, 4.2), docs/SUPPLY-CHAIN.md, CLAUDE.md, TODO.md, docs/HANDOFF.md.
+- **Class:** decision

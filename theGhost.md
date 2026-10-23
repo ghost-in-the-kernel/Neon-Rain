@@ -199,16 +199,20 @@ it is `in force`.
 - **subject:** environment
 
 ### R-011: Licensing and publication
-- **Decision:** To be decided by Ghost. Options: (a) protective, as Katana R-002 (private, all rights
-  reserved, no disclosure before any filing); (b) research-open (a permissive license on the harness,
-  so the methodology can be cited and checked, with the model and ledger private); (c) fully private
-  with no intent to publish. Until decided, the repository is private and nothing leaves it.
+- **Decision:** Protective, option (a) of three (as Katana R-002): the repository is private, all
+  rights reserved (`LICENSE`), and nothing leaves it. The other options were (b) research-open, a
+  permissive license on the harness, and (c) fully private with no intent to publish. The project is
+  meant for economic gain (Ghost, 2026-10-23), so an edge is the thing to protect. The repository
+  is public today: Ghost makes it private, and until he does nothing that could show an edge enters
+  it (phase 3 does not begin; no weights, no results, no trials lines from real data).
 - **Why:** The harness has standalone value as a methodology artifact and could support the NSF
   study's thesis about agent-built research; the trained model, if it ever has an edge, loses that
   edge on publication. Those pull in different directions and the choice is Ghost's.
-- **Held by:** `LICENSE` once decided.
-- **Source:** proposed by Claude Fable, 2026-10-22.
-- **Status:** proposed
+- **Held by:** `LICENSE`; `docs/HANDOFF.md` ("For Ghost", until the repository is private); CLAUDE.md
+  ("Two rules").
+- **Source:** proposed by Claude Fable, 2026-10-22; Ghost, 2026-10-23: "lets assume we will be moving
+  this to eventually use for economic gain" and "yes record them" (J-036).
+- **Status:** in force
 - **See also:** R-003
 - **subject:** license
 
@@ -298,8 +302,8 @@ it is `in force`.
   same rules, content-addressed: each file is named by its SHA-256 and the main repository records
   the hash it depends on. (c) `scripts/fetch/<dataset>.py` of R-006 clones or pulls the data
   repository and verifies the manifest hash; it never reaches any other host. (d) The license of
-  every dataset is checked by Ghost before it enters the data repository; the manifest line says
-  so. Until a news feed is supplied the same way, phase 5 is blocked and phases 1–4 proceed.
+  every dataset is checked by Ghost before it enters the data repository, and must allow commercial
+  use (amended 2026-10-23, R-011); the manifest line says so. Until a news feed is supplied the same way, phase 5 is blocked and phases 1–4 proceed.
 - **Why:** NR-F-01: from this workspace every market-data and news host is refused, GitHub Releases
   and LFS uploads are refused for this session type, and plain git pushes are the one write that
   works. A second repository keeps blobs out of the code repository's history (R-006's reason) and
@@ -457,3 +461,25 @@ it is `in force`.
 - **Status:** in force
 - **See also:** R-012, R-019, R-023
 - **subject:** agent environment
+
+### R-025: The network lives in this repository and can be lifted out, one way
+- **Decision:** The network (its code, its trained weights, and a manifest of the feature columns
+  it expects, by name and hash) lives in this repository, in `neonrain/models/`, which imports
+  nothing of ours: given a feature table it returns scores. Training it and running it through the
+  harness live in `neonrain/training/`, which may import `models`, `harness`, `features` and
+  `targets`; nothing else imports `models`. A copy can be lifted out and run on its own, one way:
+  nothing re-imports, re-syncs or redocks a copy, and a changed copy is another thing, never merged
+  back. Whatever trades with a copy does so outside this repository (R-013). Weights go to the
+  private `neon-rain-artifacts` (R-016(b)) until the repository is private (R-011), and come in
+  beside the code after.
+- **Why:** Ghost, 2026-10-23: what is built so far is tooling to build the thing; the thing should
+  live with it and be separable from it, and unlike Suite Builder's suites there is no reason for it
+  to redock. A network that reads no tooling cannot depend on the harness's view of the data, so
+  the copy that leaves is the one that was scored.
+- **Held by:** `docs/modules.json` (`models` may import nothing; MOD-02, MOD-06);
+  `test/test_modules.py`; docs/ROADMAP.md §3.3 and phase 4.
+- **Source:** Ghost, 2026-10-23: "the neural network should live in the same repository ... there is
+  no reason to have it redock with the tooling"; drafted by Claude Opus; Ghost: "yes record them".
+- **Status:** in force
+- **See also:** R-009, R-011, R-013, R-016
+- **subject:** model

@@ -87,3 +87,14 @@ def test_every_problem_in_every_file_is_reported(tmp_path: Path, root: Path) -> 
         "neonrain/harness/a.py imports baselines: harness may import only ['features', 'targets']",
         "neonrain/ledger/b.py imports universe: ledger may import only []",
     ]
+
+
+def test_the_network_reads_nothing_of_ours_and_only_training_reads_it(root: Path) -> None:
+    spec = modules.json.loads((root / "docs" / "modules.json").read_text())["modules"]
+    assert spec["models"]["mayImport"] == []
+    assert [name for name, entry in spec.items() if "models" in entry["mayImport"]] == ["training"]
+
+
+def test_the_network_importing_the_harness_is_caught(tmp_path: Path, root: Path) -> None:
+    found = modules.problems(plant(tmp_path, root, {"models/net.py": "from neonrain.harness import split\n"}))
+    assert found == ["neonrain/models/net.py imports harness: models may import only []"]

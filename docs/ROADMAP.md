@@ -151,14 +151,16 @@ refuses anything else. Adding a module is a decision (Katana R-043's rule applie
 | `neonrain/targets` | the four horizons' labels, direction and rank | `universe` |
 | `neonrain/harness` | splits (time × ticker group), cost model, metrics, the trials file | `features`, `targets` |
 | `neonrain/baselines` | zero, momentum, reversal, LightGBM | `harness` |
-| `neonrain/models` | the one network | `harness` |
+| `neonrain/models` | the one network, liftable one way (R-025) | nothing of ours |
+| `neonrain/training` | trains the network and runs it through the harness | `models`, `harness`, `features`, `targets` |
 | `neonrain/scorer` | the Haiku scorer and the ledger writer; **the only module that imports a model client** | nothing of ours |
 | `neonrain/ledger` | readers for both ledgers, with the publish-time cut | nothing of ours |
 
-Rules: **MOD-01** only `scorer` imports a model client. **MOD-02** `harness` never imports `models`
-or `baselines` (the referee does not read the players' code; Katana MOD-05). **MOD-03** no module
+Rules: **MOD-01** only `scorer` imports a model client. **MOD-02** `harness` never imports `models`,
+`baselines` or `training` (the referee does not read the players' code; Katana MOD-05). **MOD-03** no module
 imports a broker or order client (R-013). **MOD-04** `features` reads the news ledger only through
-`ledger`'s cut reader.
+`ledger`'s cut reader. **MOD-06** `models` imports nothing of ours and only `training` imports it
+(R-025).
 
 ### 3.4 The network (phase 4; the shape is R-009's decision, recorded when phase 4 opens)
 
@@ -333,8 +335,9 @@ Decisions recorded: the cost default; the embargo length; the group count *k*; H
 ### Phase 4: the network (about three weeks)
 
 4.1 **The shape decision** (R-009): one of §3.4's candidates, recorded in `theGhost.md` with its why.
-4.2 **The model**, one file, pooled training, four heads, early stopping on the walk-forward
-    validation fold only (never on test).
+4.2 **The model**, one file in `neonrain/models/` (nothing of ours imported, R-025), pooled training
+    in `neonrain/training/`, four heads, early stopping on the walk-forward validation fold only
+    (never on test); its weights to `neon-rain-artifacts` until the repository is private (R-011).
 4.3 **The run** through the harness: mean ± dispersion at all four horizons against the tree.
 4.4 **The write-up** in `docs/RESULTS.md`, whichever way it went. If the network does not beat the
     tree at any horizon, `docs/FINDINGS.md` gets the entry and the project's honest state is "the

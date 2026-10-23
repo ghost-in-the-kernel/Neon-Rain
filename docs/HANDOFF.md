@@ -16,8 +16,8 @@ calendar, derived in the repository from a holiday data file, no new dependency 
 J-033). The slow tests (`pytest -m slow`) run in `precommit.sh`. No real data, no
 model, no result.
 
-One decision is `proposed` and must not be built on (`TODO.md` 0.2): **R-011** (license, Ghost's
-alone). R-001 (Python), R-002 (harness first) and R-016 (data and artifacts through two private
+No decision is `proposed`. **R-011** is in force (protective) but waits on Ghost making the
+repository private (`TODO.md` 0.2). R-001 (Python), R-002 (harness first) and R-016 (data and artifacts through two private
 GitHub repositories, approved 2026-10-23) are in force; R-010 is superseded by R-016.
 
 ## Starting a session cold
@@ -63,11 +63,9 @@ J-018). Nothing under `neonrain/models/` or `neonrain/baselines/` exists yet; 1.
 
 ## For Ghost: waiting on you
 
-1. **R-011, the license.** Protective as Katana's (private, all rights reserved, nothing leaves),
-   research-open on the harness only (the methodology is citable and checkable; the model and ledger
-   stay private), or fully private with no intent to publish. The harness is the part with
-   standalone value and the part that could support the NSF study; the model loses any edge on
-   publication. Phase 1 can proceed without this; nothing leaves the repository until it is settled.
+1. **Make the repository private** (R-011, protective: the project is meant for economic gain).
+   Settings, then General, then Danger Zone, then "Change visibility". Until it is private, phase 3
+   does not begin, and no weights, results or real-data trials lines enter.
 2. **R-016, the two data repositories.** `neon-rain-data` and `neon-rain-artifacts`, both private,
    created by you (this session type cannot create repositories). Then phase 2 can start.
 3. **Delete the `probe-plain` branch** on GitHub.

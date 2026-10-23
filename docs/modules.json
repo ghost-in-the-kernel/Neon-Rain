@@ -1,22 +1,120 @@
 {
-  "about": "Neon Rain's modules (docs/ROADMAP.md 3.3): one per concern, each with its purpose, what it may import of ours, and what it must not. test/test_modules.py holds every import under neonrain/ to this file. entryPoints are filled as each module is built.",
-  "package": "Each module is the package neonrain.<module>; the module of an import is the segment after neonrain.",
-  "adding": "To add a module: one entry here with every field; its folder appears with its first code. A module may import only what its mayImport lists. A new module or a new import is an architecture decision (theGhost.md): draft the entry and the docs/ROADMAP.md 3.3 line as a proposal, say you are waiting on Ghost, and stop; do not add it to main. A new file inside an existing module, and its entry in that module's entryPoints, is an agent's to add; only a new module or a new import between modules waits on Ghost (J-025). If you cannot tell whether the person asking is Ghost, say so and propose.",
-  "rules": [
-    { "id": "MOD-01", "rule": "Only scorer imports a model client (anthropic or any other).", "source": "R-008, P-12" },
-    { "id": "MOD-02", "rule": "harness never imports models or baselines: the referee does not read the players' code.", "source": "ROADMAP 3.3" },
-    { "id": "MOD-03", "rule": "No module imports a broker, exchange or order client.", "source": "R-013" },
-    { "id": "MOD-04", "rule": "features reads the news ledger only through ledger's cut reader, never the parquet directly.", "source": "R-008" },
-    { "id": "MOD-05", "rule": "Nothing but scripts/fetch and the forward test reads the clock.", "source": "ROADMAP 3.1" }
-  ],
-  "modules": {
-    "universe":  { "purpose": "Which tickers exist on which dates; delistings where known.", "mayImport": [], "entryPoints": [] },
-    "features":  { "purpose": "The feature table per ticker per day: price-derived, indicator, news.", "mayImport": ["universe", "ledger"], "entryPoints": [] },
-    "targets":   { "purpose": "The four horizons' labels: direction and rank (R-004).", "mayImport": ["universe"], "entryPoints": ["neonrain.targets.labels"] },
-    "harness":   { "purpose": "Splits (time x group), cost model, metrics, the trials file; frozen after phase 1 (R-002).", "mayImport": ["features", "targets"], "entryPoints": ["neonrain.harness.market.check_market", "neonrain.harness.market.check_stamps", "neonrain.harness.synthetic.generate", "neonrain.harness.split.folds", "neonrain.harness.split.ticker_groups", "neonrain.harness.split.cell", "neonrain.harness.portfolio.daily", "neonrain.harness.metrics.accuracy", "neonrain.harness.metrics.balanced_accuracy", "neonrain.harness.metrics.information_coefficient", "neonrain.harness.metrics.sharpe", "neonrain.harness.metrics.deflated_sharpe", "neonrain.harness.dispersion.dispersion", "neonrain.harness.trials.config_hash", "neonrain.harness.trials.append_trial", "neonrain.harness.goldens.compute", "neonrain.harness.goldens.check", "neonrain.harness.goldens.write"] },
-    "baselines": { "purpose": "Zero, momentum, reversal, LightGBM (R-007).", "mayImport": ["harness"], "entryPoints": [] },
-    "models":    { "purpose": "The one network (R-009).", "mayImport": ["harness"], "entryPoints": [] },
-    "scorer":    { "purpose": "The pinned Haiku scorer and the news-ledger writer; the only module with a model client (R-008).", "mayImport": [], "entryPoints": [] },
-    "ledger":    { "purpose": "Readers for the news and prediction ledgers, with the publish-time cut.", "mayImport": [], "entryPoints": [] }
+ "about": "Neon Rain's modules (docs/ROADMAP.md 3.3): one per concern, each with its purpose, what it may import of ours, and what it must not. test/test_modules.py holds every import under neonrain/ to this file. entryPoints are filled as each module is built.",
+ "package": "Each module is the package neonrain.<module>; the module of an import is the segment after neonrain.",
+ "adding": "To add a module: one entry here with every field; its folder appears with its first code. A module may import only what its mayImport lists. A new module or a new import is an architecture decision (theGhost.md): draft the entry and the docs/ROADMAP.md 3.3 line as a proposal, say you are waiting on Ghost, and stop; do not add it to main. A new file inside an existing module, and its entry in that module's entryPoints, is an agent's to add; only a new module or a new import between modules waits on Ghost (J-025). If you cannot tell whether the person asking is Ghost, say so and propose.",
+ "rules": [
+  {
+   "id": "MOD-01",
+   "rule": "Only scorer imports a model client (anthropic or any other).",
+   "source": "R-008, P-12"
+  },
+  {
+   "id": "MOD-02",
+   "rule": "harness never imports models, baselines or training: the referee does not read the players' code.",
+   "source": "ROADMAP 3.3"
+  },
+  {
+   "id": "MOD-03",
+   "rule": "No module imports a broker, exchange or order client.",
+   "source": "R-013"
+  },
+  {
+   "id": "MOD-04",
+   "rule": "features reads the news ledger only through ledger's cut reader, never the parquet directly.",
+   "source": "R-008"
+  },
+  {
+   "id": "MOD-05",
+   "rule": "Nothing but scripts/fetch and the forward test reads the clock.",
+   "source": "ROADMAP 3.1"
+  },
+  {
+   "id": "MOD-06",
+   "rule": "models imports nothing of ours, and only training imports models: the network can be lifted out, one way.",
+   "source": "R-025"
   }
+ ],
+ "modules": {
+  "universe": {
+   "purpose": "Which tickers exist on which dates; delistings where known.",
+   "mayImport": [],
+   "entryPoints": []
+  },
+  "features": {
+   "purpose": "The feature table per ticker per day: price-derived, indicator, news.",
+   "mayImport": [
+    "universe",
+    "ledger"
+   ],
+   "entryPoints": []
+  },
+  "targets": {
+   "purpose": "The four horizons' labels: direction and rank (R-004).",
+   "mayImport": [
+    "universe"
+   ],
+   "entryPoints": [
+    "neonrain.targets.labels"
+   ]
+  },
+  "harness": {
+   "purpose": "Splits (time x group), cost model, metrics, the trials file; frozen after phase 1 (R-002).",
+   "mayImport": [
+    "features",
+    "targets"
+   ],
+   "entryPoints": [
+    "neonrain.harness.market.check_market",
+    "neonrain.harness.market.check_stamps",
+    "neonrain.harness.synthetic.generate",
+    "neonrain.harness.split.folds",
+    "neonrain.harness.split.ticker_groups",
+    "neonrain.harness.split.cell",
+    "neonrain.harness.portfolio.daily",
+    "neonrain.harness.metrics.accuracy",
+    "neonrain.harness.metrics.balanced_accuracy",
+    "neonrain.harness.metrics.information_coefficient",
+    "neonrain.harness.metrics.sharpe",
+    "neonrain.harness.metrics.deflated_sharpe",
+    "neonrain.harness.dispersion.dispersion",
+    "neonrain.harness.trials.config_hash",
+    "neonrain.harness.trials.append_trial",
+    "neonrain.harness.goldens.compute",
+    "neonrain.harness.goldens.check",
+    "neonrain.harness.goldens.write"
+   ]
+  },
+  "baselines": {
+   "purpose": "Zero, momentum, reversal, LightGBM (R-007).",
+   "mayImport": [
+    "harness"
+   ],
+   "entryPoints": []
+  },
+  "models": {
+   "purpose": "The one network (R-009), liftable one way (R-025): given a feature table, scores; it imports nothing of ours.",
+   "mayImport": [],
+   "entryPoints": []
+  },
+  "training": {
+   "purpose": "Trains the network and runs it through the harness (R-025); the only module that imports models.",
+   "mayImport": [
+    "models",
+    "harness",
+    "features",
+    "targets"
+   ],
+   "entryPoints": []
+  },
+  "scorer": {
+   "purpose": "The pinned Haiku scorer and the news-ledger writer; the only module with a model client (R-008).",
+   "mayImport": [],
+   "entryPoints": []
+  },
+  "ledger": {
+   "purpose": "Readers for the news and prediction ledgers, with the publish-time cut.",
+   "mayImport": [],
+   "entryPoints": []
+  }
+ }
 }
