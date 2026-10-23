@@ -508,3 +508,23 @@ shared classes). `test/test_journal.py` holds this.
 - **Touched:** CLAUDE.md, docs/JOURNAL.md, `scripts/checks/journal.py`, test/test_journal.py,
   docs/AGENT.md.
 - **Class:** decision
+
+### J-024 NR-F-02 resolved: a delisting's last price ends the window
+- **Who:** Ghost, Claude Opus.
+- **Intent:** Ghost, 2026-10-23: "delisting price is the end value."
+- **Found:** The labels need to tell a delisting from a gap in the data; HAR-02 had only "a missing
+  price at *t+h*".
+- **Options:** Any missing *t+h* takes the last price before it (refused: a gap would become a fake
+  return); a ticker with no price after its last one is delisted, and only then does its last close
+  end the window (taken).
+- **Resolved:** HAR-02 states it, with a fourth count beside every result, `delisting_ends`.
+  `targets.label_cells` builds it; a gap is still `dropped_missing`. Hand cases for both (C's last
+  close 30 ends day 5's window at −0.4 and day 6's at −0.25). On the synthetic market no 21-day
+  window is dropped for a delisting any more. The labelled rows now hold the names that delist, so
+  `test_mirror.py`'s demonstration of the old hole is turned to show it closed; the portfolio is
+  still scored on every universe row (HAR-07), which never leaned on how labels are made. NR-F-02
+  marked resolved; its item leaves HANDOFF.md's list for Ghost. Not written into theGhost.md, which
+  Ghost keeps.
+- **Touched:** docs/HARNESS.md (HAR-02), docs/FINDINGS.md, docs/HANDOFF.md, `neonrain/targets.py`,
+  test/test_targets.py, test/test_mirror.py.
+- **Class:** decision

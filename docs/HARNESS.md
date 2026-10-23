@@ -61,8 +61,10 @@ For ticker *i*, date *t* and horizon *h* ∈ {3, 5, 21, 63} trading days:
 
 The cells are the (ticker, date) pairs of the universe frame whose date has an *h*-th trading date
 after it on the calendar; the last *h* dates have none, make no cells and are not counted. A ticker
-missing a price at *t* or at *t+h* is excluded from that (i,t,h) cell and counted in
-`dropped_missing` (but see NR-F-02: a delisting is a missing *t+h*). The three dropped counts appear in every result; a run that drops more than 5% of
+whose last price comes before *t+h* was delisted: its last close stands as `P(i, t+h)` (a delisting
+return), and the cell is counted in `delisting_ends` (NR-F-02, resolved by Ghost, J-024). A ticker
+missing a price at *t*, or at *t+h* while it trades again later (a gap in the data), is excluded
+from that (i,t,h) cell and counted in `dropped_missing`. The three dropped counts appear in every result; a run that drops more than 5% of
 its cells is reported with that fact beside its numbers.
 
 The harness predicts nothing else. There is no price-level and no raw-return target (R-004).

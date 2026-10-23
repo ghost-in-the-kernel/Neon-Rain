@@ -15,15 +15,18 @@ class Labels(NamedTuple):
     """One horizon's labels and the three counts HAR-02 requires beside every result."""
 
     frame: pl.DataFrame  # ticker, date, horizon, forward, excess, direction (null on a tie), rank
-    dropped_missing: int  # cells with no price at t or at t+h
+    dropped_missing: int  # cells with no price at t, or none at t+h for a ticker that trades again later (a gap)
     dropped_ties: int  # cells whose excess is exactly 0: no direction label, rank kept
     dropped_thin_dates: int  # dates with fewer than min_tickers priced, eligible tickers
+    delisting_ends: int  # cells whose window crosses the ticker's last price: that price ends it (NR-F-02)
 
 
 def label_cells(prices: pl.DataFrame, universe: pl.DataFrame, calendar: list[date], horizon: int) -> pl.DataFrame:
-    """Each eligible (ticker, date) with an h-th trading date after it, and its closes at t and t+h (null if none).
+    """Each eligible (ticker, date) with an h-th trading date after it, and its closes at t and t+h.
 
-    On a five-date calendar with horizon 3, only the first two dates make cells.
+    On a five-date calendar with horizon 3, only the first two dates make cells. A ticker whose last price comes
+    before t+h was delisted: its last close stands as the close at t+h and the cell is marked `delisted` (HAR-02,
+    NR-F-02). A ticker with no price at t+h that trades again later has a gap: its close at t+h stays null.
     """
     ahead = pl.DataFrame(
         {"date": calendar[:-horizon], "until": calendar[horizon:]},
@@ -33,7 +36,21 @@ def label_cells(prices: pl.DataFrame, universe: pl.DataFrame, calendar: list[dat
     at_h = prices.select("ticker", pl.col("date").alias("until"), pl.col("close").alias("close_h"))
     frame = universe.join(ahead, on="date")
     frame = frame.join(at_t, on=["ticker", "date"], how="left")
-    return frame.join(at_h, on=["ticker", "until"], how="left")
+    frame = frame.join(at_h, on=["ticker", "until"], how="left")
+    return delisting_ends(frame, prices)
+
+
+# Decision: NR-F-02 resolved by Ghost, 2026-10-23 (J-024): a delisting's last price is the window's end value
+def delisting_ends(frame: pl.DataFrame, prices: pl.DataFrame) -> pl.DataFrame:
+    """Fill the close at t+h with the ticker's last close where the window runs past its last price."""
+    last = prices.sort("date").group_by("ticker").agg(
+        pl.col("date").last().alias("last_date"), pl.col("close").last().alias("last_close"))
+    frame = frame.join(last, on="ticker", how="left")
+    delisted = pl.col("close_t").is_not_null() & (pl.col("until") > pl.col("last_date"))
+    frame = frame.with_columns(delisted.alias("delisted"))
+    frame = frame.with_columns(pl.when(pl.col("delisted")).then(pl.col("last_close")).otherwise(pl.col("close_h"))
+                               .alias("close_h"))
+    return frame.drop("last_date", "last_close")
 
 
 def input_problems(prices: pl.DataFrame, universe: pl.DataFrame, calendar: list[date]) -> list[str]:
@@ -71,5 +88,6 @@ def labels(
         ((pl.col("excess").rank("average").over("date") - 1.0) / (pl.col("n") - 1)).alias("rank"),
     )
     ties = kept.filter(pl.col("excess") == 0.0).height
+    ends = priced.filter(pl.col("delisted"))["ticker"].len()
     columns = ["ticker", "date", pl.lit(horizon).alias("horizon"), "forward", "excess", "direction", "rank"]
-    return Labels(kept.select(columns).sort("date", "ticker"), missing, ties, thin)
+    return Labels(kept.select(columns).sort("date", "ticker"), missing, ties, thin, ends)

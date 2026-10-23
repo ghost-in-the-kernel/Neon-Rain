@@ -136,12 +136,27 @@ def test_the_edge_shows_in_the_labels_and_thins_with_the_horizon() -> None:
     assert 0.3 / np.sqrt(21) * 0.7 < found[21] < 0.3 / np.sqrt(21) * 1.3
 
 
-def test_a_delisted_name_s_windows_are_dropped_as_missing() -> None:
-    # NR-F-02, held as it stands: the names that fall to delisting lose the windows that cross it.
+def test_a_delisted_name_s_windows_end_at_its_last_price() -> None:
+    # NR-F-02, resolved (J-024): no window is dropped for a delisting; each ends at the last price, and is counted.
     market = synthetic.generate(synthetic.MarketConfig(tickers=60, days=250, idio_vol=0.04, delist_below=0.6, seed=2))
     found = targets.labels(market.prices, market.universe, market.calendar, 21)
     delisted = market.prices.group_by("ticker").len().filter(pl.col("len") < 250).height
-    assert delisted > 0 and found.dropped_missing == 21 * delisted
+    assert delisted > 0 and found.dropped_missing == 0 and 0 < found.delisting_ends <= 21 * delisted
+
+
+def test_delisting_by_hand() -> None:
+    # C has no price after day 7 (last close 30): delisted. Day 5: 30/50 − 1 = −0.4; day 6: 30/40 − 1 = −0.25.
+    prices, universe = series()
+    gone = prices.filter(~((pl.col("ticker") == "C") & (pl.col("date") >= DAYS[8])))
+    found = targets.labels(gone, universe, DAYS, 3, 2)
+    assert row(found, "C", 5)["forward"] == pytest.approx(-0.4) and row(found, "C", 6)["forward"] == pytest.approx(-0.25)
+    assert (found.dropped_missing, found.delisting_ends) == (0, 2)
+
+
+def test_a_gap_is_not_a_delisting() -> None:
+    # The series' C has no price on day 8 but trades again on day 9: a gap, so day 5's cell is missing, not ended.
+    found = hand(3)
+    assert (found.dropped_missing, found.delisting_ends) == (1, 0)
 
 
 def test_labels_are_sorted_by_date_then_ticker_whatever_order_they_came_in() -> None:
@@ -172,3 +187,25 @@ def test_an_eligible_ticker_with_no_price_on_the_day_itself_is_counted_missing()
     gap = prices.filter(~((pl.col("ticker") == "A") & (pl.col("date") == DAYS[1])))
     found = targets.labels(gap, universe, DAYS, 3, 2)
     assert found.dropped_missing == 2 and found.frame.height == 18
+
+
+def test_label_cells_has_exactly_its_columns() -> None:
+    prices, universe = series()
+    frame = targets.label_cells(prices, universe, DAYS, 3)
+    assert frame.columns == ["ticker", "date", "until", "close_t", "close_h", "delisted"]
+    assert frame.filter(pl.col("delisted")).height == 0
+
+
+def test_a_window_ending_on_the_last_price_is_not_a_delisting() -> None:
+    # C's last price is day 7; day 4's window ends on day 7 itself: an ordinary cell, not a delisting end.
+    prices, universe = series()
+    gone = prices.filter(~((pl.col("ticker") == "C") & (pl.col("date") >= DAYS[8])))
+    cells = targets.label_cells(gone, universe, DAYS, 3)
+    assert cells.filter((pl.col("ticker") == "C") & (pl.col("date") == DAYS[4]))["delisted"].to_list() == [False]
+
+
+def test_an_eligible_ticker_with_no_prices_at_all_is_missing() -> None:
+    prices, universe = series()
+    extra = pl.concat([universe, pl.DataFrame({"ticker": ["D"], "date": [DAYS[0]]}, schema=universe.schema)])
+    found = targets.labels(prices, extra, DAYS, 3, 2)
+    assert found.dropped_missing == 2 and found.delisting_ends == 0

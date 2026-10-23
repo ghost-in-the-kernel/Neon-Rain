@@ -64,15 +64,11 @@ J-018). Nothing under `neonrain/models/` or `neonrain/baselines/` exists until 1
    created by you (this session type cannot create repositories). Then phase 2 can start.
 3. **Delete the `probe-plain` branch** on GitHub.
 4. **Approve `pip install` if the classifier blocks it**, or say how you would rather it be done.
-5. **NR-F-02, delisting windows** (J-014): HAR-02 drops a cell with no price at *t+h*, so the
-   windows in which names fall to delisting, the worst returns, leave the labels. The usual remedy
-   is a delisting return (the last price as the value at *t+h*). Built as written; yours (or
-   Fable's, as the contract's author) to decide, before 1.6's survivorship test is read.
-6. **Phase 5's news feed is blocked on you** (NR-F-01): a dataset with publish timestamps, obtained
+5. **Phase 5's news feed is blocked on you** (NR-F-01): a dataset with publish timestamps, obtained
    where there is network access and pushed to `neon-rain-data`. FNSPID on Hugging Face is the
    leading candidate — 15M+ timestamped items with tickers — and its license is yours to check
    before it enters. Phases 1 to 4 do not wait on this.
-7. **The calibration set, phase 5.3**: 200 news stories hand-labelled by you (bullish / bearish /
+6. **The calibration set, phase 5.3**: 200 news stories hand-labelled by you (bullish / bearish /
    neutral, and which ticker), which is what the scorer's own accuracy is measured against. You are
    the first reviewer here as you are on Katana.
 

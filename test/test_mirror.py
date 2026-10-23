@@ -94,8 +94,10 @@ def test_the_undefined_cases_agree() -> None:
     assert metrics.balanced_accuracy(one_class) is None and mirror.balanced_accuracy([(0.9, 1), (0.1, 1)]) is None
 
 
-def test_scoring_labelled_rows_only_would_hide_every_delisting() -> None:
-    # The leak the line above guards against, shown: the labelled rows hold no name that delists in its hold.
+def test_labelled_rows_now_hold_the_names_that_delist() -> None:
+    # Before NR-F-02 was resolved (J-018), labelled rows held no name that delists in its hold; with delisting
+    # ends (J-024) they do. The portfolio is still scored on every universe row (HAR-07): its features are known
+    # at t, and that rule does not lean on how labels are made.
     market, scored = market_and_labels()
-    assert held_delistings(market, scored.select("ticker", "date", pl.col("edge").alias("score"))) == 0
+    assert held_delistings(market, scored.select("ticker", "date", pl.col("edge").alias("score"))) >= 20
     assert held_delistings(market, tradable(market)) >= 20
