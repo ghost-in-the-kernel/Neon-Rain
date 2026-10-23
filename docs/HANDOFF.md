@@ -9,14 +9,16 @@ Phase 0 is done but for Ghost's items (0.2, 0.4). Phase 1: 1.1 to 1.5 are done (
 J-026): the synthetic market, the targets (delisting ends, J-024), the splits, the cost model and
 metrics with HAR-07's mirror written blind, and the trials file with HAR-01's config hash; then
 `neonrain/harness/market.py`, the frame layouts and HAR-12's stamp refusal (J-029); and 1.6, the
-adversarial tests (J-030, J-031); and 1.7, the freeze (J-032): the harness is frozen, and a change
-that moves a golden needs a decision in force. **Next is 1.8, tithe pass 1**, then phase 2, which
-waits on R-016's two repositories. The slow tests (`pytest -m slow`) run in `precommit.sh`. No real data, no
+adversarial tests (J-030, J-031); 1.7, the freeze (J-032): the harness is frozen, and a change
+that moves a golden needs a decision in force; and 1.8, tithe pass 1 (J-033). Phase 1 is done.
+**Next is phase 2**, which waits on R-016's two repositories. Its trading calendar is the exact NYSE
+calendar, derived in the repository from a holiday data file, no new dependency (Ghost, 2026-10-23;
+J-033). The slow tests (`pytest -m slow`) run in `precommit.sh`. No real data, no
 model, no result.
 
-Two decisions are `proposed` and must not be built on (`TODO.md` 0.2): **R-011** (license, Ghost's
-alone) and **R-016** (data and artifacts through a second GitHub repository, from 0.3's measurement).
-R-001 (Python) and R-002 (harness first) are in force; R-010 is superseded by R-016.
+One decision is `proposed` and must not be built on (`TODO.md` 0.2): **R-011** (license, Ghost's
+alone). R-001 (Python), R-002 (harness first) and R-016 (data and artifacts through two private
+GitHub repositories, approved 2026-10-23) are in force; R-010 is superseded by R-016.
 
 ## Starting a session cold
 
@@ -43,19 +45,19 @@ Four things about this environment, each measured, not assumed (NR-F-01):
 
 ---
 
-## For Opus: phase 1, the harness — what is left
+## For Opus: phase 1, the harness — what holds now that it is built
 
 `docs/HARNESS.md` is the specification; build to it, and when it is not precise enough to implement,
 **make the document precise rather than deciding in code** (every step so far found gaps: J-013 to
-J-018). Nothing under `neonrain/models/` or `neonrain/baselines/` exists until 1.6 passes (R-002).
+J-018). Nothing under `neonrain/models/` or `neonrain/baselines/` exists yet; 1.6 has passed, so phases 3 and 4 may begin it (R-002).
 
 - **HAR-12's stamp check exists** (`market.check_stamps`, J-029): 1.6's planted-leak test calls it.
   The news cutoff's time of day is undecided (phase 5, NL-04); until a run gives one, a news stamp
   is refused, not guessed at.
 - **A DSR's `N` is `trials_so_far + 1`** from the trials file (HAR-09), counting every earlier line
   of the same metric at any horizon (J-026).
-- **1.7 writes the goldens, not before.** A golden recorded while the harness changes records a bug
-  as the expected answer.
+- **1.7 has written the goldens** (J-032). A golden recorded while the harness changes records a bug
+  as the expected answer, so a harness change now needs every golden identical or a decision (HAR-14).
 - **The portfolio is scored on every universe row, never only labelled rows** (HAR-07, J-018).
 - **A run of mutmut timeouts** means a fork problem first (J-013; `pyproject.toml`).
 
@@ -77,11 +79,16 @@ J-018). Nothing under `neonrain/models/` or `neonrain/baselines/` exists until 1
 6. **The calibration set, phase 5.3**: 200 news stories hand-labelled by you (bullish / bearish /
    neutral, and which ticker), which is what the scorer's own accuracy is measured against. You are
    the first reviewer here as you are on Katana.
+7. **Three metric targets from tithe pass 1** (J-033; Claude Fable's recommendations, yours to take):
+   (a) AGT-04: 400 lines for source only, a document over 400 lines pointed at by section;
+   (b) docs per source line, 2.76 against 0.35: re-base, records (journal, log, theGhost.md) left
+   out, armed at phase 3; (c) the full check, 9.53 of 10 minutes: mutmut's per-mutant test
+   selection and its result cache first; only then split the gate (AGT-07).
 
 ## Waiting on a run
 
-Nothing yet. The first measurements that change the plan are: 1.6's zero-edge noise band (does the
-harness report chance when there is no edge?), 3.1's baseline edge at each horizon, and 3.2's tree.
+Nothing yet. The zero-edge noise band is measured (`docs/DONE.md`, 1.4). The measurements that change
+the plan now are 3.1's baseline edge at each horizon and 3.2's tree.
 
 ## Trials: questions to be settled by running something, not by arguing
 

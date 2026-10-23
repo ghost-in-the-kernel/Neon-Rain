@@ -1,9 +1,12 @@
 # Mutation: the surviving mutants, and why each is harmless
 
-`scripts/precommit.sh` runs `mutmut` over `neonrain/` (R-015a). A mutant that survives — the code
+`scripts/precommit.sh` runs `mutmut` over `neonrain/` and `scripts/checks/` (`pyproject.toml`, R-015a). A mutant that survives — the code
 was changed and every test still passed — means the tests do not hold that line. Each survivor gets
 either a test that kills it, or one line here saying why it is harmless, and the push is refused
 until it has one. Suite Builder does the same with Stryker.
+
+A survivor in a file you did not touch is still yours: `scripts/precommit.sh` refuses the push for it all
+the same, so kill it with a test or explain it here.
 
 This file is the audit trail for a maintainer who does not read Python by eye: a short file means
 the tests hold the code, and a long one means they do not.

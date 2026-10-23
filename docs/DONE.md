@@ -130,3 +130,12 @@ Check: the goldens are written from the synthetic market; a harness change is ca
 cost moved by 0.5 bp: three goldens named with their first differing line, and `--write` refused
 without a decision); `test_harness_doc`'s invariants are held by the code now that this item is
 done. ✓
+
+### 1.8 Tithe pass 1 — done 2026-10-23 (J-033)
+
+A fresh Claude Sonnet agent re-measured `docs/AGENT.md` (no armed metric regressed; the full check
+9.53 min of its 10), fixed what it could not find (a tithe row, AGENT.md's re-measuring, MUTATION.md's scope, HANDOFF's stale phase-1 lines) and
+gave each of the phase's debriefs a verdict. The separate fresh-agent trial ran once more and
+drifted into phase-2 work on a follow-up; Ghost retired it (R-023). `docs/rules/tithe.md` is the
+one procedure, reviewed by Claude Fable. Check: AGENT.md re-measured; every debrief given a
+verdict, the log wiped and "Last review" moved; open questions in the journal. ✓

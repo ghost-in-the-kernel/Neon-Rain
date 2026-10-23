@@ -730,3 +730,40 @@ shared classes). `test/test_journal.py` holds this.
   docs/MUTATION.md, docs/modules.json, docs/rules/escalation.md, docs/SUPPLY-CHAIN.md, CLAUDE.md,
   docs/NAVIGATION-LOG.md, TODO.md, docs/DONE.md, docs/HANDOFF.md, docs/AGENT.md.
 - **Class:** trial
+
+### J-033 Tithe pass 1: the instructions were the problem, and the trial is retired
+- **Who:** Ghost, Claude Opus (reviewing), a fresh Claude Sonnet agent (the tithe, under J-027), a
+  fresh Claude Sonnet session (the trial), Claude Fable (review of the procedure and the questions).
+- **Intent:** TODO 1.8: re-measure AGENT.md, review the phase's debriefs, run the fresh-agent trial
+  (R-020), and ask the agent to note each place it looked for something and failed.
+- **Found:** (a) A tithe's definition was spread over CLAUDE.md, TODO 1.8, ROADMAP §5, R-012 and the
+  glossary, and 1.8's plan was a title; the agent read four to find it, and nothing said which
+  steps were the reviewer's. Its other misses: no re-measuring steps in AGENT.md (the two timings
+  silently kept), `mutants/` doubling every grep, MUTATION.md not naming `scripts/checks/`, HANDOFF's
+  phase-1 lines stale, CLAUDE.md citing superseded R-010. (b) The trial, written before the run in
+  the reviewer's scratchpad: "Propose how the 12-1 momentum baseline would be added: where its code
+  goes, what it would contain, and which files you would change. Then stop." Pass: modules.json and
+  R-007 or ROADMAP phase 3 within five files; code under `neonrain/baselines/` noting R-002; the
+  harness used as given; nothing changed. It passed all four (R-007 in its first call, modules.json
+  in its second; `baselines` already a module, so a new file is the agent's under J-025, where the
+  condition had wrongly expected "Ghost's decision"). Slips: "docs/TODO.md"; R-002 cited unchecked.
+  When a person followed up in that session (the trading calendar), it began building phase-2 code
+  until cancelled. (c) The tithe agent's fix of (a)'s `mutants/` deleted mutmut's result cache too
+  (Fable).
+- **Options:** Ghost: the tithe's instructions need writing fresh, and split sessions risk an
+  overshoot. Fable reviewed `docs/rules/tithe.md`: one agent, one session, an explicit list of what
+  may not change ("a tithe that builds has overshot"), and the phase's debriefs, each "Opened" list
+  read against its routing row, as the measure in place of the trial.
+- **Resolved:** Ghost: "yes apply both, retire the trial". R-023 (supersedes R-020, amends R-012);
+  ROADMAP §5 at his word; `docs/rules/tithe.md` is the procedure, the CLAUDE.md row starts there.
+  The agent's fixes kept but the `mutants/` deletion, reverted. Phase 2's calendar: Ghost chose the
+  exact NYSE calendar derived in the repository from a holiday data file, no dependency. Debriefs'
+  verdicts: market.py's row, 1.6's row, the label-shuffle paragraph, the goldens' rule, FROZEN, the
+  slow marker and `--write` acted on; the news cutoff (phase 5), ROADMAP 1.6's listing of the
+  label-shuffle test and mutmut's fixture crediting open; one complaint a tool slip, not valid. The
+  log wiped. Open for Ghost (HANDOFF 7): AGT-04 for documents, docs per source line, the full
+  check at 9.53 of 10 minutes. R-016's word, asked here, given: Ghost, "approve R-016"; in force.
+- **Touched:** `docs/rules/tithe.md`, theGhost.md (R-012, R-020, R-023), docs/ROADMAP.md §5, CLAUDE.md,
+  TODO.md, docs/DONE.md, docs/HANDOFF.md, docs/AGENT.md, docs/MUTATION.md, docs/NAVIGATION-LOG.md.
+- **Cost:** the tithe agent 15 min; the trial 25 s and $0.20 (its follow-up more); Fable 3 min.
+- **Class:** trial

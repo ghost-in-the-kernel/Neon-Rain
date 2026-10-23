@@ -215,8 +215,8 @@ it is `in force`.
 ### R-012: The navigation tithe: one commit in eight, one pass per phase
 - **Decision:** Every eighth commit changes no result (every golden identical) and improves the
   agent's environment: file size, routing rows, glossary, decision cross-references, stale docs,
-  slow tests. Every phase ends with a tithe pass that re-measures `docs/AGENT.md` and runs the
-  fresh-agent trial. Metrics may improve and never regress without a decision here.
+  slow tests. Every phase ends with a tithe pass that re-measures `docs/AGENT.md` and scores the
+  phase's debriefs against the routing rows (R-023; the fresh-agent trial is retired). Metrics may improve and never regress without a decision here.
 - **Why:** Ghost's finding in Suite Builder, held in Katana R-008: delivery speed rose once about a
   tenth of effort went to the agent's ability to work with little context. This project is smaller
   than Katana and in one language, so the share is Katana's floor, not above it.
@@ -308,8 +308,9 @@ it is `in force`.
 - **Held by:** `scripts/fetch/`; `data/MANIFEST.md` (a `supplied by` column); `test/test_manifest.py`
   (every line has a hash and a license); `scripts/probe/reachability.py` (re-run at every phase
   boundary; a newly reachable host is a journal entry, not a silent change of route).
-- **Source:** measured by Claude Fable, 2026-10-22; decision proposed for Ghost's word.
-- **Status:** proposed
+- **Source:** measured by Claude Fable, 2026-10-22; decision proposed for Ghost's word; Ghost,
+  2026-10-23: "approve R-016".
+- **Status:** in force
 - **See also:** R-003, R-006, R-010
 - **subject:** environment
 
@@ -375,7 +376,7 @@ it is `in force`.
   shell command can read eight files, so a count of tool calls measures nothing.
 - **Held by:** docs/ROADMAP.md §5; the journal entry of each trial.
 - **Source:** proposed by Claude Opus, 2026-10-22, from J-012; Ghost, 2026-10-22: "approve R-020".
-- **Status:** in force
+- **Status:** superseded by R-023
 - **See also:** R-012
 - **subject:** agent environment
 
@@ -412,4 +413,26 @@ it is `in force`.
 - **Source:** Ghost, 2026-10-23: "we add an escalation rule ... in the entrance path for agents".
 - **Status:** in force
 - **See also:** R-012, R-015, R-020
+- **subject:** agent environment
+
+### R-023: A tithe pass scores the phase's debriefs; the fresh-agent trial is retired
+- **Decision:** A tithe pass is one agent in one session doing every step of `docs/rules/tithe.md`
+  up to its hand-back; the reviewer reviews, wipes the navigation log, records and pushes. No
+  separate trial session is run. The measure of whether a fresh agent finds its way is the phase's
+  debriefs: each "Opened" list (J-027) is read against the routing row its task matched, counted as
+  R-020 counted (by file, in order, `CLAUDE.md` not counted), with the tithe agent's own notes of
+  each miss. R-020's counting rule stands; its separate trial does not. Amends R-012's last step.
+- **Why:** Ghost, 2026-10-23: agents split into different sessions risk a tithe session
+  overshooting, and a proposal task may not serve the tithe's goal (ease of use, clearing what
+  agents run into, manageable context). The trial misbehaved at both runs: J-012's read its own
+  answer key; phase 1's, given a follow-up, began building phase-2 code. Every task already goes to
+  a fresh agent (J-027), so the debriefs are several cold starts per phase on real work. Lost: a
+  pass condition fixed before the run (the reviewer, not the agent, scores the lists) and a probe
+  of a task no row covers (the tithe agent's notes are one). A Claude Fable review.
+- **Held by:** `docs/rules/tithe.md`; `docs/NAVIGATION-LOG.md`'s header; the journal entry of each
+  tithe pass.
+- **Source:** proposed by Claude Fable, 2026-10-23, at Ghost's request; Ghost, 2026-10-23: "yes
+  apply both, retire the trial".
+- **Status:** in force
+- **See also:** R-012, R-020, R-022
 - **subject:** agent environment

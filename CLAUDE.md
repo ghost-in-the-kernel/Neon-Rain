@@ -17,6 +17,7 @@ at the plan.
 | A decision, a plan, what to work on | `docs/HANDOFF.md`, `theGhost.md`, `TODO.md` | `theGhost.md` | `test/test_ghost.py` |
 | Writing down what happened | `docs/JOURNAL.md` (one entry, its fields) | | `test/test_journal.py` |
 | Debriefing a task: what was hard to find | `docs/NAVIGATION-LOG.md` | its header | `test/test_navigation.py` |
+| A tithe: a tithe commit or a phase's tithe pass | `docs/rules/tithe.md` (the steps, in order), `docs/AGENT.md`, `docs/NAVIGATION-LOG.md` | R-012, R-019, R-023 | `test/test_metrics.py`, `test/test_navigation.py` |
 | A word | `docs/GLOSSARY.md` | | `test/test_glossary.py` |
 | Why a rule is what it is | `docs/GHOST-IN-THE-KERNEL.md` | | |
 | A module: add one, or change its imports | `docs/modules.json` (its `adding` line) | its `rules` (MOD-01 to MOD-05) | `test/test_modules.py` |
@@ -51,7 +52,7 @@ requirements.lock` once per session (lockfile only, wheels only, pip as the venv
 the metrics line; quote its last line in the commit. Long output (`precommit.sh`, mutmut) goes to a
 file, grepped for failures (`FAILED`, `Error`, `refused`, `unexplained`); read the file only if
 there are some.
-Data and artifacts are fetched, never committed (R-006, R-010).
+Data and artifacts are fetched, never committed (R-006).
 
 ## When X happens, read Y
 

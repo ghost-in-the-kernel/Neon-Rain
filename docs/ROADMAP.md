@@ -204,11 +204,10 @@ runs them, the unit tests, and the import rule, and prints a line the agent quot
 ## 5. The navigation tithe
 
 Every eighth commit is a tithe (R-012): no result changes, the agent's environment improves. Every
-phase ends with a tithe pass: re-measure `docs/AGENT.md`, read `CLAUDE.md` as a new agent would, run
-the fresh-agent trial (a copy of the repository, an agent told only a task phrased as a proposal,
-scored on whether it opened the right files first and changed nothing). The task and its pass
-condition are phrased fresh for each run and written nowhere the agent can read until it is over;
-reads are counted by file, and `CLAUDE.md` does not count, since the tool loads it (R-020).
+phase ends with a tithe pass, one agent in one session following `docs/rules/tithe.md`: re-measure
+`docs/AGENT.md`, fix what agents ran into, and score the phase's debriefs, each "Opened" list read
+against the routing row its task matched (by file, in order; `CLAUDE.md` does not count). The
+separate fresh-agent trial of R-020 is retired (R-023).
 
 | Metric | Phase 0 target | Why it matters to the agent |
 | --- | --- | --- |

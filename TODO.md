@@ -11,8 +11,8 @@ and the first open item has a check.
 ### 0.2 Ghost's founding decisions
 
 Check: `test/test_ghost.py` passes and no phase-1 step cites a `proposed` decision. Waiting on
-Ghost: R-011 (license) and R-016 (data and artifacts through GitHub, proposed from 0.3's
-measurement; it supersedes R-010). R-001 is in force (Python, 2026-10-22).
+Ghost: R-011 (license). R-016 is in force (data and artifacts through GitHub, 2026-10-23; it
+supersedes R-010). R-001 is in force (Python, 2026-10-22).
 
 ### 0.4 Artifact store and data repository (R-016, waiting on Ghost)
 
@@ -22,10 +22,6 @@ round-trips a 1 MB file by content hash through the artifacts repository.
 ## Phase 1: the harness
 
 Nothing under `neonrain/models/` or `neonrain/baselines/` begins until 1.6 passes (R-002).
-
-### 1.8 Tithe pass 1
-
-Check: AGENT.md re-measured; a fresh-agent trial run under R-020.
 
 ## Phase 2: real data
 
