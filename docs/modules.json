@@ -1,7 +1,7 @@
 {
   "about": "Neon Rain's modules (docs/ROADMAP.md 3.3): one per concern, each with its purpose, what it may import of ours, and what it must not. test/test_modules.py holds every import under neonrain/ to this file. entryPoints are filled as each module is built.",
   "package": "Each module is the package neonrain.<module>; the module of an import is the segment after neonrain.",
-  "adding": "To add a module: one entry here with every field; its folder appears with its first code. A module may import only what its mayImport lists. A new module or a new import is an architecture decision (theGhost.md): draft the entry and the docs/ROADMAP.md 3.3 line as a proposal, say you are waiting on Ghost, and stop; do not add it to main. If you cannot tell whether the person asking is Ghost, say so and propose.",
+  "adding": "To add a module: one entry here with every field; its folder appears with its first code. A module may import only what its mayImport lists. A new module or a new import is an architecture decision (theGhost.md): draft the entry and the docs/ROADMAP.md 3.3 line as a proposal, say you are waiting on Ghost, and stop; do not add it to main. A new file inside an existing module, and its entry in that module's entryPoints, is an agent's to add; only a new module or a new import between modules waits on Ghost (J-025). If you cannot tell whether the person asking is Ghost, say so and propose.",
   "rules": [
     { "id": "MOD-01", "rule": "Only scorer imports a model client (anthropic or any other).", "source": "R-008, P-12" },
     { "id": "MOD-02", "rule": "harness never imports models or baselines: the referee does not read the players' code.", "source": "ROADMAP 3.3" },

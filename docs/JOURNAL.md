@@ -528,3 +528,19 @@ shared classes). `test/test_journal.py` holds this.
 - **Touched:** docs/HARNESS.md (HAR-02), docs/FINDINGS.md, docs/HANDOFF.md, `neonrain/targets.py`,
   test/test_targets.py, test/test_mirror.py.
 - **Class:** decision
+
+### J-025 The modules rule amended: a file inside a module is an agent's to add
+- **Who:** Ghost, Claude Opus.
+- **Intent:** Ghost, 2026-10-23, asked to see the rule that had held up `harness/trials.py` and
+  `harness/market.py`, in case it should be reversed.
+- **Found:** The rule is modules.json's `adding` line ("a new module or a new import is an
+  architecture decision ... stop"). Read with its own `package` line (a module is the segment after
+  `neonrain.`), it never covered a file inside an existing module; the hold came from agents reading
+  its silence cautiously. With Sonnet agents reading literally (R-022), the gap would cost more.
+- **Options:** Reverse it (refused: a new module or a new cross-module import does change the
+  architecture, and MOD-02 is what it protects); amend it to say what it never said (taken, Ghost).
+- **Resolved:** One sentence in `adding`: a new file inside an existing module, and its entry in
+  that module's `entryPoints`, is an agent's to add; only a new module or a new import between
+  modules waits on Ghost. ROADMAP §3.3's "adding a module is a decision" still holds as written.
+- **Touched:** docs/modules.json.
+- **Class:** decision
