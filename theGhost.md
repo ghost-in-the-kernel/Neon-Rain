@@ -202,14 +202,12 @@ it is `in force`.
 - **Decision:** Protective, option (a) of three (as Katana R-002): the repository is private, all
   rights reserved (`LICENSE`), and nothing leaves it. The other options were (b) research-open, a
   permissive license on the harness, and (c) fully private with no intent to publish. The project is
-  meant for economic gain (Ghost, 2026-10-23), so an edge is the thing to protect. The repository
-  is public today: Ghost makes it private, and until he does nothing that could show an edge enters
-  it (phase 3 does not begin; no weights, no results, no trials lines from real data).
+  meant for economic gain (Ghost, 2026-10-23), so an edge is the thing to protect. Ghost made the
+  repository private on 2026-10-23 (J-037); it stays private.
 - **Why:** The harness has standalone value as a methodology artifact and could support the NSF
   study's thesis about agent-built research; the trained model, if it ever has an edge, loses that
   edge on publication. Those pull in different directions and the choice is Ghost's.
-- **Held by:** `LICENSE`; `docs/HANDOFF.md` ("For Ghost", until the repository is private); CLAUDE.md
-  ("Two rules").
+- **Held by:** `LICENSE`; CLAUDE.md ("Two rules").
 - **Source:** proposed by Claude Fable, 2026-10-22; Ghost, 2026-10-23: "lets assume we will be moving
   this to eventually use for economic gain" and "yes record them" (J-036).
 - **Status:** in force
@@ -469,9 +467,9 @@ it is `in force`.
   harness live in `neonrain/training/`, which may import `models`, `harness`, `features` and
   `targets`; nothing else imports `models`. A copy can be lifted out and run on its own, one way:
   nothing re-imports, re-syncs or redocks a copy, and a changed copy is another thing, never merged
-  back. Whatever trades with a copy does so outside this repository (R-013). Weights go to the
-  private `neon-rain-artifacts` (R-016(b)) until the repository is private (R-011), and come in
-  beside the code after.
+  back. Whatever trades with a copy does so outside this repository (R-013). Weights live beside
+  the code (the repository is private, R-011) unless their size sends them to `neon-rain-artifacts`
+  by hash (R-016(b)).
 - **Why:** Ghost, 2026-10-23: what is built so far is tooling to build the thing; the thing should
   live with it and be separable from it, and unlike Suite Builder's suites there is no reason for it
   to redock. A network that reads no tooling cannot depend on the harness's view of the data, so

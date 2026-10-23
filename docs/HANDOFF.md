@@ -11,13 +11,14 @@ metrics with HAR-07's mirror written blind, and the trials file with HAR-01's co
 `neonrain/harness/market.py`, the frame layouts and HAR-12's stamp refusal (J-029); and 1.6, the
 adversarial tests (J-030, J-031); 1.7, the freeze (J-032): the harness is frozen, and a change
 that moves a golden needs a decision in force; and 1.8, tithe pass 1 (J-033). Phase 1 is done.
-**Next is phase 2**, which waits on R-016's two repositories. Its trading calendar is the exact NYSE
+**Next is 0.4**, the artifacts round trip through the two private repositories Ghost created,
+then phase 2. Its trading calendar is the exact NYSE
 calendar, derived in the repository from a holiday data file, no new dependency (Ghost, 2026-10-23;
 J-033). The slow tests (`pytest -m slow`) run in `precommit.sh`. No real data, no
 model, no result.
 
-No decision is `proposed`. **R-011** is in force (protective) but waits on Ghost making the
-repository private (`TODO.md` 0.2). R-001 (Python), R-002 (harness first) and R-016 (data and artifacts through two private
+No decision is `proposed`. **R-011** is in force: the repository is private, all rights reserved.
+R-001 (Python), R-002 (harness first) and R-016 (data and artifacts through two private
 GitHub repositories, approved 2026-10-23) are in force; R-010 is superseded by R-016.
 
 ## Starting a session cold
@@ -63,18 +64,13 @@ J-018). Nothing under `neonrain/models/` or `neonrain/baselines/` exists yet; 1.
 
 ## For Ghost: waiting on you
 
-1. **Make the repository private** (R-011, protective: the project is meant for economic gain).
-   Settings, then General, then Danger Zone, then "Change visibility". Until it is private, phase 3
-   does not begin, and no weights, results or real-data trials lines enter.
-2. **R-016, the two data repositories.** `neon-rain-data` and `neon-rain-artifacts`, both private,
-   created by you (this session type cannot create repositories). Then phase 2 can start.
-3. **Delete the `probe-plain` branch** on GitHub.
-4. **Approve `pip install` if the classifier blocks it**, or say how you would rather it be done.
-5. **Phase 5's news feed is blocked on you** (NR-F-01): a dataset with publish timestamps, obtained
+1. **Delete the `probe-plain` branch** on GitHub.
+2. **Approve `pip install` if the classifier blocks it**, or say how you would rather it be done.
+3. **Phase 5's news feed is blocked on you** (NR-F-01): a dataset with publish timestamps, obtained
    where there is network access and pushed to `neon-rain-data`. FNSPID on Hugging Face is the
    leading candidate — 15M+ timestamped items with tickers — and its license is yours to check
-   before it enters. Phases 1 to 4 do not wait on this.
-6. **The calibration set, phase 5.3**: 200 news stories hand-labelled by you (bullish / bearish /
+   before it enters, for commercial use too (R-016(d)). Phases 1 to 4 do not wait on this.
+4. **The calibration set, phase 5.3**: 200 news stories hand-labelled by you (bullish / bearish /
    neutral, and which ticker), which is what the scorer's own accuracy is measured against. You are
    the first reviewer here as you are on Katana.
 

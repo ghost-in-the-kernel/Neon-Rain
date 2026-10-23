@@ -84,8 +84,8 @@ are authored as Ghost (`git config user.name Ghost`, `git config user.email
 **Market data never enters this repository**: prices, news, datasets, anything the data can be read
 back from (a feature cache, a ledger snapshot), or anything under a license that forbids
 redistribution. The engine is trained on it outside the repository; what training and test runs
-produce may be committed: results, trials lines, goldens, run records (J-032). The repository is to
-be private (R-011): while it is public, phase 3 does not begin and no weights or results enter.
+produce may be committed: results, trials lines, goldens, run records (J-032). The repository is
+private, all rights reserved (R-011).
 
 ## Supply-chain rules (binding)
 

@@ -827,3 +827,16 @@ shared classes). `test/test_journal.py` holds this.
 - **Touched:** theGhost.md (R-011, R-016, R-025), `LICENSE`, docs/modules.json, test/test_modules.py,
   docs/ROADMAP.md (§3.3, 4.2), docs/SUPPLY-CHAIN.md, CLAUDE.md, TODO.md, docs/HANDOFF.md.
 - **Class:** decision
+
+### J-037 The repository private; the two data repositories exist
+- **Who:** Ghost, Claude Opus.
+- **Intent:** R-011's one action (make the repository private) and R-016's (create the data and
+  artifacts repositories).
+- **Found:** Ghost made `neon-rain` private (an unauthenticated request now returns 404) and created
+  `ghost-in-the-kernel/Neon-Rain-Data` and `Neon-Rain-Artifacts`, both private; this session has
+  push access to both and cloned them, empty.
+- **Resolved:** TODO 0.2 done; 0.4 no longer waits on Ghost. R-011 no longer gates phase 3, and
+  R-025's weights live beside the code (or in the artifacts repository by hash when large).
+- **Touched:** theGhost.md (R-011, R-025), CLAUDE.md, TODO.md, docs/DONE.md, docs/HANDOFF.md,
+  docs/SUPPLY-CHAIN.md, docs/ROADMAP.md.
+- **Class:** decision

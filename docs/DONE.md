@@ -13,6 +13,13 @@ An item moves here from `TODO.md` when its check passes, keeping its roadmap num
 `docs/modules.json`, `.gitignore`, `data/MANIFEST.md`, `harness/trials.tsv`, `requirements.in`.
 Check: `git log` shows Ghost as author; the files exist.
 
+### 0.2 Ghost's founding decisions — done 2026-10-23 (J-036, J-037)
+
+R-001 (Python), R-016 (data and artifacts through two private GitHub repositories) and R-011
+(protective) in force; R-010 superseded. Ghost made the repository private and created
+`ghost-in-the-kernel/neon-rain-data` and `neon-rain-artifacts`, both private and empty.
+Check: `test/test_ghost.py` passes and no decision is `proposed`. ✓
+
 ### 0.3 Reachability — done 2026-10-22 (J-004, NR-F-01)
 
 `scripts/probe/reachability.py` run from the workspace. Every market-data and news host refused by

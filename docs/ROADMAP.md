@@ -337,7 +337,7 @@ Decisions recorded: the cost default; the embargo length; the group count *k*; H
 4.1 **The shape decision** (R-009): one of §3.4's candidates, recorded in `theGhost.md` with its why.
 4.2 **The model**, one file in `neonrain/models/` (nothing of ours imported, R-025), pooled training
     in `neonrain/training/`, four heads, early stopping on the walk-forward validation fold only
-    (never on test); its weights to `neon-rain-artifacts` until the repository is private (R-011).
+    (never on test); its weights beside it, or in `neon-rain-artifacts` by hash when large.
 4.3 **The run** through the harness: mean ± dispersion at all four horizons against the tree.
 4.4 **The write-up** in `docs/RESULTS.md`, whichever way it went. If the network does not beat the
     tree at any horizon, `docs/FINDINGS.md` gets the entry and the project's honest state is "the
