@@ -28,13 +28,13 @@ until a metric is first measured within its target it is "not armed" and not com
 
 | Metric | Phase 0 target | Measured | Why it matters to the agent |
 | --- | --- | --- | --- |
-| Mandatory context (words) | < 1,200 | 1075 | every task pays it |
+| Mandatory context (words) | < 1,200 | 1100 | every task pays it |
 | Fast loop (s) | < 30 | 2.91 | run after every edit |
 | Full check, `precommit.sh` (min) | < 10 | 0.82 | paid before every push while there is no CI |
 | Largest source file (lines) | < 400 | 273 | fits a read without paging |
-| Files a routing row opens | ≤ 5 | 4 | first five reads decide the task |
+| Files a routing row opens | ≤ 5 | 3 | first five reads decide the task |
 | Decisions without `See also` | 0 | 0 | links find what grep misses |
 | Results without a trials line | 0 | 0 | P-07 |
 | Results without dispersion | 0 | 0 | R-014 |
 | Datasets without a manifest line | 0 | 0 | R-006 |
-| Docs lines per source line | < 0.35 | 3.74 | Suite Builder reached 0.37 and it hurt |
+| Docs lines per source line | < 0.35 | 3.19 | Suite Builder reached 0.37 and it hurt |

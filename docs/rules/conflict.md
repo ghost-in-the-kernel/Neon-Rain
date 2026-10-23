@@ -12,7 +12,8 @@ just changed.
    until its **Resolved** line names Ghost (`test/test_journal.py` holds this).
 5. **Never touch what you did not start:** never kill or stop a process another agent or person
    started; never revert, force-push over or rewrite another agent's commit; never edit the journal
-   or `theGhost.md` to get around a conflict.
+   or `theGhost.md` to get around a conflict. Never `git stash`, reset or check out in a working
+   tree you share: it sweeps up others' uncommitted work with yours (J-029).
 
 One writer per working tree: an agent you invoke to advise (an escalation, a reviewer) reads; you edit.
 

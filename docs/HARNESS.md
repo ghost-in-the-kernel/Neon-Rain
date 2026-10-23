@@ -18,15 +18,31 @@ document, and the fix is to make it precise, not to read the code.
 
 ## What the harness is given
 
+`neonrain/harness/market.py` holds the `Market` type (the four things below, in this order: `prices`,
+`universe`, `features`, `calendar`), these layouts, and `check_market`, which refuses a `Market` that
+does not have them (`LayoutRefused`, the message naming the frame and the first offending row or
+column). Both the synthetic market (HAR-10) and phase 2's loader build a `Market`; neither imports the
+other. Frames are polars; a column is named and typed exactly as below.
+
 - A **price frame**: one row per (ticker, trading date) with adjusted close, and whatever else the
-  features need. "Adjusted" means adjusted for splits and cash dividends; a source that does not
+  features need. Columns `ticker` (String), `date` (Date), `close` (Float64), in any order, other
+  columns allowed. "Adjusted" means adjusted for splits and cash dividends; a source that does not
   adjust is recorded as a finding and its prices are adjusted by the loader or refused.
 - A **universe frame**: for each trading date, the tickers eligible that day (R-006), including
-  names that were later delisted.
-- A **feature frame**: one row per (ticker, date), every column a feature, each carrying its
-  provenance stamp (HAR-12).
-- A **calendar**: the ordered list of trading dates. All horizons are counted in trading days on
-  this calendar, never calendar days.
+  names that were later delisted. Exactly the columns `ticker` (String) and `date` (Date), in that
+  order, one row per eligible (ticker, date).
+- A **feature frame**: one row per (ticker, date), every other column a feature, each carrying its
+  provenance stamp (HAR-12). Columns `ticker` and `date` as above; then, for each feature `f`, a
+  numeric column `f` and a column `f_stamp` (HAR-12 gives its type and meaning). A column whose name
+  ends in `_stamp` is a stamp, never a feature; a feature without its stamp column, or a stamp
+  without its feature, is refused.
+- A **calendar**: the ordered list of trading dates (Python `date`s), strictly ascending and not
+  empty. All horizons are counted in trading days on this calendar, never calendar days.
+
+In every frame `ticker` and `date` are never null and a (ticker, date) pair occurs at most once; and
+every `date` in any frame is on the calendar. Nothing else is checked about the values: a null or
+non-positive `close`, or a ticker absent from the universe, is not a layout fault (HAR-02 counts
+missing prices; the frames are read as they come).
 
 The harness never reads the clock, never reaches the network, and never imports `neonrain.models`
 or `neonrain.baselines` (modules.json MOD-02).
@@ -316,13 +332,31 @@ sorted keys, so a frame's row order cannot change a number.
 
 ## HAR-12 Every feature carries a provenance stamp, and the harness checks it
 
-A feature column is accompanied by, for each (ticker, date) cell, the **maximum timestamp of any
-input row used to compute it**. The harness refuses a feature whose stamp for a cell dated *t* is
-past *t*'s cutoff: for a price feature the stamp is the trading date of the latest close used, and
-it is refused when later than *t* (the close of *t* itself is known at *t*); for a news feature it is
-refused at or after the publish-time cut (R-008, the ledger's rule). The refusal names the feature
-and the cell. (J-013: this read "at or after" for both, which would have refused every honest
-price feature.)
+A feature column `f` is accompanied by a column `f_stamp` holding, for each (ticker, date) cell, the
+**maximum timestamp of any input row used to compute it**. The stamp's type says what kind of
+feature it is, and with it the rule:
+
+- **A price feature**: `f_stamp` is a `Date`, the trading date of the latest close used. It is
+  refused when later than the cell's date *t* (the close of *t* itself is known at *t*).
+- **A news feature**: `f_stamp` is a `Datetime` without a time zone, in UTC, the latest story
+  publish time used (NL-04). It is refused at or after the **cut** of *t*: *t* at 00:00 UTC plus
+  the run's **news cutoff time**, a time of day UTC that the caller gives (`cutoff`, a `datetime.time`
+  without a time zone). A stamp equal to the cut is refused. The harness fixes no cutoff time: which
+  one is a decision of phase 5 (R-008, NL-04), and until the run says one, a `Datetime` stamp is refused
+  as a layout fault rather than checked against a guess.
+- **No stamp where there is a value**: a cell whose stamp is null while its feature value is not null
+  is refused (a stamp that says nothing proves nothing). Where the value is null (nothing was
+  computed, e.g. a warm-up) the stamp may be null, and the cell is not checked.
+- Any other stamp type is refused as a layout fault.
+
+`check_stamps(features, cutoff=None)` and `check_market` do this and raise `StampRefused`, a
+`ValueError`, never return a boolean. The refusal **names the feature and the cell**: the first
+feature in ascending name order that has an offending cell, and within it the first cell by
+(ticker, date) ascending; the message is `feature 'f' refused at cell (TICKER, YYYY-MM-DD): <reason>`,
+with ` (and N more cells)` appended when N > 0 others of that feature are also offending. The
+reason is `stamp S is after the cell's date`, `stamp S is at or after the news cut`, or `value has
+no stamp`. (J-013: this read "at or after" for both, which would have refused every honest price
+feature.)
 
 This is the mechanical half of HAR-04: a leak becomes a type error rather than a suspiciously good
 number. The statistical checks of 1.6 remain as the second line, because a stamp can be computed

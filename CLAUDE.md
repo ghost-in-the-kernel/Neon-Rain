@@ -20,6 +20,7 @@ at the plan.
 | A word | `docs/GLOSSARY.md` | | `test/test_glossary.py` |
 | Why a rule is what it is | `docs/GHOST-IN-THE-KERNEL.md` | | |
 | A module: add one, or change its imports | `docs/modules.json` (its `adding` line) | its `rules` (MOD-01 to MOD-05) | `test/test_modules.py` |
+| What the harness is given: frame layouts, the stamp check | `neonrain/harness/market.py` | HARNESS.md's first section, HAR-12 | `test/test_market.py` |
 | The synthetic market | `neonrain/harness/synthetic.py` | HAR-10, HAR-11 | `test/test_synthetic.py` |
 | Targets: the four horizons | `neonrain/targets.py` | R-004, HAR-02 | `test/test_targets.py` |
 | Folds, purge, embargo, ticker groups | `neonrain/harness/split.py` | HAR-03 to HAR-05 | `test/test_split.py` |
@@ -29,7 +30,7 @@ at the plan.
 | The trials file, a run's config hash | `neonrain/harness/trials.py` | HAR-01, HAR-09 | `test/test_trials.py` |
 | The adversarial tests (TODO 1.6) | `TODO.md` 1.6, `test/mirror_har07.py` (written blind; never edit) | `docs/HARNESS.md` HAR-12 | `test/test_harness_adversarial.py` (1.6 writes it) |
 | A dataset: fetch, manifest, universe | `scripts/fetch/`, `data/MANIFEST.md` (phase 2) | R-006 | `test/test_manifest.py` |
-| A feature family (phase 2) | `docs/modules.json` (`features`), `neonrain/harness/synthetic.py` (`Market.features`) | HAR-12; `docs/GLOSSARY.md` (its term first) | one unit test per feature |
+| A feature family (phase 2) | `docs/modules.json` (`features`), `neonrain/harness/market.py` (the feature frame, its stamps) | HAR-12; `docs/GLOSSARY.md` (its term first) | one unit test per feature |
 | A baseline | `neonrain/baselines/` (phase 3) | R-007 | `harness/goldens/` |
 | The network | `neonrain/models/` (phase 4) | R-009 | `docs/RESULTS.md` |
 | The scorer and the news ledger | `neonrain/scorer/`, `neonrain/ledger/` (phase 5) | `docs/LEDGER.md`, R-008 | `test/test_ledger.py` |

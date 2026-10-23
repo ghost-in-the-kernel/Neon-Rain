@@ -614,3 +614,30 @@ shared classes). `test/test_journal.py` holds this.
 - **Touched:** CLAUDE.md, docs/rules/escalation.md, docs/rules/conflict.md, `scripts/checks/pointers.py`,
   test/test_pointers.py, `scripts/checks/glossary.py`, test/test_glossary.py, docs/AGENT.md.
 - **Class:** direction
+
+### J-029 harness/market.py: what the harness is given, and HAR-12's stamp refusal
+- **Who:** Ghost, Claude Opus (reviewing), a fresh Claude Sonnet agent (building, under J-027).
+- **Intent:** The approved `neonrain/harness/market.py`: `Market` and the frame layouts out of the
+  fake-market generator, so phase 2's loader need not import it; and a callable HAR-12 refusal, which
+  nothing enforced and 1.6 needs.
+- **Found:** The agent made HARNESS.md precise first: exact layouts for the four inputs (a new rule:
+  every date in every frame is on the calendar); in HAR-12, the stamp's type picks the rule (a Date
+  stamp a price feature, refused later than *t*; a Datetime stamp a news feature, refused at or after
+  *t*'s cut); a value with no stamp refused; the refusal an exception naming the first feature and
+  cell. No document gives the news cut's time of day, so it is the caller's `cutoff`, and a news
+  stamp with none is refused rather than checked against a guess. 27 tool calls, 16 minutes, about
+  21 files opened; no escalation (each red run named its cause). It killed an unexplained survivor in
+  `scripts/checks/modules.py` it had not touched, with a new test. It ran `git stash` and `pop` once
+  to see whether a survivor predated its change, against its brief; everything was restored.
+- **Options:** Reviewed by Claude Opus and accepted whole. The stash would have swept up any other
+  agent's uncommitted work in the same tree.
+- **Resolved:** `docs/rules/conflict.md`: never stash, reset or check out in a shared working tree.
+  CLAUDE.md: a routing row for what the harness is given (the agent's debrief suggestion), and the
+  feature-family row, which this change had made stale, now points at `market.py`. The first
+  navigation-log debrief is in; its other items (the news cut's time, MUTATION.md's rule being
+  discoverable only from the check, survivors outside one's own files) wait for the log's review.
+- **Touched:** `neonrain/harness/market.py`, test/test_market.py, `neonrain/harness/synthetic.py`,
+  test/test_synthetic.py, test/test_mirror.py, test/test_modules.py, docs/HARNESS.md,
+  docs/modules.json, docs/NAVIGATION-LOG.md, docs/rules/conflict.md, CLAUDE.md, docs/HANDOFF.md,
+  docs/AGENT.md.
+- **Class:** trial

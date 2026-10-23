@@ -10,6 +10,8 @@ from typing import NamedTuple
 import numpy as np
 import polars as pl
 
+from neonrain.harness.market import Market
+
 START = date(2000, 1, 3)
 START_PRICE = 100.0
 
@@ -25,15 +27,6 @@ class MarketConfig(NamedTuple):
     idio_vol: float = 0.02  # σ_x, per day
     delist_below: float | None = None  # a fraction of the start price; None keeps every ticker
     seed: int = 0
-
-
-class Market(NamedTuple):
-    """What the harness is given (docs/HARNESS.md): prices, the universe, features, the calendar."""
-
-    prices: pl.DataFrame  # ticker, date, close
-    universe: pl.DataFrame  # ticker, date: eligible that day
-    features: pl.DataFrame  # ticker, date, edge, edge_stamp (HAR-12)
-    calendar: list[date]
 
 
 def calendar(days: int) -> list[date]:

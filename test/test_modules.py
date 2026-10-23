@@ -1,4 +1,5 @@
 """Every import under neonrain/ is one docs/modules.json allows; each rule, broken in a planted file, is caught."""
+import ast
 import shutil
 from pathlib import Path
 
@@ -59,6 +60,11 @@ def test_reading_the_clock_is_caught(tmp_path: Path, root: Path) -> None:
     source = "import datetime\nimport time\nfrom time import time_ns\na = datetime.date.today()\nb = time.time()\n"
     found = modules.problems(plant(tmp_path, root, {"targets.py": source}))
     assert found == [f"neonrain/targets.py:{line} reads the clock (MOD-05)" for line in (3, 4, 5)]
+
+
+def test_importing_a_clock_function_among_others_is_the_clock_and_importing_others_alone_is_not() -> None:
+    assert modules.reads_clock(ast.parse("from time import sleep, time").body[0])
+    assert not modules.reads_clock(ast.parse("from time import sleep").body[0])
 
 
 def test_a_module_modules_json_does_not_name_is_caught(tmp_path: Path, root: Path) -> None:

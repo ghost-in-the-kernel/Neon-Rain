@@ -10,12 +10,13 @@ import pytest
 
 from neonrain import targets
 from neonrain.harness import metrics, portfolio, synthetic
+from neonrain.harness.market import Market
 
 CONFIG = synthetic.MarketConfig(tickers=60, days=160, rho=0.2, idio_vol=0.05, delist_below=0.85, seed=21)
 HORIZON = 5
 
 
-def market_and_labels() -> tuple[synthetic.Market, pl.DataFrame]:
+def market_and_labels() -> tuple[Market, pl.DataFrame]:
     market = synthetic.generate(CONFIG)
     labels = targets.labels(market.prices, market.universe, market.calendar, HORIZON, min_tickers=10).frame
     scored = labels.join(market.features, on=["ticker", "date"]).with_columns(
@@ -23,7 +24,7 @@ def market_and_labels() -> tuple[synthetic.Market, pl.DataFrame]:
     return market, scored.filter(pl.col("date") < market.calendar[120])
 
 
-def held_delistings(market: synthetic.Market, scores: pl.DataFrame) -> int:
+def held_delistings(market: Market, scores: pl.DataFrame) -> int:
     """How many leg positions lose their price during their hold: the comparison must exercise HAR-07's delisting
     rule, not only have delistings somewhere in the market (J-018). Worked independently of portfolio.py."""
     index = {d: i for i, d in enumerate(market.calendar)}
@@ -38,7 +39,7 @@ def held_delistings(market: synthetic.Market, scores: pl.DataFrame) -> int:
     return count
 
 
-def tradable(market: synthetic.Market) -> pl.DataFrame:
+def tradable(market: Market) -> pl.DataFrame:
     """The portfolio's scores: every universe row with a feature on the test dates, never only the labelled rows.
     A label needs a price at t+h, so scoring labelled rows alone would keep out every name about to delist:
     a choice on day t made with day t+h's knowledge (NR-F-02, J-018)."""

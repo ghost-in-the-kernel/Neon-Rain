@@ -7,9 +7,9 @@ finished. This file says what the next session should actually do, and what it m
 
 Phase 0 is done but for Ghost's items (0.2, 0.4). Phase 1: 1.1 to 1.5 are done (J-013 to J-018,
 J-026): the synthetic market, the targets (delisting ends, J-024), the splits, the cost model and
-metrics with HAR-07's mirror written blind, and the trials file with HAR-01's config hash. **Next is
-`neonrain/harness/market.py`** (Ghost approved it: what the harness is given, and HAR-12's stamp
-refusal), **then 1.6**. The slow tests (`pytest -m slow`) run in `precommit.sh`. No real data, no
+metrics with HAR-07's mirror written blind, and the trials file with HAR-01's config hash; then
+`neonrain/harness/market.py`, the frame layouts and HAR-12's stamp refusal (J-029). **Next is 1.6**,
+the adversarial tests, which call `market.check_stamps`. The slow tests (`pytest -m slow`) run in `precommit.sh`. No real data, no
 model, no result.
 
 Two decisions are `proposed` and must not be built on (`TODO.md` 0.2): **R-011** (license, Ghost's
@@ -47,9 +47,9 @@ Four things about this environment, each measured, not assumed (NR-F-01):
 **make the document precise rather than deciding in code** (every step so far found gaps: J-013 to
 J-018). Nothing under `neonrain/models/` or `neonrain/baselines/` exists until 1.6 passes (R-002).
 
-- **1.6 needs HAR-12's stamp check, and nothing enforces it yet.** The stamp is the primary leak
-  defence (a leaking feature refused by construction, not noticed by a metric); today `edge_stamp`
-  is only produced. It goes in `neonrain/harness/market.py`, approved (J-025), before 1.6.
+- **HAR-12's stamp check exists** (`market.check_stamps`, J-029): 1.6's planted-leak test calls it.
+  The news cutoff's time of day is undecided (phase 5, NL-04); until a run gives one, a news stamp
+  is refused, not guessed at.
 - **A DSR's `N` is `trials_so_far + 1`** from the trials file (HAR-09), counting every earlier line
   of the same metric at any horizon (J-026).
 - **1.7 writes the goldens, not before.** A golden recorded while the harness changes records a bug

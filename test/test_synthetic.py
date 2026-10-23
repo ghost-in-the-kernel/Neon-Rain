@@ -6,12 +6,13 @@ import numpy as np
 import polars as pl
 
 from neonrain.harness import synthetic
+from neonrain.harness.market import Market
 from neonrain.harness.synthetic import MarketConfig
 
 SMALL = MarketConfig(tickers=4, days=6, idio_vol=0.05, seed=7)
 
 
-def next_day_pairs(market: synthetic.Market) -> tuple[np.ndarray, np.ndarray]:
+def next_day_pairs(market: Market) -> tuple[np.ndarray, np.ndarray]:
     """Each (edge at t, next day's log return in excess of that day's cross-sectional mean), over all t."""
     frame = market.prices.join(market.features, on=["ticker", "date"], validate="1:1").sort("ticker", "date")
     frame = frame.with_columns(pl.col("close").log().diff().over("ticker").shift(-1).over("ticker").alias("ahead"))
