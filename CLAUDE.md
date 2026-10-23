@@ -45,7 +45,9 @@ at the plan.
 requirements.lock` once per session (lockfile only, wheels only, pip as the venv ships it).
 `.venv/bin/pytest` is the fast loop: doc tests and unit tests, no data, no model, no network.
 `scripts/precommit.sh` is the check before a push: the fast loop, ruff, the mutation score (R-015),
-the metrics line; quote its last line in the commit.
+the metrics line; quote its last line in the commit. Long output (`precommit.sh`, mutmut) goes to a
+file, grepped for failures (`FAILED`, `Error`, `refused`, `unexplained`); read the file only if
+there are some.
 Data and artifacts are fetched, never committed: `scripts/fetch/<dataset>.py` and
 `scripts/fetch/artifacts.py` (R-006, R-010).
 

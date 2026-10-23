@@ -447,3 +447,12 @@ failure), **Cost**, **Class** (`contradiction`, `ambiguity`, `failure-caught`, `
 - **Touched:** CLAUDE.md, `scripts/checks/metrics.py`, test/test_metrics.py, docs/AGENT.md,
   docs/HANDOFF.md, docs/DONE.md, docs/ROADMAP.md.
 - **Class:** direction
+
+### J-021 Long output to a file, grepped for failures
+- **Who:** Ghost, Claude Opus.
+- **Intent:** Ghost, 2026-10-23: long output is sent to a file and grepped by agents for failures
+  before reading; with no failures, it is not read.
+- **Resolved:** One line in CLAUDE.md's Commands, naming the strings to grep for. Saves the context
+  `precommit.sh` and mutmut would otherwise fill.
+- **Touched:** CLAUDE.md, docs/AGENT.md.
+- **Class:** decision
