@@ -18,6 +18,11 @@ R-001 (Python) and R-002 (harness first) are in force; R-010 is superseded by R-
 
 ## Starting a session cold
 
+**Who does a task (J-027):** each new task goes to a fresh Claude Sonnet agent, briefed with the task
+and "follow CLAUDE.md" (as J-022 and J-026 did); Claude Opus reviews the diff, runs the gate, writes
+the journal entry and pushes. The agent debriefs in `docs/NAVIGATION-LOG.md`; about every ten commits
+its entries are reviewed, as its header says.
+
 Clone, then `CLAUDE.md`'s commands (the venv) and its two rules (commits authored as Ghost). Ghost
 reads the commit count as velocity, so a session's work lands as several commits, each a deliverable
 that stands alone.

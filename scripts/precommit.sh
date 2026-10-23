@@ -28,4 +28,8 @@ $bin/python scripts/survivors.py <<< "$results" || stop "an unexplained survivor
 full_check=$(python3 -c "print(round(($(date +%s) - $started) / 60, 2))")
 $bin/python scripts/metrics.py --fast-loop "$fast_loop" --full-check "$full_check" || stop "a metric that regressed"
 
+reviewed=$(sed -n 's/^Last review: \([0-9a-f]*\) .*/\1/p' docs/NAVIGATION-LOG.md)
+since=$(git rev-list --count "$reviewed..HEAD" 2>/dev/null || echo "?")
+echo "navigation log: $since commits since its last review$( [ "$since" != "?" ] && [ "$since" -ge 10 ] && echo ': review due (docs/NAVIGATION-LOG.md)')"
+
 echo "precommit: passed; fast loop ${fast_loop}s, slow ${slow}s, mutants ${killed}/${total} killed, the rest explained, ${full_check} min"

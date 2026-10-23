@@ -16,6 +16,7 @@ at the plan.
 | --- | --- | --- | --- |
 | A decision, a plan, what to work on | `docs/HANDOFF.md`, `theGhost.md`, `TODO.md` | `theGhost.md` | `test/test_ghost.py` |
 | Writing down what happened | `docs/JOURNAL.md` (one entry, its fields) | | `test/test_journal.py` |
+| Debriefing a task: what was hard to find | `docs/NAVIGATION-LOG.md` | its header | `test/test_navigation.py` |
 | A word | `docs/GLOSSARY.md` | | `test/test_glossary.py` |
 | Why a rule is what it is | `docs/GHOST-IN-THE-KERNEL.md` | | |
 | A module: add one, or change its imports | `docs/modules.json` (its `adding` line) | its `rules` (MOD-01 to MOD-05) | `test/test_modules.py` |
@@ -48,8 +49,7 @@ requirements.lock` once per session (lockfile only, wheels only, pip as the venv
 the metrics line; quote its last line in the commit. Long output (`precommit.sh`, mutmut) goes to a
 file, grepped for failures (`FAILED`, `Error`, `refused`, `unexplained`); read the file only if
 there are some.
-Data and artifacts are fetched, never committed: `scripts/fetch/<dataset>.py` and
-`scripts/fetch/artifacts.py` (R-006, R-010).
+Data and artifacts are fetched, never committed (R-006, R-010).
 
 ## If you are a Claude Sonnet model: one attempt, then escalate (R-022)
 
@@ -76,7 +76,9 @@ started; never revert, force-push over or rewrite another agent's commit; never 
 The fast loop always; `scripts/precommit.sh` before a push. A refactor changes no golden (P-02). A
 number without a trials line and a dispersion does not exist (P-07). A bias or a leak is a finding
 before it is a footnote (P-03). A function that holds a decision cites it, `# Decision: R-005`. Every
-eighth commit is a tithe (R-012). A finished step is merged to `main` at once.
+eighth commit is a tithe (R-012). A finished step is merged to `main` at once. A new task goes to a
+fresh Claude Sonnet agent, reviewed before it is pushed; done, it debriefs in `docs/NAVIGATION-LOG.md`
+(J-027).
 
 ## Two rules
 

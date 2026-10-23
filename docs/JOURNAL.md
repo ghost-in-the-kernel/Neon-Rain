@@ -573,3 +573,22 @@ shared classes). `test/test_journal.py` holds this.
   docs/HARNESS.md (HAR-01, HAR-07, HAR-09), docs/MUTATION.md, docs/modules.json, CLAUDE.md, TODO.md,
   docs/DONE.md, docs/HANDOFF.md.
 - **Class:** trial
+
+### J-027 New tasks to fresh Sonnet agents, who debrief on navigation
+- **Who:** Ghost, Claude Opus.
+- **Intent:** Ghost, 2026-10-23, after two Sonnet trials (J-022, J-026): new tasks go to fresh
+  Sonnet agents; after a task the agent writes its complaints and suggestions about navigation to a
+  file; every ten commits or so that file is evaluated for what agents converge on. Nothing
+  actionable: wipe it and go on. Actionable: wipe it, review each item for validity; open questions
+  go to a Claude Fable instance.
+- **Found:** "Every ten commits or so" needs something that counts; CLAUDE.md had 1,163 of its
+  1,200 words.
+- **Resolved:** `docs/NAVIGATION-LOG.md`, its header the whole procedure and the commit of the last
+  review; `scripts/precommit.sh` prints the commits since it and says when a review is due (it does
+  not refuse); `scripts/checks/navigation.py` holds the review line and each debrief's four fields
+  (Task, Opened, Complaints, Suggestions). CLAUDE.md: one sentence and one routing row (1,198
+  words, after shortening the fetch-scripts line, whose rule stays as R-006 and R-010); HANDOFF.md
+  says who does a task. Not written into theGhost.md, which Ghost keeps.
+- **Touched:** docs/NAVIGATION-LOG.md, `scripts/checks/navigation.py`, test/test_navigation.py,
+  `scripts/precommit.sh`, CLAUDE.md, docs/HANDOFF.md, docs/AGENT.md.
+- **Class:** decision
