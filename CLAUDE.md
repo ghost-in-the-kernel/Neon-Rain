@@ -43,6 +43,15 @@ the metrics line; quote its last line in the commit.
 Data and artifacts are fetched, never committed: `scripts/fetch/<dataset>.py` and
 `scripts/fetch/artifacts.py` (R-006, R-010).
 
+## If you are a Claude Sonnet model: one attempt, then escalate (R-022)
+
+Your system prompt names your model. If it is Sonnet: a fix you can see, or an easy one, you make; no
+escalation. Any other code change gets **one** attempt. If the fast loop, ruff or `precommit.sh` is
+still red after it and the output does not make the cause plain, do not try again: invoke a Claude
+Opus instance (the Agent tool, model `opus`) with the task, the routing row you started from, your
+diff and the failing output, and continue from its answer. If you cannot invoke one, stop and say so.
+Name the escalation in the journal entry.
+
 ## Before calling work done
 
 The fast loop always; `scripts/precommit.sh` before a push. A refactor changes no golden (P-02). A

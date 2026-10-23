@@ -403,3 +403,17 @@ failure), **Cost**, **Class** (`contradiction`, `ambiguity`, `failure-caught`, `
   `scripts/precommit.sh`, docs/modules.json, TODO.md, docs/DONE.md, docs/HANDOFF.md.
 - **Caught by:** breaking the code on purpose to watch the mirror fail (a, b); the mirror's report (c).
 - **Class:** failure-caught
+
+### J-019 An escalation rule, so a Claude Sonnet agent can work here
+- **Who:** Ghost, Claude Opus.
+- **Intent:** Ghost, 2026-10-23: a Sonnet agent tries a code fix once; an easy fix needs no
+  escalation; a hard failure goes to a Claude Opus instance. In the entrance path.
+- **Found:** "Fails in a way that is difficult" needed a test an agent can apply to itself.
+- **Options:** a retry count alone (refused: a typo the output names is not difficult); a judgement
+  of difficulty (refused: unmeasurable); red after the one attempt and the cause not plain from the
+  output (taken).
+- **Resolved:** R-022; its own short section in CLAUDE.md (913 words, under AGT-03's 1,200), with
+  what to hand the Opus instance (task, routing row, diff, failing output) and what to do if none
+  can be invoked (stop and say so).
+- **Touched:** CLAUDE.md, theGhost.md (R-022), docs/HANDOFF.md, docs/AGENT.md.
+- **Class:** decision

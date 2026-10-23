@@ -7,7 +7,7 @@ finished. This file says what the next session should actually do, and what it m
 
 Phase 0 is done but for Ghost's items (0.2, 0.4). Phase 1: 1.1 to 1.4 are done (J-013 to J-018):
 the synthetic market, the targets, the splits, and the cost model and metrics, with HAR-07's mirror
-written blind and agreeing to 1e-12. `theGhost.md` holds R-001 to R-021. **Next is 1.5, the trials
+written blind and agreeing to 1e-12. `theGhost.md` holds R-001 to R-022. **Next is 1.5, the trials
 file** (HAR-09). The slow tests (`pytest -m slow`, the 100-seed check) run in `precommit.sh`, not
 the fast loop. No real data, no model, no result.
 

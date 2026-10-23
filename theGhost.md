@@ -396,3 +396,20 @@ it is `in force`.
 - **Status:** in force
 - **See also:** R-002, R-005, R-007
 - **subject:** method
+
+### R-022: A Claude Sonnet agent makes one attempt at a hard code fix, then escalates to Claude Opus
+- **Decision:** An agent running as a Claude Sonnet model makes a fix it can see, or an easy one,
+  without escalating. Any other code change gets one attempt; if the fast loop, ruff or
+  `scripts/precommit.sh` is still red after it and the output does not make the cause plain, it does
+  not retry but invokes a Claude Opus instance with the task, its starting routing row, its diff and
+  the failing output, and continues from the answer. It names the escalation in the journal.
+- **Why:** Ghost, 2026-10-23: so a Sonnet agent can work on the codebase. The cheaper model does the
+  routine work; the costly failure mode is a model retrying a hard fix until it lands on something
+  that passes for the wrong reason, which in this project is the failure the harness exists to stop.
+  One attempt, then a stronger reader, bounds that. "Difficult" is made checkable: still red, cause
+  not plain from the output.
+- **Held by:** CLAUDE.md (the entrance path, its own section); the journal (each escalation named).
+- **Source:** Ghost, 2026-10-23: "we add an escalation rule ... in the entrance path for agents".
+- **Status:** in force
+- **See also:** R-012, R-015, R-020
+- **subject:** agent environment
