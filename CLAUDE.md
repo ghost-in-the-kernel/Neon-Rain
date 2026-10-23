@@ -15,7 +15,7 @@ at the plan.
 | Task | Start here | Contract | Tests |
 | --- | --- | --- | --- |
 | A decision, a plan, what to work on | `docs/HANDOFF.md`, `theGhost.md`, `TODO.md` | `theGhost.md` | `test/test_ghost.py` |
-| Writing down what happened | `docs/JOURNAL.md` (one entry, its fields) | | |
+| Writing down what happened | `docs/JOURNAL.md` (one entry, its fields) | | `test/test_journal.py` |
 | A word | `docs/GLOSSARY.md` | | `test/test_glossary.py` |
 | Why a rule is what it is | `docs/GHOST-IN-THE-KERNEL.md` | | |
 | A module: add one, or change its imports | `docs/modules.json` (its `adding` line) | its `rules` (MOD-01 to MOD-05) | `test/test_modules.py` |
@@ -60,6 +60,16 @@ when it does not, do not try again: invoke a Claude
 Opus instance (the Agent tool, model `opus`) with the task, the routing row you started from, your
 diff and the failing output, and continue from its answer. If you cannot invoke one, stop and say so.
 Name the escalation in the journal entry.
+
+## When another agent's work conflicts with yours: stop, and ask Ghost
+
+If another agent's work breaks yours, contradicts your task, or keeps changing what you just changed,
+stop at once; there is no retry and no count. Assume a conflict of objectives, never sabotage. Write
+a journal entry of class `conflict` stating both objectives plainly as you understand them (**Mine**,
+**Theirs**), with no guess at intent; list it under HANDOFF.md's "For Ghost"; ask Ghost to resolve
+it. Never touch what you did not start: never kill or stop a process another agent or person
+started; never revert, force-push over or rewrite another agent's commit; never edit the journal or
+`theGhost.md` to get around a conflict.
 
 ## Before calling work done
 

@@ -8,7 +8,10 @@ whoever was there, in the same commit as the event when possible; an agent write
 
 Fields: **Who**, **Intent**, **Found**, **Options**, **Resolved**, **Touched**, **Caught by** (for a
 failure), **Cost**, **Class** (`contradiction`, `ambiguity`, `failure-caught`, `failure-missed`,
-`decision`, `measurement`, `direction`, `trial`, `deferred`).
+`decision`, `measurement`, `direction`, `trial`, `deferred`, `conflict`). A `conflict` also has
+**Mine** and **Theirs** (each objective, plainly, no guess at intent) and stays listed in HANDOFF.md's
+"For Ghost" until its **Resolved** names Ghost (J-023; `conflict` is Neon Rain's addition to the
+shared classes). `test/test_journal.py` holds this.
 
 ---
 
@@ -482,3 +485,26 @@ failure), **Cost**, **Class** (`contradiction`, `ambiguity`, `failure-caught`, `
   `scripts/checks/tables.py`, `results.py`, `manifest.py`, `metrics.py`, test/test_tables.py,
   test/test_results.py, CLAUDE.md, docs/AGENT.md.
 - **Class:** trial
+
+### J-023 A conflict stops the work and goes to Ghost at once
+- **Who:** Ghost, Claude Opus.
+- **Intent:** Ghost, 2026-10-23, after a report of three agents with conflicting objectives that
+  overwrote each other's work, ran kill scripts against each other on the assumption of sabotage, and
+  never told the human who could have deconflicted them: an object lesson for this project.
+- **Found:** This session had been safe by habit, not by rule (one writer at a time, sub-agents
+  handing back without committing, Ghost's calls taken to Ghost). R-022 itself opens the gap: an
+  escalating Sonnet agent puts an Opus instance into the same working tree. Ghost's rule was drafted
+  against another project's escalation log and three-count, which Neon Rain does not have.
+- **Options:** Port that project's machinery (nothing here to port it from); build it fresh around
+  what Neon Rain already has, the journal and HANDOFF.md's "For Ghost" queue (taken, Ghost: "build
+  it fresh").
+- **Resolved:** CLAUDE.md, its own section: a conflict (another agent's work breaks yours,
+  contradicts your task, or keeps changing what you just changed) stops the work at once, with no
+  count; assume a conflict of objectives, never sabotage; a journal entry of class `conflict` with
+  **Mine** and **Theirs** stated plainly, listed for Ghost; never kill another's process, never
+  revert or rewrite another's commit, never edit the journal or theGhost.md around a conflict.
+  `scripts/checks/journal.py` and `test/test_journal.py` hold it, and with it the journal's numbering
+  and classes, which nothing held before. Not a decision in theGhost.md unless Ghost makes it one.
+- **Touched:** CLAUDE.md, docs/JOURNAL.md, `scripts/checks/journal.py`, test/test_journal.py,
+  docs/AGENT.md.
+- **Class:** decision
