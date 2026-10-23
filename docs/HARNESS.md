@@ -67,7 +67,9 @@ canonical JSON of the object
   including `E`, the step, the rolling window or its absence, the `k` and `seed` of HAR-05. `cost`:
   the cost parameters of HAR-06. `data_manifest`: dataset name to its manifest hash. Each is a JSON
   object whose values are strings, numbers, booleans, null, lists or objects.
-- `harness_version`: the string `"0"` while phase 1 builds; the freeze (ROADMAP 1.7) sets it to `"1"`.
+- `harness_version`: the string `"0"` while phase 1 built the harness; the freeze (ROADMAP 1.7) set it to `"1"`.
+  Each later harness change that moves a golden (HAR-14), which takes a decision in `theGhost.md`, raises it by
+  one, so a changed harness never hands out the hash of the one before it.
 - **Canonical JSON** is exactly: keys sorted ascending at every depth, no whitespace (separators `,`
   and `:`), non-ASCII characters escaped as `\uXXXX`, UTF-8 bytes, NaN and infinity refused. A number
   is written as the shortest text that reads back as itself (`0.1`, `1.0`, `3`); the integer `1` and
@@ -348,7 +350,7 @@ number of tickers at random from all of them stays under 0.02 either way. The bi
 `delisting_ends` (HAR-02): a long, wide universe in which none occurs is itself the alarm.
 
 Required behaviours: at `ρ = 0` every metric sits inside its noise band across 100 seeds; at the
-planted `ρ` a linear model recovers it; the harness's own numbers on a fixed seed are the goldens.
+planted `ρ` a linear model recovers it; the harness's own numbers on a fixed seed are the goldens (HAR-14).
 
 ## HAR-11 Determinism
 
@@ -444,3 +446,44 @@ All of: a trials line (HAR-09); both axes' dispersion (HAR-08); the three cost l
 dropped-cell counts (HAR-02); the findings it carries cited by number (P-03); and the goldens
 unchanged if the harness was touched (R-002). A result missing any of these is a draft, and
 `docs/RESULTS.md` does not hold drafts.
+
+## HAR-14 The goldens
+
+The goldens are the harness's own numbers on one fixed synthetic market, recorded at the freeze (ROADMAP 1.7)
+in `harness/goldens/`. After the freeze a change to anything under `neonrain/harness/` (or to `neonrain/targets.py`)
+either leaves every golden byte-identical or comes with a decision in `theGhost.md` that says why not; a refactor
+is the first kind (P-02). `neonrain/harness/goldens.py` computes them, `scripts/goldens.py` checks them and
+writes them, and `test/test_golden_files.py` and `test/test_the_freeze.py` fail when one is stale (AGT-05).
+
+**The market and the model, exactly.** The market is HAR-10's with 150 tickers, 330 days, `ρ = 0.1`, delisting
+below 0.5, seed 7 and the other parameters at their defaults. The model is not trained: a ticker's score on a date
+is `(r − 1) / max(n − 1, 1)`, with `r` the average rank (ties averaged) of its `edge` among that date's `n`
+tickers, so it lies in `[0, 1]` and the 0.5 of HAR-07's accuracy splits the day in half. The grid is HAR-05's with
+`k = 5`, group seed 5 (not the default 0, so that leaving it out is seen), and two folds from `embargo = 63`, `step = 40`, `min_train = 100` (HAR-03; the default
+`step` and `min_train` would need a calendar of 1,008 days, and the portfolio would take several times as long).
+The default folds of HAR-03 on a calendar of 1,200 dates are recorded as well, since the grid does not use them.
+For each horizon, each fold and each held-out group, the cell is HAR-05's: labels of HAR-02 at `min_tickers = 20`,
+training on the other groups and testing on the held-out one. Its portfolio is HAR-07's, scored on every
+universe row of the test span of the held-out group (not only labelled rows), at 0, 10 and 25 bps (HAR-06).
+
+**The files**, in `harness/goldens/`, JSON with sorted keys, one-space indent and a final line break:
+`synthetic_labels.json` (per horizon: HAR-02's row count and the four dropped counts, and the means of `forward`,
+`excess`, `direction` and `rank`); `synthetic_splits.json` (the folds as positions, the default folds, and every
+ticker's group); `synthetic_cells.json` (per horizon, per cell in fold-then-group order: train and test row
+counts, accuracy, balanced accuracy, the IC with its standard error, t and its dropped counts, the Sharpe at each
+cost level, and the DSR on the 10 bps series for `N = 1` and for `N = 5` with a variance of the Sharpes of 0.0004);
+`synthetic_dispersion.json` (HAR-08's dispersion of each of those scalars, the IC by its mean, per horizon);
+`config_hash.json` (the config of HAR-01 these runs would carry, its `harness_version` and its hash); and
+`index.json`.
+
+**Floats** are cut to 12 significant digits before they are written (`f"{x:.11e}"` read back as a float), so the
+last bits of a platform's `exp` cannot move a golden while a real change still does. A value that is not finite is
+refused. A metric the harness reports as undefined is `null`.
+
+**The index** holds the `harness_version` and, for each golden, the SHA-256 of its text and `changed_by`: `"1.7"`
+for the freeze, or the `R-nnn` of the decision that last changed it. The check fails when a golden differs from what
+the harness gives now (naming the golden and the first line that differs), when a golden was edited by hand (its
+hash is not the index's), when a golden is missing, unindexed or no longer the harness's, when `changed_by` is a
+decision not `in force` in `theGhost.md`, when any golden was changed under a decision while `harness_version` is still `"1"` (HAR-01), and when the index is for another `harness_version`. Writing a golden that
+exists and would differ, adding one or removing one, is refused unless a decision in force is named, and it is kept
+in the index.

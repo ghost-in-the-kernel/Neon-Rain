@@ -54,9 +54,11 @@ document did not say whose repository it was about. This document is about `neon
 
 ## What this repository may contain
 
-Code, documents, tests, the trials file, manifests, the scorer's prompt. Nothing a data source gave
-us, nothing a run produced, no weights, no parquet, no API key, no customer-equivalent material
-(R-006, R-016, P-13).
+Code, documents, tests, manifests, the scorer's prompt, and what training and test runs produce:
+results, the trials file, the goldens, run records. Never market data: nothing a data source gave us
+and nothing it can be read back from (a feature cache, a ledger snapshot); no parquet, no API key, no
+customer-equivalent material (R-006, R-016, P-13; Ghost, J-032). Weights go to the artifacts
+repository by R-016, for their size.
 
 ## The one API key
 

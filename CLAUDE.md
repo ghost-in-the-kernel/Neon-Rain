@@ -31,6 +31,7 @@ at the plan.
 | The adversarial tests (TODO 1.6) | `test/test_harness_adversarial.py`, `test/mirror_har07.py` (written blind; never edit) | HAR-03, HAR-08, HAR-10, HAR-12 | those two, `test/test_mirror.py` |
 | A dataset: fetch, manifest, universe | `scripts/fetch/`, `data/MANIFEST.md` (phase 2) | R-006 | `test/test_manifest.py` |
 | A feature family (phase 2) | `docs/modules.json` (`features`), `neonrain/harness/market.py` (the feature frame, its stamps) | HAR-12; `docs/GLOSSARY.md` (its term first) | one unit test per feature |
+| The goldens: the freeze, a harness change | `neonrain/harness/goldens.py`, `scripts/goldens.py` | HAR-14, R-002 | `test/test_golden_files.py`, `test/test_the_freeze.py` |
 | A baseline | `neonrain/baselines/` (phase 3) | R-007 | `harness/goldens/` |
 | The network | `neonrain/models/` (phase 4) | R-009 | `docs/RESULTS.md` |
 | The scorer and the news ledger | `neonrain/scorer/`, `neonrain/ledger/` (phase 5) | `docs/LEDGER.md`, R-008 | `test/test_ledger.py` |
@@ -79,8 +80,11 @@ fresh Claude Sonnet agent, reviewed before it is pushed (J-027).
 The maintainer is "Ghost" (GitHub: ghost-in-the-kernel) in every file, comment and commit; commits
 are authored as Ghost (`git config user.name Ghost`, `git config user.email
 118085043+ghost-in-the-kernel@users.noreply.github.com`; an agent keeps its Co-Authored-By line).
-Nothing fetched from a data source, nothing a run produced, and nothing under a license that forbids
-redistribution ever enters this repository; it is private and stays so until R-011 says otherwise.
+**Market data never enters this repository**: prices, news, datasets, anything the data can be read
+back from (a feature cache, a ledger snapshot), or anything under a license that forbids
+redistribution. The engine is trained on it outside the repository; what training and test runs
+produce may be committed: results, trials lines, goldens, run records (J-032). The repository is
+public for now; anything more waits on R-011.
 
 ## Supply-chain rules (binding)
 

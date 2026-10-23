@@ -8,7 +8,7 @@ from pathlib import Path
 from neonrain.harness.dispersion import Axis, Dispersion
 
 TRIALS_COLUMNS: list[str] = ["config_hash", "date", "horizon", "metric", "mean", "dispersion", "trials_so_far", "note"]
-HARNESS_VERSION = "0"  # "0" while phase 1 builds; step 1.7 (the freeze) sets it to "1" (HAR-01)
+HARNESS_VERSION = "1"  # "0" while phase 1 built the harness; step 1.7 (the freeze) set it to "1" (HAR-01)
 HASH_DIGITS = 16
 HEADER = "\t".join(TRIALS_COLUMNS)
 METRIC = TRIALS_COLUMNS.index("metric")

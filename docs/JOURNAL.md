@@ -694,3 +694,39 @@ shared classes). `test/test_journal.py` holds this.
 - **Touched:** test/test_harness_adversarial.py, docs/HARNESS.md (HAR-12), docs/NAVIGATION-LOG.md,
   TODO.md, docs/DONE.md, docs/HANDOFF.md.
 - **Class:** trial
+
+### J-032 Step 1.7, the freeze: goldens, a contradiction found, and an escalation with nowhere to go
+- **Who:** Ghost, Claude Opus (reviewing, finishing), a fresh Claude Sonnet agent (building, under J-027).
+- **Intent:** ROADMAP 1.7: goldens of the synthetic market, the harness version to "1", and a
+  harness change made mechanical to catch.
+- **Found:** (a) The agent found the founding documents contradicting each other: CLAUDE.md and
+  SUPPLY-CHAIN.md forbade "anything a run produced", while ROADMAP 1.7, R-002, R-007 and AGT-05
+  required committed goldens; both were there from the founding commit (df8632a), the first likely
+  carried from Suite Builder's rule on generated suites. It built only what did not depend on the
+  answer and reported both texts. (b) It made HARNESS.md precise (HAR-14: the goldens' market, model,
+  grid, files, rounding and index; HAR-01: the harness version rises by one with each change that
+  moves a golden, so a changed harness never shares a config hash with the old). (c) The goldens'
+  whole-harness tests (6 s each) were rerun by mutmut for every mutant of every harness module: the
+  full check went from about 7 to 15–20 minutes, past AGT's 10, and the fast loop from 10 to 24 s.
+  It could not fix that by an edit, looked to escalate, found a spawned agent has no Agent tool, and
+  stopped and said so, as `docs/rules/escalation.md` said; but only after 108 minutes and 120 tool
+  calls.
+- **Options:** (a) Ghost: market data never enters the repository; what training and test runs
+  produce may. (c) Mark the three whole-harness tests slow (they still run before every push); the
+  60 mutants of `goldens.compute` this left with no test: explain each, raise the time budget, or
+  exempt `compute` with what holds it instead (Ghost: exempt it).
+- **Resolved:** CLAUDE.md's "Two rules" and SUPPLY-CHAIN.md say Ghost's line (market data never;
+  results, trials lines, goldens, run records may; the repository public for now). Goldens written:
+  52 KB, no market data. Review moved the default cost by 0.5 bp and saw three goldens named and an
+  undecided rewrite refused. `compute` exempt from mutation, its region marked by mutmut's pragma and
+  listed in MUTATION.md's new "Exempt from mutation" table; `test/test_mutation.py` refuses a pragma
+  in a file that table does not list. Fast loop 12 s, full check about 9 minutes. escalation.md: a
+  spawned agent's hand-back is its escalation, at once. 1.7 done; `test_harness_doc` now runs for
+  real, and holds. For Ghost: HAR-14's small fold geometry (step 40, min_train 100) and HAR-01's
+  version rule are the agent's choices, written in HARNESS.md.
+- **Touched:** `neonrain/harness/goldens.py`, `scripts/goldens.py`, `harness/goldens/`,
+  `neonrain/harness/trials.py`, test/test_golden_files.py, test/test_the_freeze.py, test/test_trials.py,
+  `scripts/checks/mutation.py`, test/test_mutation.py, docs/HARNESS.md (HAR-01, HAR-10, HAR-14),
+  docs/MUTATION.md, docs/modules.json, docs/rules/escalation.md, docs/SUPPLY-CHAIN.md, CLAUDE.md,
+  docs/NAVIGATION-LOG.md, TODO.md, docs/DONE.md, docs/HANDOFF.md, docs/AGENT.md.
+- **Class:** trial

@@ -118,3 +118,15 @@ reaches the metrics, or reaches only direction), and the mirror (`test/test_mirr
 Check: every test red on its broken input, green on the honest one: seen by the agents on scratch
 copies of the harness, and by the reviewer in the repository (purge removed, stamp refusal off,
 `fits_names` never raised, DSR forced to 0.99, IC made absolute): each turned its test red. ✓
+
+### 1.7 Freeze — done 2026-10-23 (J-032)
+
+`harness/goldens/`: five goldens of HAR-14's synthetic market (labels, splits, cells, dispersion,
+the config hash; 52 KB, floats to 12 significant digits) and `index.json` (each file's SHA-256, who
+changed it, the harness version). `neonrain/harness/goldens.py`, `scripts/goldens.py` (check, or
+`--write`, refused for a change without a decision in force). `trials.HARNESS_VERSION` is "1".
+Built by a fresh Claude Sonnet agent under J-027, finished by Claude Opus.
+Check: the goldens are written from the synthetic market; a harness change is caught (the default
+cost moved by 0.5 bp: three goldens named with their first differing line, and `--write` refused
+without a decision); `test_harness_doc`'s invariants are held by the code now that this item is
+done. ✓

@@ -1,0 +1,46 @@
+{
+ "21": {
+  "delisting_ends": 630,
+  "dropped_missing": 0,
+  "dropped_thin_dates": 0,
+  "dropped_ties": 140,
+  "mean_direction": 0.5,
+  "mean_excess": 0.00399096545155,
+  "mean_forward": -0.0130970655634,
+  "mean_rank": 0.5,
+  "rows": 43406
+ },
+ "3": {
+  "delisting_ends": 90,
+  "dropped_missing": 0,
+  "dropped_thin_dates": 0,
+  "dropped_ties": 140,
+  "mean_direction": 0.5,
+  "mean_excess": 0.00051596720784,
+  "mean_forward": -0.00191219731887,
+  "mean_rank": 0.5,
+  "rows": 45566
+ },
+ "5": {
+  "delisting_ends": 150,
+  "dropped_missing": 0,
+  "dropped_thin_dates": 0,
+  "dropped_ties": 140,
+  "mean_direction": 0.5,
+  "mean_excess": 0.000959687782737,
+  "mean_forward": -0.00314992269798,
+  "mean_rank": 0.5,
+  "rows": 45326
+ },
+ "63": {
+  "delisting_ends": 1763,
+  "dropped_missing": 0,
+  "dropped_thin_dates": 0,
+  "dropped_ties": 117,
+  "mean_direction": 0.5,
+  "mean_excess": 0.0118983063458,
+  "mean_forward": -0.0344208182279,
+  "mean_rank": 0.5,
+  "rows": 38239
+ }
+}

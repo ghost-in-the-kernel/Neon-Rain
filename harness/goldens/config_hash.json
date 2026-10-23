@@ -1,0 +1,39 @@
+{
+ "config": {
+  "cost": {
+   "default_bps": 10.0,
+   "levels_bps": [
+    0.0,
+    10.0,
+    25.0
+   ]
+  },
+  "data_manifest": {
+   "synthetic": "seed-7"
+  },
+  "feature_columns": [
+   "edge"
+  ],
+  "hyperparameters": {},
+  "model_name": "edge-rank",
+  "split": {
+   "embargo": 63,
+   "k": 5,
+   "min_train": 100,
+   "seed": 5,
+   "step": 40,
+   "window": null
+  },
+  "target": {
+   "horizons": [
+    3,
+    5,
+    21,
+    63
+   ],
+   "min_tickers": 20
+  }
+ },
+ "harness_version": "1",
+ "hash": "f58f6be6e7a65f7f"
+}

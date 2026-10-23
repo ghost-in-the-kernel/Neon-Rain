@@ -23,12 +23,6 @@ round-trips a 1 MB file by content hash through the artifacts repository.
 
 Nothing under `neonrain/models/` or `neonrain/baselines/` begins until 1.6 passes (R-002).
 
-### 1.7 Freeze
-
-Check: `harness/goldens/` written from the synthetic market; a harness change after it is a commit
-with every golden identical or a decision saying why not; `trials.HARNESS_VERSION` becomes `"1"`
-(HAR-01).
-
 ### 1.8 Tithe pass 1
 
 Check: AGENT.md re-measured; a fresh-agent trial run under R-020.

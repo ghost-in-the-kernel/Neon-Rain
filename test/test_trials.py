@@ -43,10 +43,10 @@ def test_the_header_is_har_09s(root: Path) -> None:
 
 def test_the_config_hash_is_the_first_16_hex_digits_of_the_canonical_json() -> None:
     text = ('{"cost":{"bps":10},"data_manifest":{"prices":"ff"},"feature_columns":["a","b"],'
-            '"harness_version":"0","model":{"hyperparameters":{},"name":"zero"},"split":{"seed":1},'
+            '"harness_version":"1","model":{"hyperparameters":{},"name":"zero"},"split":{"seed":1},'
             '"target":{"min_tickers":20}}')
     assert trials.config_hash(**CONFIG) == hashlib.sha256(text.encode()).hexdigest()[:16]  # type: ignore[arg-type]
-    assert trials.HARNESS_VERSION == "0"
+    assert trials.HARNESS_VERSION == "1"
 
 
 def test_the_config_hash_ignores_the_order_of_columns_and_keys() -> None:
@@ -67,7 +67,7 @@ def test_the_config_hash_tells_one_from_one_point_zero_and_escapes_non_ascii() -
     assert whole != trials.config_hash(**(CONFIG | {"cost": {"bps": 1.0}}))  # type: ignore[arg-type]
     accented = CONFIG | {"feature_columns": ["é"]}
     text = ('{"cost":{"bps":10},"data_manifest":{"prices":"ff"},"feature_columns":["\\u00e9"],'
-            '"harness_version":"0","model":{"hyperparameters":{},"name":"zero"},"split":{"seed":1},'
+            '"harness_version":"1","model":{"hyperparameters":{},"name":"zero"},"split":{"seed":1},'
             '"target":{"min_tickers":20}}')
     assert trials.config_hash(**accented) == hashlib.sha256(text.encode()).hexdigest()[:16]  # type: ignore[arg-type]
 

@@ -1,0 +1,25 @@
+{
+ "files": {
+  "config_hash.json": {
+   "changed_by": "1.7",
+   "sha256": "fce485a69b6db63361833d5e68c515da33632f3fa9f0b8bca06dc8899d9ad26b"
+  },
+  "synthetic_cells.json": {
+   "changed_by": "1.7",
+   "sha256": "8baf00b892cdc43ce801f44432a43207b6e3d9a0840912fe97f0e3915667be9f"
+  },
+  "synthetic_dispersion.json": {
+   "changed_by": "1.7",
+   "sha256": "1215f9558b193505034ad880431217735cf4d30bf7c1fa1d0ef8966728165d15"
+  },
+  "synthetic_labels.json": {
+   "changed_by": "1.7",
+   "sha256": "7d7f8bbdd628499cee99b3697f81c521954f2643d64a9c6a6ade47e8818dd118"
+  },
+  "synthetic_splits.json": {
+   "changed_by": "1.7",
+   "sha256": "75bdbdbdba18b17ea3389e27530e9771b0ebfbe31192206cc69043f3a90ce7f4"
+  }
+ },
+ "harness_version": "1"
+}
