@@ -641,3 +641,31 @@ shared classes). `test/test_journal.py` holds this.
   docs/modules.json, docs/NAVIGATION-LOG.md, docs/rules/conflict.md, CLAUDE.md, docs/HANDOFF.md,
   docs/AGENT.md.
 - **Class:** trial
+
+### J-030 Step 1.6, first part: the harness's adversarial tests
+- **Who:** Ghost, Claude Opus (reviewing), a fresh Claude Sonnet agent (building, under J-027).
+- **Intent:** ROADMAP 1.6: each attack a check, red on its broken input and green on the honest one.
+- **Found:** Nine tests in `test/test_harness_adversarial.py`, nothing new under `neonrain/`: a
+  planted `peek` feature refused by the stamp check, and, with a lying stamp, caught by a leak check
+  (a median-split rule's accuracy at lag 0 and 1); a universe without its delisted names, whose
+  mean forward return inflates by more than 0.02 at 63 days where a random removal does not; a
+  training label reaching the embargo, counted by brute force at each horizon over the purged grid;
+  a short embargo refused; a name memorizer showing R-014's group-axis signature over six seeds
+  (slow, 24 s). The agent saw each fail by sabotaging a scratch copy of the harness, and made
+  HARNESS.md precise first (HAR-03 "crosses the embargo", HAR-08 the memorizer's signature, HAR-10
+  survivorship's measure, HAR-12 the leak check). It found that a lagged feature collapses under the
+  "shift and watch it collapse" detector whether it leaks or is an honest edge at 3 days, so the
+  check needs an accuracy ceiling as well. 37 tool calls, 18 minutes, no red run, no escalation.
+  Open, for Ghost: its thresholds (the 0.60 accuracy ceiling, the 0.02 inflation margin, "at least
+  half the seeds") are its own choices, written in HARNESS.md.
+- **Options:** Review by Claude Opus re-ran three sabotages in the repository itself (purge removed,
+  the stamp refusal off, `fits_names` never raised): each turned its test red; the tree restored
+  from copies, not by checkout. HAR-12 names a label-shuffle test among 1.6's checks that ROADMAP
+  1.6 does not list; the agent asked which wins. HARNESS.md is the specification (HANDOFF.md): 1.6
+  stays open until it is written.
+- **Resolved:** The nine tests kept as written; HAR-10's survivorship sentence matched to the test
+  (prices and universe; features only where a test reads them); CLAUDE.md's 1.6 row points at the
+  tests that now exist. TODO 1.6 records what is left. The agent's debrief is in the navigation log.
+- **Touched:** test/test_harness_adversarial.py, docs/HARNESS.md, docs/NAVIGATION-LOG.md, CLAUDE.md,
+  TODO.md, docs/AGENT.md.
+- **Class:** trial

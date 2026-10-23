@@ -125,6 +125,14 @@ A **fold** is three spans of the calendar, in order: a training span `[a, b)`, a
 - A fold exists only when its whole test span is on the calendar (`c ≤` the number of dates); a
   partial last span is not a fold. With a rolling window of `W` dates, `a = b − W`.
 
+A label **crosses the embargo** when its window reaches `b` or later: a training row at position `t` with
+`t + h ≥ b`, or a training row dated outside `[a, b)`. With `E ≥ 63 ≥ h` such a window can reach the embargo
+but never the test span, so the purge at `b` is what keeps it out; a fold whose embargo is under 63 is refused
+(`ValueError`, the message naming the embargo), and a fold built by hand with a gap under 63 between `b` and
+the test span's start is a fault whatever its purge. The adversarial tests (ROADMAP 1.6) count the training rows
+that cross, by brute force on calendar positions, for the unpurged set (non-zero at every horizon: at least
+`h` dates times the tickers) and for every cell of the grid (zero).
+
 **There is no random k-fold, no shuffled split, and no stratified sampling over dates, ever.** A
 function in the harness that shuffles rows across dates is a defect.
 
@@ -264,6 +272,16 @@ cell is left out of its axis, so `n_folds` and `n_groups` count what was average
 model whose group-axis sd exceeds its group-axis mean in absolute value is reported as *fits names,
 not an algorithm*, and does not count as beating a baseline however good its mean (R-014).
 
+What the flag is and is not (ROADMAP 1.6). It is a rule on one axis, not a detector of memorizers: a model with
+no skill at all has a group-axis mean near 0 and is flagged most of the time, which is intended (it beats
+nothing). A **name memorizer** (a lookup of ticker → mean return, a ticker it has not seen answered from a
+hash bucket of the names it has) is held to this signature on a market where names matter, and every part is
+checked: scored without the group axis (every ticker trains, the held-out group's too) its IC looks like an
+algorithm's (mean well above 0, not flagged); scored on the grid its group-axis mean falls below half of that,
+its group-axis sd is above that of an honest pooled model's by a margin, and it is flagged on at least half of
+the seeds tried, while the honest model (a pooled slope on the planted edge) is flagged on none. The flag is
+therefore judged over several seeds, never one.
+
 ## HAR-09 The trials file
 
 Every run appends tab-separated lines to `harness/trials.tsv`, which is git-tracked and
@@ -320,6 +338,15 @@ the order market, feature, noise, all standard normal:
 So `ρ` is the correlation between the edge and the next day's idiosyncratic return; against an
 *h*-day return it is about `ρ/√h`, since only the first day of the window carries it.
 
+**Survivorship, exactly** (ROADMAP 1.6). The *biased universe* is the market with every ticker that was
+delisted removed entirely from the price and universe frames (and from the features, where a test reads them),
+as a source that lists only the names still trading would give it. Its **inflation** is the mean of `forward` (HAR-02) over a horizon's label cells,
+biased minus honest: the delisting returns of HAR-02 are what the honest figure holds and the biased one lacks,
+so with delisting on the inflation is positive. It counts as caught when it exceeds 0.02 at 63 days on the test's
+market (300 tickers, 300 days, ρ = 0, idiosyncratic volatility 3%, delisting below 60%), while removing the same
+number of tickers at random from all of them stays under 0.02 either way. The biased universe also has no
+`delisting_ends` (HAR-02): a long, wide universe in which none occurs is itself the alarm.
+
 Required behaviours: at `ρ = 0` every metric sits inside its noise band across 100 seeds; at the
 planted `ρ` a linear model recovers it; the harness's own numbers on a fixed seed are the goldens.
 
@@ -364,6 +391,25 @@ wrongly: the label-shuffle test (permute labels within each date; every metric m
 chance), the planted-leak test (a feature deliberately built from `t+1` must be refused by the stamp
 check and, if the check is disabled, must show impossibly high accuracy), and the mirror test
 (R-015c).
+
+**The planted-leak test and the leak check, exactly** (ROADMAP 1.6). The planted feature `peek(i,t)` is
+`P(i, t+1) / P(i, t) − 1`, the return to the ticker's next row (null on its last row, with a null stamp); its
+honest stamp is the date of that next row, which the stamp check refuses at the first cell
+(`feature 'peek' refused at cell (T000, 2000-01-03): stamp 2000-01-04 is after the cell's date (and N more
+cells)`). "The check disabled" is a stamp that lies: `peek` stamped with the cell's own date, which passes
+`check_stamps`. The **leak check** is then the second line, for a feature `f` at one horizon (3 days in the test):
+
+- The **rule**: on each date, among the rows with a value of `f` *and* a direction label, predict 1 where
+  `(rank − 1) / (n − 1) > 0.5`, `rank` the ascending average rank of `f` among those `n` rows, else 0; score it
+  with HAR-07's accuracy over those rows.
+- **Lag `L`** replaces `f(i,t)` by `f` at the ticker's `L`-th earlier row (rows with no such value are left out).
+  The rule's accuracy at lag `L` is `A_L`.
+- **Flagged** when `A_0 ≥ 0.60` (impossibly high, the ceiling for the planted edges used, where the honest edge
+  at ρ = 0.3 reaches about 0.55 and `peek` about 0.69) **and** `A_1 − 0.5 ≤ (A_0 − 0.5) / 2` (a one-day lag takes at
+  least half the edge away: the feature knew something about the label that only a later day holds). The 0.60 is a
+  parameter of the test for the market it uses, not a harness constant.
+
+An honest feature is not flagged: the planted edge at ρ = 0.3 stays under the ceiling.
 
 ## HAR-13 What makes a result reportable
 
