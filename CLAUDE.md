@@ -55,7 +55,8 @@ Data and artifacts are fetched, never committed: `scripts/fetch/<dataset>.py` an
 
 Your system prompt names your model. If it is Sonnet: a fix you can see, or an easy one, you make; no
 escalation. Any other code change gets **one** attempt. If the fast loop, ruff or `precommit.sh` is
-still red after it and the output does not make the cause plain, do not try again: invoke a Claude
+still red after it: when the output names the cause (a `NameError`, a typo), fix that and run again;
+when it does not, do not try again: invoke a Claude
 Opus instance (the Agent tool, model `opus`) with the task, the routing row you started from, your
 diff and the failing output, and continue from its answer. If you cannot invoke one, stop and say so.
 Name the escalation in the journal entry.

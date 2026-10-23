@@ -9,8 +9,10 @@ from typing import NamedTuple
 
 import polars as pl
 
-EMBARGO = 63
-LONGEST = 63  # the longest horizon of R-004
+from neonrain.targets import HORIZONS
+
+LONGEST = max(HORIZONS)  # the longest horizon of R-004
+EMBARGO = LONGEST
 STEP = 126
 MIN_TRAIN = 756
 GROUPS = 5

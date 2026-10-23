@@ -2,7 +2,7 @@
 import re
 from pathlib import Path
 
-from scripts.checks import ghost, results
+from scripts.checks import ghost, results, tables
 
 SOURCE_DIRS: tuple[str, ...] = ("neonrain", "scripts", "test")
 TIMED: tuple[str, ...] = ("Fast loop (s)", "Full check, `precommit.sh` (min)")
@@ -27,10 +27,10 @@ def opened(name: str, root: Path) -> int:
 def routing_files(claude: str, root: Path) -> int:
     """The most files one routing row of CLAUDE.md opens, counting its "Start here" cell's backticked names
     (a folder as its files); 0 with no table."""
-    for table in results.TABLE.findall(claude):
+    for table in tables.TABLE.findall(claude):
         lines = table.splitlines()
-        if results.cells(lines[0])[:2] == ["Task", "Start here"]:
-            names = [re.findall(r"`([^`]+)`", results.cells(line)[1]) for line in lines[2:]]
+        if tables.cells(lines[0])[:2] == ["Task", "Start here"]:
+            names = [re.findall(r"`([^`]+)`", tables.cells(line)[1]) for line in lines[2:]]
             return max(sum(opened(name, root) for name in row) for row in names)
     return 0
 
@@ -56,7 +56,7 @@ def results_lacking(root: Path, phrase: str) -> int:
 def unlisted_datasets(root: Path) -> int:
     """Entries under data/ but MANIFEST.md that no manifest row names."""
     manifest = (root / "data" / "MANIFEST.md").read_text()
-    named = {results.cells(line)[0] for line in manifest.splitlines()[2:] if line.startswith("|")}
+    named = {tables.cells(line)[0] for line in manifest.splitlines()[2:] if line.startswith("|")}
     present = {p.name.split(".")[0] for p in (root / "data").iterdir() if p.name != "MANIFEST.md"}
     return len(present - named)
 

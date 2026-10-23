@@ -456,3 +456,29 @@ failure), **Cost**, **Class** (`contradiction`, `ambiguity`, `failure-caught`, `
   `precommit.sh` and mutmut would otherwise fill.
 - **Touched:** CLAUDE.md, docs/AGENT.md.
 - **Class:** decision
+
+### J-022 Trial: a Claude Sonnet agent does the clean-ups, under R-022
+- **Who:** Ghost, Claude Opus (running and reviewing the trial), a Claude Sonnet agent (the subject).
+- **Intent:** Ghost, 2026-10-23: see whether a Sonnet agent can take the next task. The task, as given:
+  three refactors that change no result (the minimum tickers and the longest horizon defined once,
+  in `targets.py`; the markdown-table helpers moved from `scripts/checks/results.py` to their own
+  `tables.py`; `targets.cells` renamed `label_cells`), "follow CLAUDE.md", no file list, no commits.
+- **Found:** It read CLAUDE.md, then modules.json first (to check `harness` may import `targets`),
+  then the six files it changed and two tests: about ten files, every one needed. Nine tool calls,
+  5.6 minutes. First attempt red: four `NameError`s, from dropping an import still in use; the output
+  named the cause, so it fixed it without escalating, which R-022 allows, and its second run passed
+  the fast loop, ruff and `precommit.sh` (2259/2262, the rest explained), with the long output sent to
+  a file and grepped (J-021). Unasked, it tied `EMBARGO` to `LONGEST` (HAR-03's rule, same value) and
+  said so; it moved the `cells` test and added one for `TABLE`. It named one unclear point: whether a
+  correction after a red run is a second attempt.
+- **Options:** Reviewed line by line by Claude Opus before commit: accepted whole, the `EMBARGO`
+  change included.
+- **Resolved:** The refactors committed as written. CLAUDE.md's Sonnet section now says it outright:
+  when the output names the cause, fix it and run again; when it does not, escalate (R-022's "the
+  output does not make the cause plain", unchanged). Result of the trial: a Sonnet agent handled a
+  bounded multi-file refactor from the entrance path alone, applied the escalation rule correctly,
+  and stayed inside its rules.
+- **Touched:** `neonrain/targets.py`, `neonrain/harness/metrics.py`, `neonrain/harness/split.py`,
+  `scripts/checks/tables.py`, `results.py`, `manifest.py`, `metrics.py`, test/test_tables.py,
+  test/test_results.py, CLAUDE.md, docs/AGENT.md.
+- **Class:** trial

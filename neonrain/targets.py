@@ -20,7 +20,7 @@ class Labels(NamedTuple):
     dropped_thin_dates: int  # dates with fewer than min_tickers priced, eligible tickers
 
 
-def cells(prices: pl.DataFrame, universe: pl.DataFrame, calendar: list[date], horizon: int) -> pl.DataFrame:
+def label_cells(prices: pl.DataFrame, universe: pl.DataFrame, calendar: list[date], horizon: int) -> pl.DataFrame:
     """Each eligible (ticker, date) with an h-th trading date after it, and its closes at t and t+h (null if none).
 
     On a five-date calendar with horizon 3, only the first two dates make cells.
@@ -56,7 +56,7 @@ def labels(
         problems.append(f"min_tickers is {min_tickers}: a rank needs at least two tickers on a date")
     if problems:
         raise ValueError("; ".join(problems))
-    frame = cells(prices, universe, calendar, horizon)
+    frame = label_cells(prices, universe, calendar, horizon)
     priced = frame.filter(pl.col("close_t").is_not_null() & pl.col("close_h").is_not_null())
     missing = frame.height - priced.height
     priced = priced.with_columns(

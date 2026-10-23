@@ -2,15 +2,11 @@
 (test/test_results.py; P-07, R-014, HAR-13)."""
 import re
 
+from scripts.checks.tables import TABLE, cells
+
 TRIALS_COLUMNS: list[str] = ["config_hash", "date", "horizon", "metric", "mean", "dispersion", "trials_so_far", "note"]
-TABLE = re.compile(r"(?:^\|.*(?:\n|$))+", re.MULTILINE)
 DISPERSION = re.compile(r"±.*\[.*,.*\]")
 FINDING = re.compile(r"\bNR-F-\d{2}\b")
-
-
-def cells(line: str) -> list[str]:
-    """A table line's cells, trimmed: "| a | b |" gives ["a", "b"]."""
-    return [cell.strip() for cell in line.strip().split("|")[1:-1]]
 
 
 def reported_rows(results: str) -> list[dict[str, str]]:

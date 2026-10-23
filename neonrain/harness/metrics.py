@@ -9,9 +9,10 @@ import numpy as np
 import polars as pl
 from scipy.stats import norm, rankdata
 
+from neonrain.targets import MIN_TICKERS
+
 EULER_GAMMA = 0.5772156649
 TRADING_DAYS = 252
-MIN_TICKERS = 20
 
 
 class IC(NamedTuple):

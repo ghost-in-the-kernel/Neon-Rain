@@ -1,5 +1,5 @@
 """Every dataset in data/MANIFEST.md has every column filled (test/test_manifest.py, R-006)."""
-from scripts.checks import results
+from scripts.checks import tables
 
 
 def problems(manifest: str) -> list[str]:
@@ -7,10 +7,10 @@ def problems(manifest: str) -> list[str]:
     table = [line for line in manifest.splitlines() if line.startswith("|")]
     if not table:
         return ["no table"]
-    header = results.cells(table[0])
+    header = tables.cells(table[0])
     found = []
     for line in table[2:]:
-        cells = results.cells(line)
+        cells = tables.cells(line)
         dataset = cells[0] or "?"
         found += [f"{dataset} has no {name}" for name, cell in zip(header, cells) if not cell]
         if len(cells) != len(header):

@@ -75,10 +75,6 @@ def test_tables_are_read_separately() -> None:
     assert [row["Run"] for row in results.reported_rows(text)] == ["ab12"]
 
 
-def test_cells_are_trimmed_and_the_outer_bars_dropped() -> None:
-    assert results.cells("  | a |  b c |  |\n") == ["a", "b c", ""]
-
-
 def test_trial_hashes_are_the_first_column_without_the_header() -> None:
     assert results.trial_hashes(TRIALS + "cd 34\tx\n") == {"ab12", "cd 34"}
 
