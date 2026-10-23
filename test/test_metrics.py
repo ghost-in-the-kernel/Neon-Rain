@@ -71,11 +71,24 @@ def test_the_table_is_rewritten_in_place() -> None:
 def test_routing_rows_count_their_files() -> None:
     other = "| Name | Files |\n| --- | --- |\n| x | `1`, `2`, `3`, `4` |\n\n"
     claude = other + "| Task | Start here | Contract | Tests |\n| --- | --- | --- | --- |\n| A | `a.md`, `b/` | `c.md` | |\n| B | `d.md` | | |\n"
-    assert metrics.routing_files(claude) == 2
+    assert metrics.routing_files(claude, Path("/nowhere")) == 2
 
 
 def test_no_routing_table_opens_nothing() -> None:
-    assert metrics.routing_files("# CLAUDE.md\n") == 0
+    assert metrics.routing_files("# CLAUDE.md\n", Path("/nowhere")) == 0
+
+
+def test_a_folder_opens_its_files(tmp_path: Path) -> None:
+    # A row sending the agent to a folder of three .py files opens three, not one (J-020).
+    (tmp_path / "pkg").mkdir()
+    for name in ("a.py", "b.py", "c.py", "notes.md"):
+        (tmp_path / "pkg" / name).write_text("")
+    claude = "| Task | Start here | Contract | Tests |\n| --- | --- | --- | --- |\n| A | `pkg/`, `x.md` | | |\n"
+    assert metrics.routing_files(claude, tmp_path) == 4
+    assert metrics.opened("pkg/", tmp_path) == 3 and metrics.opened("pkg", tmp_path) == 1
+    assert metrics.opened("missing/", tmp_path) == 1
+    (tmp_path / "empty").mkdir()
+    assert metrics.opened("empty/", tmp_path) == 1
 
 
 def plant(tmp_path: Path) -> Path:

@@ -417,3 +417,26 @@ failure), **Cost**, **Class** (`contradiction`, `ambiguity`, `failure-caught`, `
   can be invoked (stop and say so).
 - **Touched:** CLAUDE.md, theGhost.md (R-022), docs/HANDOFF.md, docs/AGENT.md.
 - **Class:** decision
+
+### J-020 A traversability pass, with a Fable advisor
+- **Who:** Ghost, Claude Opus; a Claude Fable advisor (read-only).
+- **Intent:** Ghost, 2026-10-23: a hard pass on traversability, ease of navigation and low agent
+  context, with separation of concerns, before the harness freezes at 1.7.
+- **Found:** The advisor, walking three tasks as a new agent: "the harness" row sent agents to a
+  folder of six files and to `test/test_harness_adversarial.py`, which does not exist, while the
+  routing metric counted the folder as one file and read 3; a task for 1.5 opened eight files to
+  find five, and nothing routed to where the trials file's header is defined; HANDOFF.md (2,082
+  words, the file agents grep first) carried the finished 0.5 table and sections repeated from
+  CLAUDE.md and GHOST-IN-THE-KERNEL.md; two rows named ROADMAP sections as contracts that the tests
+  hold elsewhere (modules.json's rules, AGENT.md's AGT-nn). Also proposed, waiting on Ghost: shared
+  constants in one place, the table helpers in their own file, `harness/trials.py` and
+  `harness/market.py` (with HAR-12's stamp check, which nothing yet enforces), a check that
+  modules.json's entry points import. Not to change: theGhost.md's length, each test file's own
+  helpers, the blind mirror, the portfolio's plain loops.
+- **Options:** Ghost took items 1 and 2 (routing, HANDOFF.md); theGhost.md is left alone; the
+  roadmap is Ghost's or Fable's, and its references are updated on Ghost's directive.
+- **Resolved:** One routing row per harness part, each with its file, HAR sections and tests; the
+  rows for 1.5, 1.6 and a feature family point at what exists; the routing metric counts a folder
+  as its files (now 4, within 5); CLAUDE.md 1,015 words.
+- **Touched:** CLAUDE.md, `scripts/checks/metrics.py`, test/test_metrics.py, docs/AGENT.md.
+- **Class:** direction

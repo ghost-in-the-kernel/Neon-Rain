@@ -15,12 +15,23 @@ def python_lines(root: Path, tops: tuple[str, ...]) -> list[int]:
     return [len(p.read_text().splitlines()) for top in tops for p in sorted((root / top).rglob("*.py"))]
 
 
-def routing_files(claude: str) -> int:
-    """The most files one routing row of CLAUDE.md opens: backticked names in its "Start here" cell; 0 with no table."""
+def opened(name: str, root: Path) -> int:
+    """The files one backticked name opens: a folder ("neonrain/harness/") its .py files, anything else one.
+    A folder not built yet counts as one: the row still sends the agent there."""
+    folder = root / name
+    if name.endswith("/") and folder.is_dir():
+        return max(1, len(list(folder.glob("*.py"))))
+    return 1
+
+
+def routing_files(claude: str, root: Path) -> int:
+    """The most files one routing row of CLAUDE.md opens, counting its "Start here" cell's backticked names
+    (a folder as its files); 0 with no table."""
     for table in results.TABLE.findall(claude):
         lines = table.splitlines()
         if results.cells(lines[0])[:2] == ["Task", "Start here"]:
-            return max(len(re.findall(r"`[^`]+`", results.cells(line)[1])) for line in lines[2:])
+            names = [re.findall(r"`([^`]+)`", results.cells(line)[1]) for line in lines[2:]]
+            return max(sum(opened(name, root) for name in row) for row in names)
     return 0
 
 
@@ -66,7 +77,7 @@ def measure(root: Path, fast_loop: float | None, full_check: float | None) -> di
         "Fast loop (s)": fast_loop,
         "Full check, `precommit.sh` (min)": full_check,
         "Largest source file (lines)": largest(root),
-        "Files a routing row opens": routing_files((root / "CLAUDE.md").read_text()),
+        "Files a routing row opens": routing_files((root / "CLAUDE.md").read_text(), root),
         "Decisions without `See also`": without_see_also((root / "theGhost.md").read_text()),
         "Results without a trials line": results_lacking(root, "trials.tsv"),
         "Results without dispersion": results_lacking(root, "dispersion"),
