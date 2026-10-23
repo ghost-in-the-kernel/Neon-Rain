@@ -192,7 +192,7 @@ truth (R-001). No CI (R-003).
 | `docs/JOURNAL.md` | what happened while the work was done, fixed fields | |
 | `docs/modules.json` | modules and their imports | `test/test_modules.py` |
 | `data/MANIFEST.md` | every dataset: source, license, fetch command, hash | `test/test_manifest.py` |
-| `harness/trials.tsv` | every evaluation run | `test/test_trials.py` |
+| `harness/trials.tsv` | every evaluation run | `test/test_results.py` |
 | `TODO.md` | the open items, in order | `test/test_todo.py` |
 | `CLAUDE.md` | the routing table | mandatory-context word count in `AGENT.md` |
 
@@ -249,9 +249,9 @@ working with agents in cloud sessions, and are the team's own.
     or says Ghost attaches it.
 0.4 **Artifact store** chosen by R-010 from 0.3's result; `scripts/fetch/artifacts.py` round-trips a
     file by content hash.
-0.5 **The doc tests and `precommit.sh`.** `test_ghost`, `test_glossary`, `test_todo`,
+0.5 **The doc tests and `scripts/precommit.sh`.** `test_ghost`, `test_glossary`, `test_todo`,
     `test_modules` (on an empty `modules.json` with the eight modules declared), `test_manifest`
-    (empty manifest passes), `test_supply_chain` (no workflow file, lockfile-only). `precommit.sh`
+    (empty manifest passes), `test_supply_chain` (no workflow file, lockfile-only). `scripts/precommit.sh`
     runs them and the fast loop and prints the AGENT.md line.
     *Check:* every doc test passes on the empty project; `test_ghost` fails on a deliberately
     conflicting pair, then passes when one is superseded.
