@@ -3,7 +3,7 @@
 Read `CLAUDE.md` first, then this. `TODO.md` is the chain in order; `docs/DONE.md` is what is
 finished. This file says what the next session should actually do, and what it must not assume.
 
-## Where the project stands (2026-10-22)
+## Where the project stands (2026-10-23)
 
 Phase 0 is done but for Ghost's items (0.2, 0.4). Phase 1: 1.1 to 1.4 are done (J-013 to J-018):
 the synthetic market, the targets, the splits, and the cost model and metrics, with HAR-07's mirror
@@ -17,107 +17,41 @@ R-001 (Python) and R-002 (harness first) are in force; R-010 is superseded by R-
 
 ## Starting a session cold
 
-```sh
-git clone https://github.com/ghost-in-the-kernel/Neon-Rain neon-rain   # wherever the session keeps repos
-cd neon-rain
-git config user.name Ghost
-git config user.email 118085043+ghost-in-the-kernel@users.noreply.github.com
-```
-
-Commits are authored as **Ghost** — he uses the commit count as a velocity tracker, so a session's
-work lands as several real commits, each a deliverable that stands alone, not one batch at the end.
-An agent keeps its own `Co-Authored-By` line.
+Clone, then `CLAUDE.md`'s commands (the venv) and its two rules (commits authored as Ghost). Ghost
+reads the commit count as velocity, so a session's work lands as several commits, each a deliverable
+that stands alone.
 
 Four things about this environment, each measured, not assumed (NR-F-01):
 
 1. **There is no CI and no local machine** (R-003). `scripts/precommit.sh` run in the session is the
    only gate. If a `.github/workflows/` file ever appears, that is an intrusion: change nothing and
    report it.
-2. **Only PyPI and GitHub are reachable.** Every price, news and dataset host is refused by the
-   proxy, as are GitHub Releases, Git LFS uploads and REST writes. Do not write a fetch script that
-   reaches a market-data host; it cannot work, and a retry with a different client is wasted time.
+2. **Only PyPI and GitHub are reachable, as a rule.** Every price and news host is refused by the
+   proxy, as are GitHub Releases, Git LFS uploads and REST writes; the Hugging Face Hub was open from
+   one session and not another (J-008). Do not write a fetch script for a market-data host.
 3. **`pip install` may be refused by the session's own policy classifier** even for PyPI, which is
    open (J-004). If it is, say so and ask Ghost to approve it rather than working around it.
-4. **A scratch branch `probe-plain`** with a 1 MB random blob is still on GitHub; the proxy refuses
-   branch deletion, so Ghost deletes it. Do not try again.
+4. **A scratch branch `probe-plain`** is Ghost's to delete; the proxy refuses branch deletion.
 
 ---
 
-## Step 0.5, the doc tests and `precommit.sh` — done (J-011); kept as the record of what each test holds
-
-The documents exist and nothing holds them. Write `test/` and `scripts/precommit.sh` so that the
-founding documents cannot rot silently. No data, no model, no network: the fast loop must run under
-30 seconds (AGT-02) on a clean clone with only `requirements.lock` installed.
-
-Compile the lock first with the command in docs/SUPPLY-CHAIN.md rule 2 (R-017, R-018), then
-`pip install --require-hashes -r requirements.lock`. The ten direct dependencies
-and their reasons are in `requirements.in`; adding an eleventh is a decision, not an import.
-
-Each test below names what it holds and **the mutation that must turn it red**. A test whose red
-condition you have not seen is not a check (GHOST-IN-THE-KERNEL.md); write the test, break the
-document deliberately, watch it fail, fix the document, commit.
-
-| Test | Holds | Must turn red when |
-| --- | --- | --- |
-| `test_ghost.py` | `theGhost.md`: ids `R-nnn` unique and sequential from 001; every entry has Decision, Why, Held by, Source, Status, See also, subject; status is one of the five words; a `superseded by R-nnn` names an entry that exists and that names it back; no two `in force` entries share a `subject:` while carrying `conflicts-with:` | an id is duplicated; a supersession is one-sided; two in-force entries conflict on a subject |
-| `test_glossary.py` | every backticked alias in `docs/GLOSSARY.md` appears in no other document under `docs/` or the root | a document uses an enforced alias (try writing `timeframe` into ROADMAP.md, outside backticks: a backticked word is a mention) |
-| `test_todo.py` | `TODO.md` headings in numeric order; the first open item has a `Check:` line; no item appears in both `TODO.md` and `docs/DONE.md` | an item is out of order, or is in both files |
-| `test_modules.py` | every `import` under `neonrain/` is allowed by `docs/modules.json`; MOD-01 (only `scorer` imports `anthropic`), MOD-02 (`harness` imports neither `models` nor `baselines`), MOD-03 (no broker client anywhere), MOD-04, MOD-05 | a planted `import anthropic` in `neonrain/features/` |
-| `test_manifest.py` | every row of `data/MANIFEST.md` has a source, a license, a supplier and a hash; an empty table passes | a row with a blank license |
-| `test_supply_chain.py` | no file under `.github/workflows/`; no `.claude/settings.json` hooks; no git hooks; every import in `neonrain/` resolves to something in `requirements.lock` or the standard library; none of the named worm artefacts exist | a planted empty workflow file |
-| `test_harness_doc.py` | every `HAR-nn` in `docs/HARNESS.md` is referenced by a docstring or comment in `neonrain/harness/`, and the reverse; numbers unique and sequential | an invariant exists in the document and nowhere in the code (it will fail until phase 1, so **write it last and let it fail for now** — note that in the journal rather than weakening it) |
-| `test_results.py` | every row of `docs/RESULTS.md` has a line in `harness/trials.tsv` with a matching `config_hash`, a dispersion on both axes, and findings cited by number; empty tables pass | a row with no trials line |
-| `test_metrics.py` | `docs/AGENT.md`'s table against what `scripts/metrics.py` measures; a metric within target may move freely, past it may not get worse | a measured value worse than the recorded one |
-
-`scripts/metrics.py` measures: mandatory context words (`CLAUDE.md`), fast-loop seconds, largest
-source file, files a routing row opens, decisions without `See also`, results without a trials line
-or a dispersion, datasets without a manifest line, docs lines per source line. It prints the table
-and exits non-zero past a target.
-
-`scripts/precommit.sh` runs, in order, and prints one summary line to quote in the commit: the fast
-loop; `ruff` with the R-015(b) rules configured in `pyproject.toml` (type hints required,
-comprehensions at most three clauses, no `*args`/`**kwargs` in our own signatures, functions under
-40 lines, no bare `except`); `mutmut` over `neonrain/` with a survivor refused unless
-`docs/MUTATION.md` has a line for it; `scripts/metrics.py`.
-
-**Check for 0.5:** every doc test passes; `test_ghost.py` fails on a deliberately conflicting pair,
-then passes when one is superseded; `precommit.sh` refuses an unexplained mutant; the readability
-lint is configured.
-
-## Step 0.6, tithe pass 0 — done (J-012)
-
-Run in a fresh cloud session. Its task and pass condition are in J-012 and nowhere ahead of a run
-(R-020: the first run read them here and graded itself). Two things it showed are fixed;
-the others wait below, at 1.4 and with Ghost.
-
-## For Opus: phase 1, the harness — the shape of the work
+## For Opus: phase 1, the harness — what is left
 
 `docs/HARNESS.md` is the specification; build to it, and when it is not precise enough to implement,
-**make the document precise rather than deciding in code**. The order is `TODO.md`'s and is not
-negotiable: nothing under `neonrain/models/` or `neonrain/baselines/` exists until 1.6 passes
-(R-002).
+**make the document precise rather than deciding in code** (every step so far found gaps: J-013 to
+J-018). Nothing under `neonrain/models/` or `neonrain/baselines/` exists until 1.6 passes (R-002).
 
-1.1 synthetic market (HAR-10) → 1.2 targets (HAR-02) → 1.3 splits (HAR-03 to HAR-05) → 1.4 costs and
-metrics (HAR-06, HAR-07) → 1.5 the trials file (HAR-09) → 1.6 the adversarial tests → 1.7 freeze.
-
-Three things about phase 1 that are easy to get wrong:
-
-- **The provenance stamp (HAR-12) is the primary leak defence**, not the statistical tests. Build it
-  into the feature contract from the first line of `neonrain/features/`, so a leaking feature is
-  refused by construction rather than noticed by a suspicious metric.
-- **The mirror test (R-015c) must be written blind.** Spawn a subagent, give it `docs/HARNESS.md`
-  §HAR-07 and nothing else — not the code, not your implementation's shape — and have it write an
-  independent, deliberately naive implementation of the metrics. Then compare on the synthetic
-  market. If you write both sides, you have written a mirror that agrees with itself on every shared
-  mistake, and phase 1's most important check is worthless.
-- **Mutation testing runs workers from a fork server** (`pyproject.toml`): polars's thread pool
-  does not survive a plain fork, and the synthetic market's mutants deadlocked into timeouts that
-  looked like survivors (J-013). A run of timeouts is the first thing to suspect if it recurs.
-- **HAR-06's four questions are answered** (R-021): everything pays, nothing nets.
-- **The first file under `neonrain/` makes "Docs lines per source line" measurable.** It is
-  recorded at tithes (R-019) and starts "not armed" (far past 0.35), so it fails nothing.
-- **The goldens are written at 1.7, not before.** A golden recorded while the harness is still
-  changing records a bug as the expected answer.
+- **1.5, the trials file** (HAR-09, HAR-01): its header is defined today in the doc check
+  `scripts/checks/results.py`, not in the harness that will write the file; where it should live is
+  waiting on Ghost (J-020).
+- **1.6 needs HAR-12's stamp check, and nothing enforces it yet.** The stamp is the primary leak
+  defence (a leaking feature refused by construction, not noticed by a metric); today `edge_stamp`
+  is only produced. 1.6's planted-leak test needs the refusal to exist. Where it lives is waiting on
+  Ghost (J-020).
+- **1.7 writes the goldens, not before.** A golden recorded while the harness changes records a bug
+  as the expected answer.
+- **The portfolio is scored on every universe row, never only labelled rows** (HAR-07, J-018).
+- **A run of mutmut timeouts** means a fork problem first (J-013; `pyproject.toml`).
 
 ## For Ghost: waiting on you
 
@@ -167,10 +101,5 @@ Each gets a journal entry of class `trial` naming the trial, its result and the 
 
 ## What to distrust
 
-On most projects an agent's failure mode is code that does not work. Here it is **a number that
-looks like success**, because every mechanism in this repository exists to stop one. A metric
-computed on a leaking feature, a baseline quietly weakened, a fold boundary moved by one day, a bad
-run not written to the trials file, a golden re-recorded after a change: each of those makes the
-project feel like it is going well.
-
-If a result surprises you by being good, distrust the harness before reporting it. Say so, and stop.
+A number that looks like success. If a result surprises you by being good, distrust the harness
+before reporting it, say so, and stop (`docs/GHOST-IN-THE-KERNEL.md`).

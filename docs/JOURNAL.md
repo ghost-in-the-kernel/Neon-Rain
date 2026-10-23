@@ -437,6 +437,13 @@ failure), **Cost**, **Class** (`contradiction`, `ambiguity`, `failure-caught`, `
   roadmap is Ghost's or Fable's, and its references are updated on Ghost's directive.
 - **Resolved:** One routing row per harness part, each with its file, HAR sections and tests; the
   rows for 1.5, 1.6 and a feature family point at what exists; the routing metric counts a folder
-  as its files (now 4, within 5); CLAUDE.md 1,015 words.
-- **Touched:** CLAUDE.md, `scripts/checks/metrics.py`, test/test_metrics.py, docs/AGENT.md.
+  as its files (now 4, within 5); CLAUDE.md 1,015 words. HANDOFF.md from 2,082 words to 1,105: the
+  0.5 table moved to DONE.md as the record of what each check holds; the cold-start block and "What
+  to distrust" cut to pointers at CLAUDE.md and GHOST-IN-THE-KERNEL.md; finished phase-1 bullets
+  removed, and what 1.5 to 1.7 need said, including that nothing yet enforces HAR-12's stamp; the
+  reachability fact corrected by J-008. ROADMAP's references updated on Ghost's directive
+  (`test/test_trials.py` was never a file; `test/test_results.py` holds trials.tsv). theGhost.md
+  R-005 names the same missing `test/test_trials.py`; left for Ghost, who keeps that file.
+- **Touched:** CLAUDE.md, `scripts/checks/metrics.py`, test/test_metrics.py, docs/AGENT.md,
+  docs/HANDOFF.md, docs/DONE.md, docs/ROADMAP.md.
 - **Class:** direction

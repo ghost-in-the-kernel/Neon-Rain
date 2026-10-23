@@ -33,6 +33,20 @@ file and passed once one side was superseded; `precommit.sh` refused 139 unexpla
 passed with 1,096 of 1,099 killed and 3 explained in `docs/MUTATION.md`; the readability lint is
 configured. ✓
 
+#### What 0.5's checks hold, and the change that turns each red (moved from HANDOFF.md, J-020)
+
+| Test | Holds | Must turn red when |
+| --- | --- | --- |
+| `test_ghost.py` | `theGhost.md`: ids `R-nnn` unique and sequential from 001; every entry has Decision, Why, Held by, Source, Status, See also, subject; status is one of the five words; a `superseded by R-nnn` names an entry that exists and that names it back; no two `in force` entries share a `subject:` while carrying `conflicts-with:` | an id is duplicated; a supersession is one-sided; two in-force entries conflict on a subject |
+| `test_glossary.py` | every backticked alias in `docs/GLOSSARY.md` appears in no other document under `docs/` or the root | a document uses an enforced alias (try writing `timeframe` into ROADMAP.md, outside backticks: a backticked word is a mention) |
+| `test_todo.py` | `TODO.md` headings in numeric order; the first open item has a `Check:` line; no item appears in both `TODO.md` and `docs/DONE.md` | an item is out of order, or is in both files |
+| `test_modules.py` | every `import` under `neonrain/` is allowed by `docs/modules.json`; MOD-01 (only `scorer` imports `anthropic`), MOD-02 (`harness` imports neither `models` nor `baselines`), MOD-03 (no broker client anywhere), MOD-04, MOD-05 | a planted `import anthropic` in `neonrain/features/` |
+| `test_manifest.py` | every row of `data/MANIFEST.md` has a source, a license, a supplier and a hash; an empty table passes | a row with a blank license |
+| `test_supply_chain.py` | no file under `.github/workflows/`; no `.claude/settings.json` hooks; no git hooks; every import in `neonrain/` resolves to something in `requirements.lock` or the standard library; none of the named worm artefacts exist | a planted empty workflow file |
+| `test_harness_doc.py` | every `HAR-nn` in `docs/HARNESS.md` is referenced by a docstring or comment in `neonrain/harness/`, and the reverse; numbers unique and sequential | an invariant exists in the document and nowhere in the code (it will fail until phase 1, so **write it last and let it fail for now** — note that in the journal rather than weakening it) |
+| `test_results.py` | every row of `docs/RESULTS.md` has a line in `harness/trials.tsv` with a matching `config_hash`, a dispersion on both axes, and findings cited by number; empty tables pass | a row with no trials line |
+| `test_metrics.py` | `docs/AGENT.md`'s table against what `scripts/metrics.py` measures; a metric within target may move freely, past it may not get worse | a measured value worse than the recorded one |
+
 ### 0.6 Tithe pass 0 — done 2026-10-22 (J-012)
 
 The fresh-agent trial, in a fresh cloud session on `main` at 77ff4e2. Reads `docs/modules.json` in its
