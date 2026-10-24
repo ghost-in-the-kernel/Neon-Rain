@@ -30,7 +30,7 @@ at the plan.
 | Dispersion over folds and groups | `neonrain/harness/dispersion.py` | HAR-08 | `test/test_dispersion.py` |
 | The trials file, a run's config hash | `neonrain/harness/trials.py` | HAR-01, HAR-09 | `test/test_trials.py` |
 | The adversarial tests (TODO 1.6) | `test/test_harness_adversarial.py`, `test/mirror_har07.py` (written blind; never edit) | HAR-03, HAR-08, HAR-10, HAR-12 | those two, `test/test_mirror.py` |
-| A dataset: fetch, manifest, universe; the trading calendar | `scripts/fetch/`, `data/MANIFEST.md` (phase 2); `neonrain/universe/calendar.py` | R-006 | `test/test_manifest.py`, `test/test_calendar.py` |
+| A dataset: fetch, manifest, universe; the calendar; a measuring script (`scripts/probe/`) | `scripts/fetch/`, `data/MANIFEST.md` (phase 2); `neonrain/universe/calendar.py` | R-006 | `test/test_manifest.py`, `test/test_calendar.py` |
 | A feature family (phase 2) | `docs/modules.json` (`features`), `neonrain/harness/market.py` (the feature frame, its stamps) | HAR-12; `docs/GLOSSARY.md` (its term first) | one unit test per feature |
 | The goldens: the freeze, a harness change | `neonrain/harness/goldens.py`, `scripts/goldens.py` | HAR-14, R-002 | `test/test_golden_files.py`, `test/test_the_freeze.py` |
 | A baseline | `neonrain/baselines/` (phase 3) | R-007 | `harness/goldens/` |
@@ -47,7 +47,7 @@ at the plan.
 
 `python3.12 -m venv .venv && .venv/bin/pip install --only-binary :all: --require-hashes -r
 requirements.lock` once per session (lockfile only, wheels only, pip as the venv ships it).
-`.venv/bin/pytest` is the fast loop: doc tests and unit tests, no data, no model, no network.
+`.venv/bin/pytest` is the fast loop: doc tests and unit tests, no data, no model, no network; run `.venv/bin/ruff check .` beside it.
 `scripts/precommit.sh` is the check before a push: the fast loop, ruff, the mutation score (R-015),
 the metrics line; quote its last line in the commit. Long output (`precommit.sh`, mutmut) goes to a
 file, grepped for failures (`FAILED`, `Error`, `refused`, `unexplained`); read the file only if

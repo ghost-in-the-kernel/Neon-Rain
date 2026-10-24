@@ -9,6 +9,14 @@ mutmut runs only the tests that reached the mutated function (its stats run), ch
 (`test/conftest.py`, R-024); the gate clears `mutants/` first because mutmut keeps a cached verdict
 when only the tests change. A slow check is a dear test reached by many mutants, not selection.
 
+What the full check costs, and the knobs (R-024 c): a mutant is one `pytest.main` in a fork of a warmed process,
+so a per-run cost is paid 3,896 times. `test/conftest.py` freezes the warmed heap (`gc.freeze()`) at the start of a
+run under mutmut, because pytest's unraisable-exception plugin calls `gc.collect()` twice per run and each call walked
+that heap for about 85 ms. `mutmut run "<module>.*"` runs one module's mutants in seconds, and
+`mutmut results | grep <module>` lists its survivors. To show a survivor equivalent, brute-force the mutated line over
+the function's stated domain and quote the range checked in its row. A new top-level folder the tests import (as
+`scripts/probe/` and `scripts/fetch/`) must be added to `also_copy` in `pyproject.toml`.
+
 A survivor in a file you did not touch is still yours: `scripts/precommit.sh` refuses the push for it all
 the same, so kill it with a test or explain it here.
 

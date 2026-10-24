@@ -980,3 +980,42 @@ shared classes). `test/test_journal.py` holds this.
   docs/modules.json, data/MANIFEST.md, docs/FINDINGS.md, TODO.md, docs/NAVIGATION-LOG.md;
   `neon-rain-data` (`wiki/prices/2017.parquet`, `index.tsv`).
 - **Class:** decision
+
+### J-045 Tithe: the navigation log reviewed, and the full check from 9.6 to 7.3 minutes
+- **Who:** Ghost, Claude Opus (reviewing), a fresh Claude Sonnet agent (the tithe, `docs/rules/tithe.md`).
+- **Intent:** A tithe overdue by R-012 (11 commits since 4160b6c, none a tithe), the navigation
+  log's review due, and the full check at 9.63 of AGT-07's 10 minutes.
+- **Found:** (a) **The cost**, measured before any change.
+  - The mutant phase was 337 s, and about 70% of it was per-run overhead, not tests.
+  - pytest's unraisable-exception plugin runs `gc.collect()` twice per `pytest.main`, and each
+    call walked the fork server's warmed heap (polars, the test modules) for about 85 ms.
+  - The slow tests (164 s) never run under mutmut.
+
+  (b) **The five debriefs' verdicts.**
+  - Acted on earlier: a row for the full check.
+  - Acted on now: ruff beside the fast loop; the calendar and `scripts/probe/` in the dataset row;
+    MUTATION.md on proving an arithmetic mutant equivalent, `mutmut run "<module>.*"`, and
+    `also_copy` for a new folder.
+  - Not valid: "known at t" (HAR-12 says it); one-off incidents.
+  - Open: the questions below.
+
+  Convergence: every agent reached the readability check and `docs/modules.json` by grep, not by
+  a row.
+- **Resolved:** `test/conftest.py` freezes the heap under mutmut (`gc.freeze()` at session start,
+  `# Decision: R-024 (c)`). The mutant phase went from 337 s to 163 s, with every verdict unchanged
+  (3,881 killed, the same 15 survivors explained), and the full check from 9.63 to 7.27 minutes.
+  No gate split is needed. The log is wiped.
+
+  Open, for Ghost:
+  1. Where a constant several phases share should live. `neonrain/universe/periods.py` cannot be
+     imported by `baselines` or `training` yet.
+  2. A layout note in `neon-rain-data`.
+  3. "`metrics.py --write` after changing a row's files" wanted in CLAUDE.md, which is 3 words
+     under its limit.
+  4. One test listing where the sample's end date is stated.
+  5. The slow suite, the next cost if 10 minutes is threatened again.
+
+  A leftover wait loop of the agent's (polling a scratch file) was left running; it writes nothing.
+- **Touched:** test/conftest.py, pyproject.toml, CLAUDE.md, docs/MUTATION.md, docs/AGENT.md,
+  docs/NAVIGATION-LOG.md.
+- **Class:** measurement
