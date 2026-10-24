@@ -5,6 +5,7 @@ Every dataset: source, license, fetch command, date range, hash as last fetched 
 | Dataset | Source | License | Fetch | Range | Hash |
 | --- | --- | --- | --- | --- | --- |
 | wiki-prices-raw | Quandl WIKI/PRICES via Nasdaq Data Link, the export (`qopts.export=true`), snapshot 2026-02-03 | public domain | `neon-rain-data` `raw/wiki/`: five parts, `cat WIKI_PRICES.zip.part-* > WIKI_PRICES.zip` | the frozen feed (to 2018-04); the sample 1998-01-02 to 2017-12-29 | sha256 d1b89242ebaf629e541f2a3c77c718f01819fa72dc687a30dadc764c8983e3f6 |
+| wiki-prices | the sample of `wiki-prices-raw`, one parquet file per year, columns as exported, rows sorted by ticker then date | public domain | `python scripts/fetch/wiki.py <neon-rain-data clone> <scratch dir>` writes `wiki/prices/<year>.parquet` (each under 100 MB) and `wiki/prices/index.tsv` (year, file, SHA-256) in `neon-rain-data`, refusing the raw parts unless they hash to the row above | 1998-01-02 to 2017-12-29 | sha256 127959a80fa0f4a10e2cc6daee0c5972bfac31cce37371761260789db2127a5d (of `index.tsv`) |
 
 ## The artifact store (R-016 b)
 

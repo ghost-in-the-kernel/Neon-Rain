@@ -41,7 +41,10 @@
    "entryPoints": [
     "neonrain.universe.calendar.sessions",
     "neonrain.universe.calendar.closures",
-    "neonrain.universe.calendar.holidays"
+    "neonrain.universe.calendar.holidays",
+    "neonrain.universe.membership.spans",
+    "neonrain.universe.membership.median_dollar_volume",
+    "neonrain.universe.membership.universe"
    ]
   },
   "features": {

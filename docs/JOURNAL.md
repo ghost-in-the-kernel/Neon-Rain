@@ -936,3 +936,28 @@ shared classes). `test/test_journal.py` holds this.
 - **Touched:** theGhost.md (R-016), data/MANIFEST.md, docs/FINDINGS.md (NR-F-01), TODO.md,
   docs/HANDOFF.md; `neon-rain-data` (`raw/wiki/`).
 - **Class:** decision
+
+### J-043 Step 2.1(b): WIKI's membership, and what it is missing
+- **Who:** Ghost, Claude Opus (reviewing), a fresh Claude Sonnet agent (under J-027).
+- **Intent:** TODO 2.1(b): the yearly price files and a point-in-time universe from WIKI.
+- **Found:**
+  - **The data and the code:** `scripts/fetch/wiki.py` verified the raw join against the
+    manifest's hash and wrote 1998–2017 as twenty parquet files (12,051,622 rows, 3,196 tickers,
+    423 MB) and an index to `neon-rain-data`. `neonrain/universe/membership.py` gives each
+    ticker's span and the 1,000 names with the largest median dollar volume over the 63 sessions
+    ending at t, t included (HAR-12's close of t), with a test that later rows move nothing.
+  - **The survivorship gap:** WIKI has no ticker leaving before 2014-04-01. For 1998–2013 the
+    sample holds only names alive in 2014: it is survivor-only for 16 of its 20 years (NR-F-03).
+    New names dry up from 2014 too (NR-F-04). WIKI marks no delisting (NR-F-06).
+  - **The feed's decay:** dividends stop after November 2017, and 2017-11-08 has no rows. The
+    agent proposes ending at 2017-11-07 (NR-F-07).
+  - **Smaller findings:** 98 tickers are candidates for reuse or unrecorded splits (NR-F-05); 120
+    WIKI dates are not NYSE sessions (NR-F-08).
+- **Resolved:** Reviewed. The data repository pushed (b7546db); the code, tests and findings
+  committed. Two questions go to Ghost: the sample's last date, and how a survivor-only
+  1998–2013 may be used.
+- **Touched:** scripts/fetch/wiki.py, scripts/probe/wiki_findings.py, neonrain/universe/membership.py,
+  test/test_wiki.py, test/test_membership.py, docs/FINDINGS.md (NR-F-03 to NR-F-08), data/MANIFEST.md,
+  docs/modules.json, docs/GLOSSARY.md, docs/MUTATION.md, docs/AGENT.md, docs/NAVIGATION-LOG.md;
+  `neon-rain-data` (`wiki/prices/`).
+- **Class:** measurement
