@@ -17,8 +17,9 @@ Nothing under `neonrain/models/` or `neonrain/baselines/` begins until 1.6 passe
 The source is Quandl's WIKI prices (Ghost, 2026-10-24, J-041): about 3,000 US companies, daily
 OHLCV, dividends, splits and adjusted columns, public domain, frozen since 2018-04-11. The raw export
 is staged in `neon-rain-data` (`raw/wiki/`, five parts, its hash on `data/MANIFEST.md`; J-042). The
-sample is 1998-01-02 to 2017-12-29: the calendar's first year to the last full year before the feed
-decayed in its final months. 
+sample is 1998-01-02 to 2017-11-07: the calendar's first year to the last session before the feed's
+holes (R-026, NR-F-07; the plan's first date was 2017-12-29). Every result on it is reported for two
+periods apart, before 2014-04-01 (survivor-only) and from it (R-026, NR-F-03). 
 
 ### 2.1 Universe
 
@@ -29,7 +30,7 @@ reason), no dependency (Ghost, J-033). (b) Membership, from WIKI. Plan:
 they hash to the manifest's line, and writes the sample as yearly parquet (`wiki/prices/<year>.parquet`,
 each under 100 MB) back to the data repository, one manifest line with the hash of their index (the
 reviewer pushes). `neonrain/universe/membership.py`, a pure function of the price frame: each
-ticker's first and last date in the sample; a last date before 2017-12-29 is a ticker that left;
+ticker's first and last date in the sample; a last date before 2017-11-07 is a ticker that left;
 the universe on each date is the 1,000 names with the largest trailing 63-session median dollar
 volume, known at that date (no look-ahead). Findings: the share of tickers that leave against
 the few percent a year the market loses; tickers reused by another company; how WIKI marks a

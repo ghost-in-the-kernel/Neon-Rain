@@ -491,3 +491,22 @@ it is `in force`.
 - **Status:** in force
 - **See also:** R-009, R-011, R-013, R-016
 - **subject:** model
+
+### R-026: WIKI's sample ends 2017-11-07; its survivor-only years are reported apart and the bias measured
+- **Decision:** (a) The WIKI sample is 1998-01-02 to 2017-11-07, the last session before the feed's
+  holes (NR-F-07). (b) WIKI holds no ticker leaving before 2014-04-01 (NR-F-03), so every result
+  on it is reported for two periods apart: before 2014-04-01, survivor-only, read as an optimistic
+  upper bound; and from 2014-04-01, closer to honest, still with no new names entering (NR-F-04). A
+  pooled number is never reported alone. (c) The size of the bias is measured on the synthetic
+  market, with and without its delisted names, through the frozen harness, and written up as a
+  finding before the first baseline's result.
+- **Why:** Ghost cannot afford a source with real delistings (J-041), and a survivor-only sample
+  flatters most strategies; reporting the periods apart and measuring the bias states the flaw
+  instead of hiding it. Using 2014 on alone was refused: about four years is too short for
+  walk-forward folds at the 63-day horizon, and is biased too.
+- **Held by:** TODO 2.1 and 2.2; docs/RESULTS.md (its period column); `scripts/checks/results.py`.
+- **Source:** proposed by Claude Opus, 2026-10-24 (J-043), from a fresh Sonnet agent's findings;
+  Ghost, 2026-10-24: "go with your recommendations on both".
+- **Status:** in force
+- **See also:** R-006, R-014, R-016
+- **subject:** data

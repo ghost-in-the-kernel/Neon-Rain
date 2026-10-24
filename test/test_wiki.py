@@ -103,13 +103,13 @@ def test_a_zip_with_other_than_one_file_is_refused(tmp_path: Path) -> None:
 
 
 def test_the_sample_keeps_exactly_the_plans_dates_and_the_columns_as_they_are(tmp_path: Path) -> None:
-    rows = [("A", "1998-01-01"), ("A", "1998-01-02"), ("A", "2017-12-29"), ("A", "2018-01-02"), ("B", "1962-01-02")]
+    rows = [("A", "1998-01-01"), ("A", "1998-01-02"), ("A", "2017-11-07"), ("A", "2017-11-08"), ("B", "1962-01-02")]
     (tmp_path / "x.csv").write_text(csv_text(rows))
     got = wiki.sample(tmp_path / "x.csv").collect()
-    assert got["date"].to_list() == [date(1998, 1, 2), date(2017, 12, 29)]
+    assert got["date"].to_list() == [date(1998, 1, 2), date(2017, 11, 7)]
     assert got.columns == list(wiki.COLUMNS)
     assert got.schema == pl.Schema(wiki.COLUMNS)
-    assert (wiki.FIRST_DATE, wiki.LAST_DATE) == (date(1998, 1, 2), date(2017, 12, 29))
+    assert (wiki.FIRST_DATE, wiki.LAST_DATE) == (date(1998, 1, 2), date(2017, 11, 7))
 
 
 def test_a_header_that_is_not_the_export_is_refused(tmp_path: Path) -> None:

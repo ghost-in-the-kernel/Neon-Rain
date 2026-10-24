@@ -961,3 +961,22 @@ shared classes). `test/test_journal.py` holds this.
   docs/modules.json, docs/GLOSSARY.md, docs/MUTATION.md, docs/AGENT.md, docs/NAVIGATION-LOG.md;
   `neon-rain-data` (`wiki/prices/`).
 - **Class:** measurement
+
+### J-044 R-026 (a) and (b): the sample ends 2017-11-07; every WIKI result has two periods
+- **Who:** Ghost, Claude Opus (the decision's text, reviewing), a fresh Claude Sonnet agent (under J-027).
+- **Intent:** Ghost: "go with your recommendations on both". R-026 recorded; (a) and (b) built.
+  Part (c), the bias measured on the synthetic market, is the next task.
+- **Found:** (a) `scripts/fetch/wiki.py`'s `LAST_DATE` moved to 2017-11-07 and the script was
+  rerun: only `2017.parquet` (551,931 rows) and the index changed, the other nineteen files
+  hash-identical; the manifest's `wiki-prices` hash is now 867d708b…0a65. (b) RESULTS.md's tables
+  gained a Period column (`synthetic`, `survivor-only`, `from-2014-04-01`); `scripts/checks/results.py`
+  refuses a row with no period and a WIKI run, horizon and metric reported for one period only. The
+  boundary is `neonrain/universe/periods.py`'s `BOUNDARY`. Open: no module that reports a result
+  (`baselines`, `training`) may import `universe` yet, a new import for Ghost when phase 3 needs it;
+  FINDINGS' counts are still the 2017-12-29 sample's, and say so.
+- **Resolved:** Reviewed; the data repository pushed (5969cd7).
+- **Touched:** theGhost.md (R-026), scripts/fetch/wiki.py, test/test_wiki.py, neonrain/universe/periods.py,
+  test/test_periods.py, scripts/checks/results.py, test/test_results.py, docs/RESULTS.md,
+  docs/modules.json, data/MANIFEST.md, docs/FINDINGS.md, TODO.md, docs/NAVIGATION-LOG.md;
+  `neon-rain-data` (`wiki/prices/2017.parquet`, `index.tsv`).
+- **Class:** decision

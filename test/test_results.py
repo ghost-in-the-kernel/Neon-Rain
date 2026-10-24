@@ -1,11 +1,12 @@
-"""Every number in docs/RESULTS.md has a trials line, both dispersions and a finding; a bare one is caught."""
+"""Every number in docs/RESULTS.md has a trials line, both dispersions, a finding and a period; a bare one is caught,
+and a WIKI run reported for one period only is caught (R-026)."""
 from pathlib import Path
 
 from scripts.checks import results
 
-HEADER = "| Run | Horizon | Folds: mean ± sd [min, max] | Groups: mean ± sd [min, max] | Findings |\n| --- | --- | --- | --- | --- |\n"
+HEADER = "| Run | Horizon | Period | Folds: mean ± sd [min, max] | Groups: mean ± sd [min, max] | Findings |\n| --- | --- | --- | --- | --- | --- |\n"
 TRIALS = "\t".join(results.TRIALS_COLUMNS) + "\nab12\t2026-11-01\t5\tIC\t0.02\t0.01\t3\t\n"
-GOOD = "| ab12 | 5 | 0.02 ± 0.01 [0.00, 0.04] | 0.02 ± 0.02 [-0.01, 0.05] | NR-F-01 |\n"
+GOOD = "| ab12 | 5 | synthetic | 0.02 ± 0.01 [0.00, 0.04] | 0.02 ± 0.02 [-0.01, 0.05] | NR-F-01 |\n"
 
 
 def test_the_real_results_hold(root: Path) -> None:
@@ -14,7 +15,7 @@ def test_the_real_results_hold(root: Path) -> None:
 
 
 def test_an_empty_table_holds() -> None:
-    assert results.problems(HEADER + "| *(none yet)* | | | | |\n", TRIALS) == []
+    assert results.problems(HEADER + "| *(none yet)* | | | | | |\n", TRIALS) == []
 
 
 def test_a_full_row_holds() -> None:
@@ -60,7 +61,7 @@ def test_a_row_with_no_run_is_named_by_a_question_mark() -> None:
 
 
 def test_a_table_without_a_groups_or_findings_column_is_caught() -> None:
-    table = "| Run | Folds: mean ± sd [min, max] |\n| --- | --- |\n| ab12 | 0.02 ± 0.01 [0.00, 0.04] |\n"
+    table = "| Run | Period | Folds: mean ± sd [min, max] |\n| --- | --- | --- |\n| ab12 | synthetic | 0.02 ± 0.01 [0.00, 0.04] |\n"
     assert results.problems(table, TRIALS) == [
         "ab12 has no dispersion on the groups axis (mean ± sd [min, max])", "ab12 cites no finding (NR-F-nn)"
     ]
@@ -82,3 +83,67 @@ def test_trial_hashes_are_the_first_column_without_the_header() -> None:
 def test_rows_of_every_run_table_are_read() -> None:
     text = HEADER + GOOD + "\n" + HEADER + GOOD.replace("ab12", "cd34")
     assert [row["Run"] for row in results.reported_rows(text)] == ["ab12", "cd34"]
+
+
+def test_a_row_naming_no_period_is_caught() -> None:
+    assert results.problems(HEADER + GOOD.replace("synthetic", ""), TRIALS) == [
+        "ab12 names no period (synthetic, survivor-only, from-2014-04-01)"
+    ]
+
+
+def test_a_row_naming_a_period_not_in_the_list_is_caught() -> None:
+    assert results.problems(HEADER + GOOD.replace("synthetic", "pooled"), TRIALS) == [
+        "ab12 names no period (synthetic, survivor-only, from-2014-04-01)"
+    ]
+
+
+def test_a_table_without_a_period_column_is_caught() -> None:
+    table = "| Run | Groups: mean ± sd [min, max] | Folds: mean ± sd [min, max] | Findings |\n| --- | --- | --- | --- |\n" \
+            "| ab12 | 0.02 ± 0.02 [-0.01, 0.05] | 0.02 ± 0.01 [0.00, 0.04] | NR-F-01 |\n"
+    assert results.problems(table, TRIALS) == ["ab12 names no period (synthetic, survivor-only, from-2014-04-01)"]
+
+
+def test_a_wiki_run_reported_for_both_periods_holds() -> None:
+    rows = GOOD.replace("synthetic", "survivor-only") + GOOD.replace("synthetic", "from-2014-04-01")
+    assert results.problems(HEADER + rows, TRIALS) == []
+
+
+def test_a_wiki_run_reported_for_the_survivor_only_period_alone_is_caught() -> None:
+    assert results.problems(HEADER + GOOD.replace("synthetic", "survivor-only"), TRIALS) == [
+        "ab12 5 is reported for the survivor-only period only, not for the from-2014-04-01 (R-026)"
+    ]
+
+
+def test_a_wiki_run_reported_for_the_later_period_alone_is_caught() -> None:
+    assert results.problems(HEADER + GOOD.replace("synthetic", "from-2014-04-01"), TRIALS) == [
+        "ab12 5 is reported for the from-2014-04-01 period only, not for the survivor-only (R-026)"
+    ]
+
+
+def test_each_horizon_of_a_wiki_run_needs_both_periods() -> None:
+    rows = (GOOD.replace("synthetic", "survivor-only") + GOOD.replace("synthetic", "from-2014-04-01")
+            + GOOD.replace("synthetic", "survivor-only").replace("| 5 |", "| 21 |"))
+    assert results.problems(HEADER + rows, TRIALS) == [
+        "ab12 21 is reported for the survivor-only period only, not for the from-2014-04-01 (R-026)"
+    ]
+
+
+def test_each_metric_of_a_wiki_run_needs_both_periods() -> None:
+    table = "| Run | Metric | Period | Folds | Groups | Findings |\n| --- | --- | --- | --- | --- | --- |\n"
+    body = "| ab12 | IC | survivor-only | 1 ± 0 [1, 1] | 1 ± 0 [1, 1] | NR-F-03 |\n" \
+           "| ab12 | Sharpe | from-2014-04-01 | 1 ± 0 [1, 1] | 1 ± 0 [1, 1] | NR-F-03 |\n"
+    assert results.problems(table + body, TRIALS) == [
+        "ab12 IC is reported for the survivor-only period only, not for the from-2014-04-01 (R-026)",
+        "ab12 Sharpe is reported for the from-2014-04-01 period only, not for the survivor-only (R-026)",
+    ]
+
+
+def test_a_synthetic_run_needs_no_second_period() -> None:
+    assert results.problems(HEADER + GOOD + GOOD.replace("5", "21", 1), TRIALS) == []
+
+
+def test_a_row_with_no_run_and_one_period_is_named_by_a_question_mark() -> None:
+    row = GOOD.replace("| ab12 |", "|  |").replace("synthetic", "survivor-only")
+    assert "? 5 is reported for the survivor-only period only, not for the from-2014-04-01 (R-026)" in results.problems(
+        HEADER + row, TRIALS
+    )

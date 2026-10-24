@@ -13,6 +13,10 @@ Nothing is reported yet. The first rows are phase 3's baselines.
 mean ± sd [min, max]            over folds, then over groups (HAR-08)
 DSR                             deflated Sharpe: < 0.95 is not evidence of an edge (HAR-07)
 c = 0 / 10 / 25 bps             one-way cost; the edge's survival across them is the point (HAR-06)
+Period                          synthetic (the synthetic market has no periods); on WIKI, survivor-only (before
+                                2014-04-01: no ticker has left the feed, so an optimistic upper bound, NR-F-03) or
+                                from-2014-04-01 (closer to honest, still no new names entering, NR-F-04). A WIKI
+                                run has a row for each, never one pooled number alone (R-026)
 ```
 
 A row whose **group-axis sd exceeds its group-axis mean** is marked *fits names, not an algorithm*
@@ -20,15 +24,15 @@ and does not count as beating a baseline, however good its mean (R-014).
 
 ## Baselines (phase 3)
 
-| Run | Horizon | Metric | Folds: mean ± sd [min, max] | Groups: mean ± sd [min, max] | DSR | Costs | Findings |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| *(none yet)* | | | | | | | |
+| Run | Horizon | Period | Metric | Folds: mean ± sd [min, max] | Groups: mean ± sd [min, max] | DSR | Costs | Findings |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| *(none yet)* | | | | | | | | |
 
 ## The network (phase 4)
 
-| Run | Horizon | Metric | Folds | Groups | DSR | Costs | vs. tree | Findings |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| *(none yet)* | | | | | | | | |
+| Run | Horizon | Period | Metric | Folds | Groups | DSR | Costs | vs. tree | Findings |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| *(none yet)* | | | | | | | | | |
 
 ## The scorer's own number (phase 5.3)
 
@@ -45,9 +49,9 @@ feature's input quality.
 The prediction, written before the run (F-04): news features help the 3- and 5-day horizons and do
 little at 63 days. Recorded here either way.
 
-| Feature families | Horizon | Metric | Folds | Groups | vs. prices-only | Findings |
-| --- | --- | --- | --- | --- | --- | --- |
-| *(none yet)* | | | | | | |
+| Feature families | Horizon | Period | Metric | Folds | Groups | vs. prices-only | Findings |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| *(none yet)* | | | | | | | |
 
 ## The forward test (phase 7)
 

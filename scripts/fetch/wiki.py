@@ -21,7 +21,7 @@ from pathlib import Path
 import polars as pl
 
 FIRST_DATE = date(1998, 1, 2)
-LAST_DATE = date(2017, 12, 29)  # the sample's end, TODO phase 2; the plan's date, not this script's to move
+LAST_DATE = date(2017, 11, 7)  # the last session before the feed's holes (R-026 a, NR-F-07)
 MAX_BYTES = 100 * 1000 * 1000  # R-016 (a): plain git files under 100 MB each
 RAW_DATASET = "wiki-prices-raw"
 PARTS_GLOB = "WIKI_PRICES.zip.part-*"
