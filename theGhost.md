@@ -297,14 +297,16 @@ it is `in force`.
 - **See also:** R-001, R-002, R-012
 - **subject:** method
 
-### R-016: Data and artifacts arrive through GitHub as plain git blobs; nothing is fetched live from the workspace
+### R-016: Data and artifacts live in two private GitHub repositories as plain git blobs
 - **Decision:** (a) Datasets are obtained by Ghost (downloaded on his machine or elsewhere with
   network access) and pushed to a separate private data repository, `ghost-in-the-kernel/neon-rain-data`,
   as plain git files under 100 MB each (parquet, chunked by year or by ticker range when larger).
   (b) The artifact store of R-010 is a second private repository, `ghost-in-the-kernel/neon-rain-artifacts`,
   same rules, content-addressed: each file is named by its SHA-256 and the main repository records
-  the hash it depends on. (c) `scripts/fetch/<dataset>.py` of R-006 clones or pulls the data
-  repository and verifies the manifest hash; it never reaches any other host. (d) The license of
+  the hash it depends on. (c) Struck 2026-10-24 (J-042): it said a fetch script reaches only
+  the data repository, which recorded NR-F-01's refused hosts rather than a reason; a session may
+  download a dataset from a host Ghost has allowed, and the hash on its manifest line (R-006) is
+  what every run checks. (d) The license of
   every dataset is checked by Ghost before it enters the data repository, and must permit this
   project's use: research, a portfolio, and Ghost trading his own money if he does (a license that
   forbids the last is noted, and that use waits on it); the manifest line says so (2026-10-24,
@@ -318,7 +320,8 @@ it is `in force`.
   (every line has a hash and a license); `scripts/probe/reachability.py` (re-run at every phase
   boundary; a newly reachable host is a journal entry, not a silent change of route).
 - **Source:** measured by Claude Fable, 2026-10-22; decision proposed for Ghost's word; Ghost,
-  2026-10-23: "approve R-016".
+  2026-10-23: "approve R-016"; (c) struck by Ghost, 2026-10-24: "I think striking the rule entirely
+  would be best" (J-042).
 - **Status:** in force
 - **See also:** R-003, R-006, R-010
 - **subject:** environment

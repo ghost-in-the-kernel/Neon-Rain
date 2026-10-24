@@ -15,19 +15,18 @@ Nothing under `neonrain/models/` or `neonrain/baselines/` begins until 1.6 passe
 ## Phase 2: real data
 
 The source is Quandl's WIKI prices (Ghost, 2026-10-24, J-041): about 3,000 US companies, daily
-OHLCV, dividends, splits and adjusted columns, public domain, frozen since 2018-04-11. Ghost stages
-the raw export in `neon-rain-data` (HANDOFF, "For Ghost"); everything after is agent work. The
+OHLCV, dividends, splits and adjusted columns, public domain, frozen since 2018-04-11. The raw export
+is staged in `neon-rain-data` (`raw/wiki/`, five parts, its hash on `data/MANIFEST.md`; J-042). The
 sample is 1998-01-02 to 2017-12-29: the calendar's first year to the last full year before the feed
-decayed in its final months. Nothing in this phase is built from data until the export is there;
-the calendar is not data.
+decayed in its final months. 
 
 ### 2.1 Universe
 
 (a) The trading calendar: the exact NYSE calendar, derived in `neonrain/universe/` by rule
 (weekends, each holiday's rule and the years it held, the special closures listed with their
 reason), no dependency (Ghost, J-033). (b) Membership, from WIKI. Plan:
-`scripts/fetch/wiki.py` joins Ghost's parts in the data repository's clone, refuses them unless
-they hash to his `SHA256` line, and writes the sample as yearly parquet (`wiki/prices/<year>.parquet`,
+`scripts/fetch/wiki.py` joins the raw parts in the data repository's clone, refuses them unless
+they hash to the manifest's line, and writes the sample as yearly parquet (`wiki/prices/<year>.parquet`,
 each under 100 MB) back to the data repository, one manifest line with the hash of their index (the
 reviewer pushes). `neonrain/universe/membership.py`, a pure function of the price frame: each
 ticker's first and last date in the sample; a last date before 2017-12-29 is a ticker that left;
@@ -37,8 +36,7 @@ the few percent a year the market loses; tickers reused by another company; how 
 delisting, if at all.
 Check: (a) the calendar gives the NYSE's sessions for hand-checked years and closures (Good Friday,
 Juneteenth from 2022, 2001-09-11 to 09-14, 2012-10-29 and 30, the national days of mourning);
-(b) every ticker has dates in and out, and the gap is a finding. (a) is done (J-039); (b) waits on
-Ghost's export (HANDOFF).
+(b) every ticker has dates in and out, and the gap is a finding. (a) is done (J-039); (b) is next.
 
 ### 2.2 Daily prices
 

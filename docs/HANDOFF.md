@@ -13,7 +13,7 @@ adversarial tests (J-030, J-031); 1.7, the freeze (J-032): the harness is frozen
 that moves a golden needs a decision in force; and 1.8, tithe pass 1 (J-033). Phase 1 is done.
 Phase 0 is done (0.4, J-038). Phase 2 is open: its items are in `TODO.md`, and 2.1(a), the NYSE
 calendar, is built (`neonrain/universe/calendar.py`, J-039). **Next is 2.1(b)**, from Quandl's WIKI prices,
-which waits on Ghost staging the export (below). Its trading calendar is the exact NYSE
+staged in `neon-rain-data` (J-042). Its trading calendar is the exact NYSE
 calendar, derived in the repository from a holiday data file, no new dependency (Ghost, 2026-10-23;
 J-033). The slow tests (`pytest -m slow`) run in `precommit.sh`. No real data, no
 model, no result.
@@ -38,9 +38,11 @@ Four things about this environment, each measured, not assumed (NR-F-01):
 1. **There is no CI and no local machine** (R-003). `scripts/precommit.sh` run in the session is the
    only gate. If a `.github/workflows/` file ever appears, that is an intrusion: change nothing and
    report it.
-2. **Only PyPI and GitHub are reachable, as a rule.** Every price and news host is refused by the
-   proxy, as are GitHub Releases, Git LFS uploads and REST writes; the Hugging Face Hub was open from
-   one session and not another (J-008). Do not write a fetch script for a market-data host.
+2. **Only PyPI, GitHub and the hosts Ghost allows are reachable.** He allowed `data.nasdaq.com` and
+   its S3 download host for WIKI (J-042); every other price and news host is refused by the proxy,
+   as are GitHub Releases, Git LFS uploads and REST writes; the Hugging Face Hub was open from one
+   session and not another (J-008). A dataset is fetched once, staged in `neon-rain-data` with its
+   hash on the manifest, and read from there (R-006).
 3. **`pip install` may be refused by the session's own policy classifier** even for PyPI, which is
    open (J-004). If it is, say so and ask Ghost to approve it rather than working around it.
 4. **A scratch branch `probe-plain`** is Ghost's to delete; the proxy refuses branch deletion.
@@ -65,23 +67,13 @@ J-018). Nothing under `neonrain/models/` or `neonrain/baselines/` exists yet; 1.
 
 ## For Ghost: waiting on you
 
-1. **Stage the WIKI export in `neon-rain-data`** (TODO 2.1(b); five commands on your machine; your
-   Nasdaq Data Link key stays there, never in a repository or a chat):
-   ```
-   curl -o wiki.json "https://data.nasdaq.com/api/v3/datatables/WIKI/PRICES.json?qopts.export=true&api_key=$KEY"
-   # wiki.json names a download link; if its status is not "fresh", wait a minute and rerun
-   curl -o WIKI_PRICES.zip "<the link in wiki.json>"
-   sha256sum WIKI_PRICES.zip > SHA256 && split -b 90m WIKI_PRICES.zip WIKI_PRICES.zip.part-
-   mkdir -p raw/wiki && mv SHA256 WIKI_PRICES.zip.part-* raw/wiki/   # inside your neon-rain-data clone
-   git add raw/wiki && git commit -m "WIKI prices export, raw" && git push
-   ```
-2. **Delete the `probe-plain` branch** on GitHub.
-3. **Approve `pip install` if the classifier blocks it**, or say how you would rather it be done.
-4. **Phase 5's news feed is blocked on you** (NR-F-01): a dataset with publish timestamps, obtained
+1. **Delete the `probe-plain` branch** on GitHub.
+2. **Approve `pip install` if the classifier blocks it**, or say how you would rather it be done.
+3. **Phase 5's news feed is blocked on you** (NR-F-01): a dataset with publish timestamps, obtained
    where there is network access and pushed to `neon-rain-data`. FNSPID on Hugging Face is the
    leading candidate — 15M+ timestamped items with tickers — and its license is yours to check
    before it enters: CC BY-NC is fine for research and a portfolio (R-016(d)). Phases 1 to 4 do not wait on this.
-5. **The calibration set, phase 5.3**: 200 news stories hand-labelled by you (bullish / bearish /
+4. **The calibration set, phase 5.3**: 200 news stories hand-labelled by you (bullish / bearish /
    neutral, and which ticker), which is what the scorer's own accuracy is measured against. You are
    the first reviewer here as you are on Katana.
 

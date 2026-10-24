@@ -916,3 +916,23 @@ shared classes). `test/test_journal.py` holds this.
   100 MB, with its SHA-256). The survivorship gap is measured and written up, not bought away.
 - **Touched:** TODO.md, docs/ROADMAP.md, docs/HANDOFF.md.
 - **Class:** decision
+
+### J-042 The WIKI export fetched by the session; R-016(c) struck
+- **Who:** Ghost, Claude Opus.
+- **Intent:** Stage Quandl's WIKI prices in `neon-rain-data` (TODO 2.1(b)).
+- **Found:** Ghost put a new key in the cloud environment as `NASDAQ_API_KEY` and allowed
+  `data.nasdaq.com`; the export (`qopts.export=true`) gave a link on
+  `aws-gis-link-pro-us-east-1-datahub.s3.amazonaws.com`, which answered too. 463,198,483 bytes,
+  sha256 d1b89242…e3f6, Nasdaq's snapshot of 2026-02-03: one CSV of 1.8 GB, the 14 WIKI columns
+  (ticker, date, OHLCV, ex-dividend, split ratio, the five adjusted). Split into five parts under
+  90 MiB, rejoined to the same hash, pushed to `raw/wiki/` one commit each. Ghost asked when and why
+  R-016(c) was made: Claude Fable proposed it from NR-F-01 (every data host refused, 2026-10-22);
+  Ghost approved R-016 on 2026-10-23 when asked for one word on the whole decision, (c) not raised
+  on its own. It recorded a measurement, not a reason.
+- **Options:** Amend (c) to allow a fetch to stage only, or strike it.
+- **Resolved:** Ghost: "I think striking the rule entirely would be best." (c) struck; the hash on
+  the manifest line (R-006, `test/test_manifest.py`) is what every run checks. The manifest's first
+  row: `wiki-prices-raw`. The key is in the environment only, never written.
+- **Touched:** theGhost.md (R-016), data/MANIFEST.md, docs/FINDINGS.md (NR-F-01), TODO.md,
+  docs/HANDOFF.md; `neon-rain-data` (`raw/wiki/`).
+- **Class:** decision
