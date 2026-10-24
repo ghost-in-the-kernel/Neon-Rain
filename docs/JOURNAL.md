@@ -858,3 +858,26 @@ shared classes). `test/test_journal.py` holds this.
 - **Touched:** scripts/fetch/artifacts.py, test/test_artifacts.py, data/MANIFEST.md, pyproject.toml,
   docs/NAVIGATION-LOG.md, TODO.md, docs/DONE.md, docs/HANDOFF.md.
 - **Class:** measurement
+
+### J-039 Phase 2 opened; 2.1(a), the NYSE calendar by rule
+- **Who:** Ghost, Claude Opus (the phase's items, reviewing), a fresh Claude Sonnet agent (under J-027).
+- **Intent:** Ghost: "Spin up a sonnet agent for phase 2". Phase 2 is about two weeks in six steps,
+  and from 2.1(b) it needs Ghost's dataset, so Opus wrote its six items into TODO with their checks
+  and gave the agent only the part that needs no data: the exact NYSE calendar, by rule (J-033).
+- **Found:** The agent built `neonrain/universe/calendar.py`: `sessions(first, last)`, the harness's
+  `calendar` input (a test runs `check_calendar` on it), and `holidays`, `closures`, `easter`.
+  Claimed from 1998 (the first MLK Day closure), refused before. Rules: New Year's (Saturday not
+  moved), MLK, Washington's Birthday, Good Friday (Easter by Meeus/Jones/Butcher, cross-checked
+  against Oudin's 1583 to 2600), Memorial Day, Juneteenth from 2022, Independence Day, Labor Day,
+  Thanksgiving, Christmas; Saturday to Friday, Sunday to Monday. Closures: 2001-09-11 to 14, Sandy
+  2012-10-29 and 30, and the days of mourning of 2004, 2007, 2018, 2025. Sessions: 2001 248, 2012
+  250, 2021 252, 2022 251, 2023 250, 2024 252, 2025 250, 2026 251, each derived and tested. Early
+  closes are sessions and are not recorded. Five survivors explained (four `easter` constants
+  equivalent over the reachable years, one closures look-ahead). Unsure: a Saturday Juneteenth
+  (2027 taken as Friday 18 June, from the general observance rule).
+- **Resolved:** Reviewed and pushed; the goldens identical; the harness untouched. 2.1(b) waits on
+  Ghost's dataset.
+- **Touched:** neonrain/universe/__init__.py, neonrain/universe/calendar.py, test/test_calendar.py,
+  docs/modules.json, docs/GLOSSARY.md, docs/MUTATION.md, CLAUDE.md, docs/AGENT.md,
+  docs/NAVIGATION-LOG.md, TODO.md, docs/HANDOFF.md.
+- **Class:** measurement

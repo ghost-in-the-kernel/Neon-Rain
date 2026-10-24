@@ -36,9 +36,13 @@
  ],
  "modules": {
   "universe": {
-   "purpose": "Which tickers exist on which dates; delistings where known.",
+   "purpose": "Which tickers exist on which dates; delistings where known; the trading calendar.",
    "mayImport": [],
-   "entryPoints": []
+   "entryPoints": [
+    "neonrain.universe.calendar.sessions",
+    "neonrain.universe.calendar.closures",
+    "neonrain.universe.calendar.holidays"
+   ]
   },
   "features": {
    "purpose": "The feature table per ticker per day: price-derived, indicator, news.",
