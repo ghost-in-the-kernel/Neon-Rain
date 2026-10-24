@@ -308,8 +308,8 @@ Decisions recorded: the cost default; the embargo length; the group count *k*; H
 2.1 **Universe.** A liquid US equity universe (a few hundred to a thousand names) with dates in and
     out, delistings where the source gives them; `docs/FINDINGS.md` NR-F records the survivorship
     gap honestly.
-2.2 **Daily prices.** OHLCV from the source 0.3 found reachable, fetched by script, manifested
-    (R-006), ten or more years.
+2.2 **Daily prices.** OHLCV from Quandl's WIKI prices (public domain, frozen 2018; Ghost, J-041),
+    staged by Ghost in `neon-rain-data`, fetched by script, manifested (R-006); 1998 to 2017.
 2.3 **Price-derived features**, one family at a time, each with a glossary term: returns at several
     lookbacks, realized volatility, volume ratios, and the standard indicators (RSI, MACD, moving
     average ratios), each computed by a pure function from prices alone with a unit test against a

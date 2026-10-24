@@ -12,8 +12,8 @@ metrics with HAR-07's mirror written blind, and the trials file with HAR-01's co
 adversarial tests (J-030, J-031); 1.7, the freeze (J-032): the harness is frozen, and a change
 that moves a golden needs a decision in force; and 1.8, tithe pass 1 (J-033). Phase 1 is done.
 Phase 0 is done (0.4, J-038). Phase 2 is open: its items are in `TODO.md`, and 2.1(a), the NYSE
-calendar, is built (`neonrain/universe/calendar.py`, J-039). **Next is 2.1(b)**, which waits on
-Ghost's price and membership dataset in `neon-rain-data`. Its trading calendar is the exact NYSE
+calendar, is built (`neonrain/universe/calendar.py`, J-039). **Next is 2.1(b)**, from Quandl's WIKI prices,
+which waits on Ghost staging the export (below). Its trading calendar is the exact NYSE
 calendar, derived in the repository from a holiday data file, no new dependency (Ghost, 2026-10-23;
 J-033). The slow tests (`pytest -m slow`) run in `precommit.sh`. No real data, no
 model, no result.
@@ -65,13 +65,23 @@ J-018). Nothing under `neonrain/models/` or `neonrain/baselines/` exists yet; 1.
 
 ## For Ghost: waiting on you
 
-1. **Delete the `probe-plain` branch** on GitHub.
-2. **Approve `pip install` if the classifier blocks it**, or say how you would rather it be done.
-3. **Phase 5's news feed is blocked on you** (NR-F-01): a dataset with publish timestamps, obtained
+1. **Stage the WIKI export in `neon-rain-data`** (TODO 2.1(b); five commands on your machine; your
+   Nasdaq Data Link key stays there, never in a repository or a chat):
+   ```
+   curl -o wiki.json "https://data.nasdaq.com/api/v3/datatables/WIKI/PRICES.json?qopts.export=true&api_key=$KEY"
+   # wiki.json names a download link; if its status is not "fresh", wait a minute and rerun
+   curl -o WIKI_PRICES.zip "<the link in wiki.json>"
+   sha256sum WIKI_PRICES.zip > SHA256 && split -b 90m WIKI_PRICES.zip WIKI_PRICES.zip.part-
+   mkdir -p raw/wiki && mv SHA256 WIKI_PRICES.zip.part-* raw/wiki/   # inside your neon-rain-data clone
+   git add raw/wiki && git commit -m "WIKI prices export, raw" && git push
+   ```
+2. **Delete the `probe-plain` branch** on GitHub.
+3. **Approve `pip install` if the classifier blocks it**, or say how you would rather it be done.
+4. **Phase 5's news feed is blocked on you** (NR-F-01): a dataset with publish timestamps, obtained
    where there is network access and pushed to `neon-rain-data`. FNSPID on Hugging Face is the
    leading candidate — 15M+ timestamped items with tickers — and its license is yours to check
    before it enters: CC BY-NC is fine for research and a portfolio (R-016(d)). Phases 1 to 4 do not wait on this.
-4. **The calibration set, phase 5.3**: 200 news stories hand-labelled by you (bullish / bearish /
+5. **The calibration set, phase 5.3**: 200 news stories hand-labelled by you (bullish / bearish /
    neutral, and which ticker), which is what the scorer's own accuracy is measured against. You are
    the first reviewer here as you are on Katana.
 

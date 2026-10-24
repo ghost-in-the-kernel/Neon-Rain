@@ -899,3 +899,20 @@ shared classes). `test/test_journal.py` holds this.
   trading if he does it; one that forbids the last is noted, and that use waits on it.
 - **Touched:** theGhost.md (R-011, R-016), TODO.md, docs/HANDOFF.md.
 - **Class:** decision
+
+### J-041 Phase 2's data: Quandl's WIKI prices, free and frozen
+- **Who:** Ghost, Claude Opus.
+- **Intent:** A price and membership source for phase 2 that Ghost can afford.
+- **Found:** The paid sources with delistings (Sharadar personal from $9 a month, Norgate $630 a
+  year, EODHD about $20 a month) are out of reach; Ghost: "I am financially limited". Quandl's WIKI
+  prices: about 3,000 US companies, public domain, frozen since 2018-04-11, its last months decayed.
+  How many delisted names it holds is unconfirmed. Ghost pasted a Nasdaq Data Link key in the chat;
+  it is written nowhere, and Ghost was asked to regenerate it. The `delta` endpoint he named lists a
+  refresh's changes, of no use to a frozen table; the full export is `qopts.export=true`.
+- **Options:** WIKI 1998 to 2017 as a frozen, reproducible research set (taken); a free tier with a
+  symbol cap (Tiingo) later, if data past 2018 is wanted.
+- **Resolved:** Ghost: "yes, write the plan around WIKI". TODO 2.1(b) and 2.2 planned on it; ROADMAP
+  2.2 names it; HANDOFF item 1 gives Ghost's five staging commands (the export split under GitHub's
+  100 MB, with its SHA-256). The survivorship gap is measured and written up, not bought away.
+- **Touched:** TODO.md, docs/ROADMAP.md, docs/HANDOFF.md.
+- **Class:** decision
