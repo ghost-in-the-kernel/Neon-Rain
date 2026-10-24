@@ -15,7 +15,7 @@ Nothing under `neonrain/models/` or `neonrain/baselines/` begins until 1.6 passe
 ## Phase 2: real data
 
 Prices and universe membership come only from `neon-rain-data` (R-016), supplied by Ghost from a
-source whose license allows commercial use (R-016 d). Nothing in this phase is built from data
+source whose license permits this project's use (R-016 d). Nothing in this phase is built from data
 until that is there; the calendar is not data.
 
 ### 2.1 Universe

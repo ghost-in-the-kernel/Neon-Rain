@@ -70,7 +70,7 @@ J-018). Nothing under `neonrain/models/` or `neonrain/baselines/` exists yet; 1.
 3. **Phase 5's news feed is blocked on you** (NR-F-01): a dataset with publish timestamps, obtained
    where there is network access and pushed to `neon-rain-data`. FNSPID on Hugging Face is the
    leading candidate — 15M+ timestamped items with tickers — and its license is yours to check
-   before it enters, for commercial use too (R-016(d)). Phases 1 to 4 do not wait on this.
+   before it enters: CC BY-NC is fine for research and a portfolio (R-016(d)). Phases 1 to 4 do not wait on this.
 4. **The calibration set, phase 5.3**: 200 news stories hand-labelled by you (bullish / bearish /
    neutral, and which ticker), which is what the scorer's own accuracy is measured against. You are
    the first reviewer here as you are on Katana.

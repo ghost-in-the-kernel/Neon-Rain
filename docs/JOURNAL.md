@@ -881,3 +881,21 @@ shared classes). `test/test_journal.py` holds this.
   docs/modules.json, docs/GLOSSARY.md, docs/MUTATION.md, CLAUDE.md, docs/AGENT.md,
   docs/NAVIGATION-LOG.md, TODO.md, docs/HANDOFF.md.
 - **Class:** measurement
+
+### J-040 R-011 to research-open; R-016(d) relaxed: a solo experiment, not a firm
+- **Who:** Ghost, Claude Opus.
+- **Intent:** Ghost, 2026-10-24: "There is a material difference between a bank saying hey we wanna
+  do this as a way to game the market and a solo dev (me) saying, i wanna do this as an experiment
+  and as a piece for a portfolio, and maybe to use it to get hired".
+- **Found:** J-036 read "economic gain" as a firm would plan it: everything private and every
+  dataset licensed for commercial use. For a portfolio, that hid the part worth showing (the
+  harness, frozen before any model, with costs, the deflated Sharpe and planted leaks), and the
+  licence rule ruled out most free datasets, FNSPID's CC BY-NC among them, for no reason this
+  project has.
+- **Options:** R-011 (b), research-open, or keep (a) and decide later.
+- **Resolved:** Ghost: "yes record both". R-011 (b): the harness and method may be shown by a
+  one-way export when Ghost chooses; this repository, the model, its weights and edge-bearing
+  results stay private. R-016(d): a licence must permit research, a portfolio, and Ghost's own
+  trading if he does it; one that forbids the last is noted, and that use waits on it.
+- **Touched:** theGhost.md (R-011, R-016), TODO.md, docs/HANDOFF.md.
+- **Class:** decision

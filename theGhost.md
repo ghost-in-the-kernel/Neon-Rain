@@ -199,17 +199,22 @@ it is `in force`.
 - **subject:** environment
 
 ### R-011: Licensing and publication
-- **Decision:** Protective, option (a) of three (as Katana R-002): the repository is private, all
-  rights reserved (`LICENSE`), and nothing leaves it. The other options were (b) research-open, a
-  permissive license on the harness, and (c) fully private with no intent to publish. The project is
-  meant for economic gain (Ghost, 2026-10-23), so an edge is the thing to protect. Ghost made the
-  repository private on 2026-10-23 (J-037); it stays private.
+- **Decision:** Research-open, option (b) of three: the harness and the method may be shown; the
+  model, its weights and any result that could show an edge stay private. This repository stays
+  private, all rights reserved (`LICENSE`); showing the work is a one-way export of the harness and
+  its documents to a public place, chosen by Ghost when he wants to show it, never a merge back
+  (as R-025's network lifts out). The other options were (a) protective, nothing leaves (in force
+  2026-10-23, J-036), and (c) fully private with no intent to publish. The project is a solo
+  experiment and a portfolio piece, possibly a route to being hired, and perhaps later traded with
+  Ghost's own money (Ghost, 2026-10-24).
 - **Why:** The harness has standalone value as a methodology artifact and could support the NSF
   study's thesis about agent-built research; the trained model, if it ever has an edge, loses that
   edge on publication. Those pull in different directions and the choice is Ghost's.
 - **Held by:** `LICENSE`; CLAUDE.md ("Two rules").
 - **Source:** proposed by Claude Fable, 2026-10-22; Ghost, 2026-10-23: "lets assume we will be moving
-  this to eventually use for economic gain" and "yes record them" (J-036).
+  this to eventually use for economic gain" and "yes record them" (J-036), option (a); Ghost,
+  2026-10-24: "a solo dev (me) saying, i wanna do this as an experiment and as a piece for a
+  portfolio, and maybe to use it to get hired" and "yes record both" (J-040), option (b).
 - **Status:** in force
 - **See also:** R-003
 - **subject:** license
@@ -300,8 +305,10 @@ it is `in force`.
   same rules, content-addressed: each file is named by its SHA-256 and the main repository records
   the hash it depends on. (c) `scripts/fetch/<dataset>.py` of R-006 clones or pulls the data
   repository and verifies the manifest hash; it never reaches any other host. (d) The license of
-  every dataset is checked by Ghost before it enters the data repository, and must allow commercial
-  use (amended 2026-10-23, R-011); the manifest line says so. Until a news feed is supplied the same way, phase 5 is blocked and phases 1–4 proceed.
+  every dataset is checked by Ghost before it enters the data repository, and must permit this
+  project's use: research, a portfolio, and Ghost trading his own money if he does (a license that
+  forbids the last is noted, and that use waits on it); the manifest line says so (2026-10-24,
+  J-040; the commercial-use rule of 2026-10-23 withdrawn). Until a news feed is supplied the same way, phase 5 is blocked and phases 1–4 proceed.
 - **Why:** NR-F-01: from this workspace every market-data and news host is refused, GitHub Releases
   and LFS uploads are refused for this session type, and plain git pushes are the one write that
   works. A second repository keeps blobs out of the code repository's history (R-006's reason) and
