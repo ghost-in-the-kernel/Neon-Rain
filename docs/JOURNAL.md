@@ -1019,3 +1019,16 @@ shared classes). `test/test_journal.py` holds this.
 - **Touched:** test/conftest.py, pyproject.toml, CLAUDE.md, docs/MUTATION.md, docs/AGENT.md,
   docs/NAVIGATION-LOG.md.
 - **Class:** measurement
+
+### J-046 J-045's open questions answered (R-027)
+- **Who:** Ghost, Claude Opus.
+- **Intent:** Ghost's word on J-045's open questions.
+- **Found:** Ghost: "Yes to imports", "Raise limit on claude md", "The agent has permission to write
+  the layout notes." He named no new limit.
+- **Resolved:** R-027: `baselines` and `training` may import `universe`; mandatory context under
+  1,400 words (Opus's number, recorded as such); an agent may write layout notes in `neon-rain-data`.
+  With the room, CLAUDE.md names `scripts/metrics.py --write` after a change to it or a row's
+  files (J-045's open question 3).
+- **Touched:** theGhost.md (R-027), docs/modules.json, docs/ROADMAP.md (§3.3, §5), docs/AGENT.md,
+  docs/GHOST-IN-THE-KERNEL.md, docs/rules/tithe.md, CLAUDE.md.
+- **Class:** decision

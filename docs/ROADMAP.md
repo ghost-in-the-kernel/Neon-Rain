@@ -150,9 +150,9 @@ refuses anything else. Adding a module is a decision (Katana R-043's rule applie
 | `neonrain/features` | the feature table: price-derived, indicator, and news features, per ticker per day | `universe`, the ledger reader |
 | `neonrain/targets` | the four horizons' labels, direction and rank | `universe` |
 | `neonrain/harness` | splits (time × ticker group), cost model, metrics, the trials file | `features`, `targets` |
-| `neonrain/baselines` | zero, momentum, reversal, LightGBM | `harness` |
+| `neonrain/baselines` | zero, momentum, reversal, LightGBM | `harness`, `universe` (R-027) |
 | `neonrain/models` | the one network, liftable one way (R-025) | nothing of ours |
-| `neonrain/training` | trains the network and runs it through the harness | `models`, `harness`, `features`, `targets` |
+| `neonrain/training` | trains the network and runs it through the harness | `models`, `harness`, `features`, `targets`, `universe` (R-027) |
 | `neonrain/scorer` | the Haiku scorer and the ledger writer; **the only module that imports a model client** | nothing of ours |
 | `neonrain/ledger` | readers for both ledgers, with the publish-time cut | nothing of ours |
 
@@ -213,7 +213,7 @@ separate fresh-agent trial of R-020 is retired (R-023).
 
 | Metric | Phase 0 target | Why it matters to the agent |
 | --- | --- | --- |
-| Mandatory context (words) | < 1,200 | every task pays it |
+| Mandatory context (words) | < 1,400 | every task pays it (R-027) |
 | Fast loop (s) | < 30 | unit and doc tests, no data, no model; run after every edit |
 | Full check, `precommit.sh` (min) | < 10 | paid before every push while there is no CI (R-003) |
 | Largest source file (lines) | < 400 | fits a read without paging |

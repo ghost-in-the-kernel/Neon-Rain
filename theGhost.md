@@ -510,3 +510,19 @@ it is `in force`.
 - **Status:** in force
 - **See also:** R-006, R-014, R-016
 - **subject:** data
+
+### R-027: baselines and training may import universe; CLAUDE.md may grow to 1,400 words
+- **Decision:** (a) `baselines` and `training` may import `universe` (docs/modules.json), so a
+  result split by R-026's periods reads `neonrain/universe/periods.py`'s one boundary. (b) AGT-03's
+  mandatory context is under 1,400 words, not 1,200. (c) An agent may write layout notes in
+  `neon-rain-data` (what each folder holds and how it was made); the reviewer pushes them.
+- **Why:** J-045's tithe: the period boundary lived where no module that reports a result could
+  read it, and CLAUDE.md sat 3 words under its limit with fixes waiting for room. 1,400 is Opus's
+  number: room for a phase's rows without a trim each time; Ghost may set another.
+- **Held by:** docs/modules.json, `test/test_modules.py`; docs/AGENT.md (AGT-03, the table),
+  `test/test_metrics.py`; `neon-rain-data`'s notes.
+- **Source:** proposed by Claude Opus, 2026-10-24 (J-045); Ghost, 2026-10-25: "Yes to imports",
+  "Raise limit on claude md", "The agent has permission to write the layout notes."
+- **Status:** in force
+- **See also:** R-012, R-024, R-026
+- **subject:** agent environment

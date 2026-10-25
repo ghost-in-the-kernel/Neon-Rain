@@ -21,7 +21,7 @@ a question for step 5. You write no feature, test or module: a tithe that builds
    `.venv/bin/python scripts/metrics.py --fast-loop <s> --full-check <min> --write`. It refuses
    while an armed metric has regressed: a question for step 5, never a number or a target to edit.
 3. **Fix what the notes found:** a routing row, a stale sentence, a pointer. Each fix is one small
-   diff. `CLAUDE.md` stays under 1,200 words; run `scripts/metrics.py --write` after changing it,
+   diff. `CLAUDE.md` stays under 1,400 words; run `scripts/metrics.py --write` after changing it,
    and the fast loop after every fix.
 4. **Read the debriefs** (pass only) in `docs/NAVIGATION-LOG.md`. Each complaint gets one verdict:
    acted on earlier, acted on now (step 3), not valid, open. Each entry's "Opened" list, read

@@ -74,7 +74,7 @@ The same principle, pointed inward, and held by tests rather than hoped for:
   not seen the code, and every number he is asked to trust has a ten-row example he can check by
   hand (R-015).
 - **The environment of the agent working here is part of the product.** Mandatory context under
-  1,200 words, a fast loop under 30 seconds, no source file over 400 lines, the metrics in `docs/AGENT.md`
+  1,400 words, a fast loop under 30 seconds, no source file over 400 lines, the metrics in `docs/AGENT.md`
   ratcheted, one commit in eight spent on nothing else (R-012). Ghost's finding in Suite Builder was
   that delivery speed rose once this was treated as work worth doing.
 

@@ -95,7 +95,8 @@
   "baselines": {
    "purpose": "Zero, momentum, reversal, LightGBM (R-007).",
    "mayImport": [
-    "harness"
+    "harness",
+    "universe"
    ],
    "entryPoints": []
   },
@@ -110,7 +111,8 @@
     "models",
     "harness",
     "features",
-    "targets"
+    "targets",
+    "universe"
    ],
    "entryPoints": []
   },

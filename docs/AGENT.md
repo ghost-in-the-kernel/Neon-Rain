@@ -11,7 +11,7 @@ until a metric is first measured within its target it is "not armed" and not com
   and no network** beyond `pip`. Nothing a test needs is fetched.
 - **AGT-02 The fast loop runs under 30 s.** Doc tests and unit tests only; the harness on the
   synthetic market is its own target with its own budget.
-- **AGT-03 Mandatory context stays under 1,200 words.** `CLAUDE.md` plus whatever an agent must read
+- **AGT-03 Mandatory context stays under 1,400 words** (R-027). `CLAUDE.md` plus whatever an agent must read
   before a task.
 - **AGT-04 A routing row opens at most five files; a source file is under 400 lines; a document
   over 400 lines is pointed at by section** (R-024).
@@ -29,7 +29,7 @@ until a metric is first measured within its target it is "not armed" and not com
 
 | Metric | Phase 0 target | Measured | Why it matters to the agent |
 | --- | --- | --- | --- |
-| Mandatory context (words) | < 1,200 | 1197 | every task pays it |
+| Mandatory context (words) | < 1,400 | 1210 | every task pays it |
 | Fast loop (s) | < 30 | 19.45 | run after every edit |
 | Full check, `precommit.sh` (min) | < 10 | 7.27 | paid before every push while there is no CI |
 | Largest source file (lines) | < 400 | 383 | fits a read without paging |
