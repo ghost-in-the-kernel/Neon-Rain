@@ -29,7 +29,7 @@ until a metric is first measured within its target it is "not armed" and not com
 
 | Metric | Phase 0 target | Measured | Why it matters to the agent |
 | --- | --- | --- | --- |
-| Mandatory context (words) | < 1,400 | 1210 | every task pays it |
+| Mandatory context (words) | < 1,400 | 1251 | every task pays it |
 | Fast loop (s) | < 30 | 19.45 | run after every edit |
 | Full check, `precommit.sh` (min) | < 10 | 7.27 | paid before every push while there is no CI |
 | Largest source file (lines) | < 400 | 383 | fits a read without paging |
@@ -38,7 +38,7 @@ until a metric is first measured within its target it is "not armed" and not com
 | Results without a trials line | 0 | 0 | P-07 |
 | Results without dispersion | 0 | 0 | R-014 |
 | Datasets without a manifest line | 0 | 0 | R-006 |
-| Docs lines per source line | < 1.5 | 1.58 | records left out; arms as phases 2 to 4 add source (R-024) |
+| Docs lines per source line | < 1.5 | 1.65 | records left out; arms as phases 2 to 4 add source (R-024) |
 
 ## Re-measuring (a tithe pass, R-012)
 

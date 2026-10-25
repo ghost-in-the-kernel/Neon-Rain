@@ -4,6 +4,10 @@ Read this when your task is a tithe. A **tithe commit** (every eighth) is one im
 3 and 5, no metrics. A **tithe pass** (the last item of a phase, TODO's "Tithe pass N") is every
 step, by one agent in one session (R-023).
 
+**The guard:** `scripts/commit.sh` (R-028) makes the commit: a message starting `tithe:` is always accepted,
+any other is refused once seven commits have landed since the last tithe (the eighth is the tithe).
+`scripts/commit.sh --check` says where the count stands. Never a git hook.
+
 **You may change:** routing rows, documents, the glossary, names, cross-references, a document's
 length, `scripts/checks/`. **You may not change:** any result (`.venv/bin/python
 scripts/goldens.py` shows every golden identical), any test's assertions, anything under

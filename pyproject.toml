@@ -31,4 +31,4 @@ source_paths = ["scripts/checks/", "neonrain/"]
 process_isolation = "forkserver"
 # The doc tests read the documents themselves, so the copy mutmut tests in carries them. A new top-level folder
 # the tests import (scripts/fetch/, scripts/probe/) must be listed here, or the copied tests cannot import it.
-also_copy = ["docs/", "data/", "harness/", "theGhost.md", "TODO.md", "CLAUDE.md", "README.md", "requirements.lock", "scripts/probe/", "scripts/fetch/", "scripts/metrics.py"]
+also_copy = ["docs/", "data/", "harness/", "theGhost.md", "TODO.md", "CLAUDE.md", "README.md", "requirements.lock", "scripts/probe/", "scripts/fetch/", "scripts/metrics.py", "scripts/commit.sh", "scripts/commit_guard.py"]

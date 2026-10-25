@@ -1069,3 +1069,19 @@ shared classes). `test/test_journal.py` holds this.
 - **Touched:** theGhost.md (R-016, R-028), data/MANIFEST.md, TODO.md, docs/HANDOFF.md;
   `neon-rain-data` (README.md, CLAUDE.md, .gitattributes, .gitignore).
 - **Class:** decision
+
+### J-049 R-028 (1): the tithe guard
+- **Who:** Ghost, Claude Opus (reviewing), a fresh Claude Sonnet agent (under J-027).
+- **Intent:** R-028's first tool: no commit but a tithe while one is due (R-012), after the
+  11-commit overrun of J-045.
+- **Found:** `scripts/commit.sh` and `scripts/commit_guard.py`, adapted from Ghost-Core's
+  `scripts/commit.sh` (read, nothing run or written there). The rule: the non-merge commits on HEAD
+  since the newest `tithe:` subject are counted; at seven the next commit must start `tithe:`; a
+  `tithe:` commit is always accepted. Ghost-Core refuses at eight, which would make the tithe the
+  ninth; seven keeps it the eighth, as R-012 says. No override variable; never a git hook; Ghost's
+  identity added only when git has none. `--check` reports. 16 tests on throwaway repositories.
+  CLAUDE.md says commits are made with it (1,251 words). Docs per source line rose to 1.65 (not armed).
+- **Resolved:** Reviewed; this commit is the first made through it.
+- **Touched:** scripts/commit.sh, scripts/commit_guard.py, test/test_commit_script.py, CLAUDE.md,
+  docs/rules/tithe.md, docs/AGENT.md, pyproject.toml, docs/NAVIGATION-LOG.md.
+- **Class:** decision

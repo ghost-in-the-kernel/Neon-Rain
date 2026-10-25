@@ -17,7 +17,7 @@ at the plan.
 | A decision, a plan, what to work on | `docs/HANDOFF.md`, `theGhost.md`, `TODO.md` | `theGhost.md` | `test/test_ghost.py` |
 | Writing down what happened | `docs/JOURNAL.md` (one entry, its fields) | | `test/test_journal.py` |
 | Debriefing a task: what was hard to find | `docs/NAVIGATION-LOG.md` | its header | `test/test_navigation.py` |
-| A tithe: a tithe commit or a phase's tithe pass | `docs/rules/tithe.md` (the steps, in order), `docs/AGENT.md`, `docs/NAVIGATION-LOG.md` | R-012, R-019, R-023 | `test/test_metrics.py`, `test/test_navigation.py` |
+| A tithe: a tithe commit or a phase's tithe pass | `docs/rules/tithe.md` (the steps, in order), `docs/AGENT.md`, `docs/NAVIGATION-LOG.md`; the guard: `scripts/commit.sh` | R-012, R-019, R-023 | `test/test_metrics.py`, `test/test_navigation.py`, `test/test_commit_script.py` |
 | A word | `docs/GLOSSARY.md` | | `test/test_glossary.py` |
 | Why a rule is what it is | `docs/GHOST-IN-THE-KERNEL.md` | | |
 | A module: add one, or change its imports | `docs/modules.json` (its `adding` line) | its `rules` (MOD-01 to MOD-05) | `test/test_modules.py` |
@@ -48,7 +48,7 @@ at the plan.
 `python3.12 -m venv .venv && .venv/bin/pip install --only-binary :all: --require-hashes -r
 requirements.lock` once per session (lockfile only, wheels only, pip as the venv ships it).
 `.venv/bin/pytest` is the fast loop: doc tests and unit tests, no data, no model, no network; run `.venv/bin/ruff check .` beside it.
-`scripts/precommit.sh` is the check before a push: the fast loop, ruff, the mutation score (R-015),
+Commits are made with `scripts/commit.sh` (same arguments as `git commit`): a `tithe:` commit always passes, any other is refused while a tithe is due, seven commits after the last (R-012); `scripts/commit.sh --check` says where the count stands. `scripts/precommit.sh` is the check before a push: the fast loop, ruff, the mutation score (R-015),
 the metrics line; quote its last line in the commit. After changing CLAUDE.md or a file a row names, run
 `.venv/bin/python scripts/metrics.py --write`. Long output (`precommit.sh`, mutmut) goes to a
 file, grepped for failures (`FAILED`, `Error`, `refused`, `unexplained`); read the file only if
