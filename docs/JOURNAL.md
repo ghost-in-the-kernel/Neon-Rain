@@ -1046,3 +1046,26 @@ shared classes). `test/test_journal.py` holds this.
 - **Touched:** scripts/probe/survivorship.py, test/test_survivorship_probe.py, docs/FINDINGS.md,
   docs/NAVIGATION-LOG.md.
 - **Class:** measurement
+
+### J-048 WIKI's licence unverified; the data repository's notes; Ghost-Core's four tools (R-028)
+- **Who:** Ghost, Claude Opus, Claude Fable, two fresh Claude Sonnet agents.
+- **Intent:** The data repository's layout notes (R-027 c), WIKI's licence checked (R-016 d), and
+  Ghost-Core, Ghost's project template, read for what fits.
+- **Found:** (a) A Sonnet agent wrote `neon-rain-data`'s README.md and CLAUDE.md. Claude Fable,
+  reviewing them against Ghost-Core, kept them as the minimal set, tightened rule 1 (rebuilt, never
+  edited), added `.gitattributes` (index.tsv kept LF, so its hash holds) and ignored the rejoined zip.
+  Fable also found two gaps in Neon Rain: nothing verifies the yearly files against the index before
+  a read (2.2's loader must), and R-016's `supplied by` column is missing from the manifest.
+  (b) The licence agent could not read the primary text: the WIKI page and the Terms of Use are
+  script shells here, and the archive is refused; the keyed metadata call has no licence field. So
+  "public domain" rests on secondary sources, and WIKI entered on 2026-10-24 before Ghost's check,
+  against R-016 (d), Opus's oversight in staging it.
+- **Options:** For the licence: keep the data, mark it unverified, and hold results until Ghost reads
+  the terms (taken); or remove it.
+- **Resolved:** Ghost: "Yes to wiki reccomendations". The manifest's two rows and the data README now
+  say "unverified ... check open (2026-10-25)"; TODO phase 3 and HANDOFF item 1 hold results until he
+  reads the terms; R-016 (d) records the exception. Ghost: "yes to all four ghost-core ideas", and
+  Ghost-Core is never written to: R-028.
+- **Touched:** theGhost.md (R-016, R-028), data/MANIFEST.md, TODO.md, docs/HANDOFF.md;
+  `neon-rain-data` (README.md, CLAUDE.md, .gitattributes, .gitignore).
+- **Class:** decision

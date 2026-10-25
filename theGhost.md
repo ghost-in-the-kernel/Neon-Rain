@@ -310,7 +310,9 @@ it is `in force`.
   every dataset is checked by Ghost before it enters the data repository, and must permit this
   project's use: research, a portfolio, and Ghost trading his own money if he does (a license that
   forbids the last is noted, and that use waits on it); the manifest line says so (2026-10-24,
-  J-040; the commercial-use rule of 2026-10-23 withdrawn). Until a news feed is supplied the same way, phase 5 is blocked and phases 1–4 proceed.
+  J-040; the commercial-use rule of 2026-10-23 withdrawn). WIKI entered before its check (2026-10-24,
+  J-042), the one exception: it stays, private, marked unverified, and no result on it is reported
+  until Ghost has read its terms (Ghost, 2026-10-25, J-048). Until a news feed is supplied the same way, phase 5 is blocked and phases 1–4 proceed.
 - **Why:** NR-F-01: from this workspace every market-data and news host is refused, GitHub Releases
   and LFS uploads are refused for this session type, and plain git pushes are the one write that
   works. A second repository keeps blobs out of the code repository's history (R-006's reason) and
@@ -525,4 +527,23 @@ it is `in force`.
   "Raise limit on claude md", "The agent has permission to write the layout notes."
 - **Status:** in force
 - **See also:** R-012, R-024, R-026
+- **subject:** agent environment
+
+### R-028: Four of Ghost-Core's tools adopted; Ghost-Core is read only
+- **Decision:** Neon Rain adapts four tools from Ghost-Core (`ghost-in-the-kernel-labs/ghost-core`,
+  Ghost's project template), one fresh agent each, in this order: (1) a commit script that refuses
+  any commit but a `tithe:` one while a tithe is due (R-012), never a git hook; (2) a one-line index
+  of decisions, generated and checked, and a next-id script that fetches `main` before giving the
+  next R- or J- number; (3) an escalation register by kind, three of a kind going to Ghost; (4) the
+  journal split into numbered files with a generated index, last, when nothing else writes. Ghost-Core
+  is read only: an agent reads it, runs nothing from it, and writes, commits and pushes there never.
+- **Why:** Claude Fable's review of Ghost-Core (J-048): the tithe ran 11 commits overdue (J-045);
+  the journal is over 1,000 lines; theGhost.md has no index and two sessions could take one id;
+  escalations are journal entries, not a count. Ghost: Ghost-Core "is not to be written to, since
+  its a read only template".
+- **Held by:** each tool's own test, as each is built; the journal entries of the four steps.
+- **Source:** proposed by Claude Fable, 2026-10-25; Ghost, 2026-10-25: "yes to all four ghost-core
+  ideas", "ghost core is not to be written to, since its a read only template. only the neon rain".
+- **Status:** in force
+- **See also:** R-012, R-022, R-023
 - **subject:** agent environment
