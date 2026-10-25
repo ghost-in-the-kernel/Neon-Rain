@@ -7,11 +7,11 @@ import re
 import subprocess
 from pathlib import Path
 
-# Where each kind of record lives, relative to the repository root. Item (4) of R-028 splits the journal into
-# numbered files: it changes the "journal" paths here and nothing else.
+# Where each kind of record lives, relative to the repository root: a file, or a folder (a path ending in "/") whose
+# .md files are all read. The journal is the folder docs/journal/, ten ids to a file (R-028 (4)).
 KINDS: dict[str, tuple[str, tuple[str, ...]]] = {
     "decision": ("R", ("theGhost.md",)),
-    "journal": ("J", ("docs/JOURNAL.md",)),
+    "journal": ("J", ("docs/journal/",)),
 }
 
 
@@ -44,9 +44,25 @@ def local_text(root: Path, path: str) -> str:
     return file.read_text() if file.is_file() else ""
 
 
+def local_texts(root: Path, path: str) -> list[str]:
+    """The texts at `path` in the working tree: one for a file, one per .md file for a folder."""
+    if path.endswith("/"):
+        return [p.read_text() for p in sorted((root / path).glob("*.md"))]
+    return [local_text(root, path)]
+
+
+def remote_texts(root: Path, path: str) -> list[str]:
+    """The texts at `path` on origin/main: one for a file, one per .md file for a folder; none where it is not there."""
+    if not path.endswith("/"):
+        return [remote_text(root, path)]
+    done = subprocess.run(["git", "-C", str(root), "ls-tree", "--name-only", "origin/main", path], capture_output=True, text=True)
+    return [remote_text(root, name) for name in done.stdout.splitlines() if name.endswith(".md")]
+
+
 def next_id(root: Path, kind: str) -> tuple[str, str | None]:
     """(the next id, None) when the fetch worked; (the next id from the local copies, the fetch's failure) when not."""
     prefix, paths = KINDS[kind]
     failure = fetch(root)
-    texts = [local_text(root, p) for p in paths] + ([] if failure else [remote_text(root, p) for p in paths])
-    return format_id(prefix, max(highest(t, prefix) for t in texts) + 1), failure
+    texts = [t for p in paths for t in local_texts(root, p)]
+    texts += [] if failure else [t for p in paths for t in remote_texts(root, p)]
+    return format_id(prefix, max([highest(t, prefix) for t in texts], default=0) + 1), failure

@@ -20,7 +20,7 @@ def log(last: int, prefix: str = "R") -> str:
 
 @pytest.fixture
 def repos(tmp_path: Path) -> tuple[Path, Path]:
-    """(a clone, a second clone) of a bare remote holding theGhost.md with R-001..R-003 and docs/JOURNAL.md with J-001..J-002."""
+    """(a clone, a second clone) of a bare remote holding theGhost.md with R-001..R-003 and docs/journal/J-001-010.md with J-001..J-002."""
     remote = tmp_path / "remote.git"
     subprocess.run(["git", "init", "-q", "--bare", "-b", "main", str(remote)], check=True)
     seed = tmp_path / "seed"
@@ -28,7 +28,8 @@ def repos(tmp_path: Path) -> tuple[Path, Path]:
     git(seed, ["init", "-q", "-b", "main"])
     (seed / "docs").mkdir()
     (seed / "theGhost.md").write_text(log(3))
-    (seed / "docs" / "JOURNAL.md").write_text(log(2, "J"))
+    (seed / "docs" / "journal").mkdir()
+    (seed / "docs" / "journal" / "J-001-010.md").write_text(log(2, "J"))
     git(seed, ["add", "."])
     git(seed, ["commit", "-q", "-m", "seed"])
     git(seed, ["push", "-q", str(remote), "main"])
@@ -57,11 +58,35 @@ def test_the_local_number_wins_when_main_is_behind(repos: tuple[Path, Path]) -> 
 def test_the_fetched_number_wins_when_local_is_behind(repos: tuple[Path, Path]) -> None:
     a, b = repos
     (b / "theGhost.md").write_text(log(7))
-    (b / "docs" / "JOURNAL.md").write_text(log(4, "J"))
+    (b / "docs" / "journal" / "J-001-010.md").write_text(log(4, "J"))
     git(b, ["commit", "-q", "-a", "-m", "more"])
     git(b, ["push", "-q", "origin", "main"])
     assert next_id.next_id(a, "decision") == ("R-008", None)
     assert next_id.next_id(a, "journal") == ("J-005", None)
+
+
+def test_a_journal_file_only_main_has_counts(repos: tuple[Path, Path]) -> None:
+    a, b = repos
+    (b / "docs" / "journal" / "J-011-020.md").write_text(log(13, "J"))
+    (b / "docs" / "journal" / "notes.txt").write_text(log(40, "J"))
+    git(b, ["add", "."])
+    git(b, ["commit", "-q", "-m", "a new file"])
+    git(b, ["push", "-q", "origin", "main"])
+    assert next_id.next_id(a, "journal") == ("J-014", None)
+    (a / "docs" / "journal" / "J-021-030.md").write_text(log(25, "J"))
+    assert next_id.next_id(a, "journal") == ("J-026", None)
+
+
+def test_a_folder_that_is_not_there_counts_as_none(tmp_path: Path) -> None:
+    assert next_id.local_texts(tmp_path, "docs/journal/") == []
+    assert next_id.remote_texts(tmp_path, "docs/journal/") == []
+    assert next_id.local_texts(tmp_path, "theGhost.md") == [""]
+
+
+def test_a_root_with_no_record_at_all_starts_at_one(tmp_path: Path) -> None:
+    git(tmp_path, ["init", "-q"])
+    found, failure = next_id.next_id(tmp_path, "journal")
+    assert found == "J-001" and isinstance(failure, str)
 
 
 def test_a_failed_fetch_is_reported_and_the_local_answer_stands(repos: tuple[Path, Path]) -> None:

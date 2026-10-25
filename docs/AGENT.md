@@ -29,9 +29,9 @@ until a metric is first measured within its target it is "not armed" and not com
 
 | Metric | Phase 0 target | Measured | Why it matters to the agent |
 | --- | --- | --- | --- |
-| Mandatory context (words) | < 1,400 | 1306 | every task pays it |
-| Fast loop (s) | < 30 | 19.45 | run after every edit |
-| Full check, `precommit.sh` (min) | < 10 | 7.27 | paid before every push while there is no CI |
+| Mandatory context (words) | < 1,400 | 1319 | every task pays it |
+| Fast loop (s) | < 30 | 27.43 | run after every edit |
+| Full check, `precommit.sh` (min) | < 10 | 8.32 | paid before every push while there is no CI |
 | Largest source file (lines) | < 400 | 383 | fits a read without paging |
 | Files a routing row opens | ≤ 5 | 4 | first five reads decide the task |
 | Decisions without `See also` | 0 | 0 | links find what grep misses |
