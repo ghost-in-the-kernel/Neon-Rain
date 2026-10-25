@@ -26,19 +26,20 @@ def no_global_git_config() -> Iterator[None]:
 
 # Decision: R-024 (c). scripts.checks.supply_chain asks importlib.metadata for the installed packages' import names on
 # every call, a walk of every installed file (about 0.2 s), and fourteen tests and every supply_chain mutant's run
-# make the call. The installed packages do not change during a session, so the answer is kept; each caller gets a copy.
-@pytest.fixture(autouse=True, scope="session")
-def installed_packages_asked_once() -> Iterator[None]:
-    """For the whole session, supply_chain's packages_distributions() walks the installed files once."""
+# make the call. The installed packages do not change during a process, so the answer is kept, and asked for here, at
+# import, so that under mutmut the warm-up asks it once and every forked mutant run inherits it. Each caller gets a copy.
+def _ask_installed_packages_once() -> None:
+    """Replace supply_chain's packages_distributions with a copy-returning memo, primed now."""
     from scripts.checks import supply_chain
-    real = supply_chain.packages_distributions
-    if hasattr(real, "cache_info"):  # already wrapped: a warmed process runs many sessions, and keeps the answer
-        yield
+    if hasattr(supply_chain.packages_distributions, "cache_info"):  # a warmed process imports this file once only
         return
-    kept = functools.cache(real)
+    kept = functools.cache(supply_chain.packages_distributions)
+    kept()
     supply_chain.packages_distributions = lambda: {name: list(found) for name, found in kept().items()}
     supply_chain.packages_distributions.cache_info = kept.cache_info  # type: ignore[attr-defined]
-    yield  # left wrapped: the answer is the same for the rest of the process
+
+
+_ask_installed_packages_once()
 
 
 @pytest.fixture
