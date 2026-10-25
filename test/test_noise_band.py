@@ -5,18 +5,27 @@ With no edge and one trial, the DSR is the probabilistic Sharpe ratio, which is 
 truth is zero: about 5 seeds in 100 reach 0.95 by chance. The band: at most 12 (the binomial(100, 0.05)
 chance of 13 or more is under 0.2%), and a mean within 0.4 to 0.6. Costs can only push it down.
 """
+from functools import cache
+
 import numpy as np
 import polars as pl
 import pytest
 
 from neonrain.harness import metrics, portfolio, synthetic
+from neonrain.harness.market import Market
 
 SEEDS = range(100)
 
 
+@cache
+def market_of(seed: int) -> Market:
+    """A seed's market, built once for the two cost levels (generate is a pure function of its config; R-024 c)."""
+    return synthetic.generate(synthetic.MarketConfig(tickers=100, days=300, rho=0.0, seed=seed))
+
+
 def zero_edge_dsr(seed: int, cost_bps: float) -> float:
     """The DSR (one trial) of the long–short portfolio on an edge of ρ = 0, held 5 days, on 227 test dates."""
-    market = synthetic.generate(synthetic.MarketConfig(tickers=100, days=300, rho=0.0, seed=seed))
+    market = market_of(seed)
     dates = pl.col("date")
     rows = market.features.filter((dates >= market.calendar[63]) & (dates < market.calendar[290]))
     scores = rows.select("ticker", "date", pl.col("edge").alias("score"))

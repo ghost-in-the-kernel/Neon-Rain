@@ -12,8 +12,23 @@ loop_started=$(date +%s.%N)
 $bin/pytest || stop "the fast loop"
 fast_loop=$(python3 -c "print(round($(date +%s.%N) - $loop_started, 2))")
 
+# The slow tests (R-024 c): independent files, so one pytest process each, side by side (the box has cores to spare);
+# the last process takes every slow test in a file not named above, so a new slow file is run, never left out.
 slow_started=$(date +%s)
-$bin/pytest -m slow || stop "the slow tests (the harness on the synthetic market)"
+slow_logs=$(mktemp -d)
+named=(test/test_harness_adversarial.py test/test_noise_band.py test/test_the_freeze.py test/test_survivorship_probe.py)
+$bin/pytest -m slow test/test_harness_adversarial.py > "$slow_logs/1" 2>&1 & slow_pids=($!)
+$bin/pytest -m slow test/test_noise_band.py > "$slow_logs/2" 2>&1 & slow_pids+=($!)
+$bin/pytest -m slow test/test_the_freeze.py test/test_survivorship_probe.py > "$slow_logs/3" 2>&1 & slow_pids+=($!)
+$bin/pytest -m slow "${named[@]/#/--ignore=}" > "$slow_logs/4" 2>&1 & slow_pids+=($!)
+slow_failed=0
+for n in 0 1 2 3; do
+  wait "${slow_pids[$n]}"; code=$?
+  [ "$n" = 3 ] && [ "$code" = 5 ] && code=0  # pytest's 5 is "no tests collected": no other slow file, fine
+  [ "$code" = 0 ] || slow_failed=1
+done
+cat "$slow_logs"/*
+[ "$slow_failed" = 0 ] || stop "the slow tests (the harness on the synthetic market)"
 slow=$(( $(date +%s) - slow_started ))
 
 $bin/ruff check . || stop "ruff (R-015b)"

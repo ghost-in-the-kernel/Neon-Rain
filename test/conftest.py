@@ -1,12 +1,45 @@
 """Shared fixtures: the repository root the doc tests read. One hook: under mutmut, the cheapest test runs first."""
+import functools
 import gc
 import json
 import os
+from collections.abc import Iterator
 from pathlib import Path
 
 import pytest
 
 ROOT = Path(__file__).resolve().parent.parent
+
+
+# Decision: R-024 (c). Every test that makes a commit in a throwaway repository ran the machine's own git config: in a
+# cloud session that signs each commit by starting an ssh signer, about 90 ms a commit, 150 commits in the fast loop.
+# A test of a throwaway repository wants no one's global config (the tests name their own author), so none is read.
+@pytest.fixture(autouse=True, scope="session")
+def no_global_git_config() -> Iterator[None]:
+    """For the whole session, git reads neither the user's nor the system's config; the environment is restored after."""
+    patch = pytest.MonkeyPatch()
+    patch.setenv("GIT_CONFIG_GLOBAL", os.devnull)
+    patch.setenv("GIT_CONFIG_NOSYSTEM", "1")
+    yield
+    patch.undo()
+
+
+# Decision: R-024 (c). scripts.checks.supply_chain asks importlib.metadata for the installed packages' import names on
+# every call, a walk of every installed file (about 0.2 s), and fourteen tests and every supply_chain mutant's run
+# make the call. The installed packages do not change during a process, so the answer is kept, and asked for here, at
+# import, so that under mutmut the warm-up asks it once and every forked mutant run inherits it. Each caller gets a copy.
+def _ask_installed_packages_once() -> None:
+    """Replace supply_chain's packages_distributions with a copy-returning memo, primed now."""
+    from scripts.checks import supply_chain
+    if hasattr(supply_chain.packages_distributions, "cache_info"):  # a warmed process imports this file once only
+        return
+    kept = functools.cache(supply_chain.packages_distributions)
+    kept()
+    supply_chain.packages_distributions = lambda: {name: list(found) for name, found in kept().items()}
+    supply_chain.packages_distributions.cache_info = kept.cache_info  # type: ignore[attr-defined]
+
+
+_ask_installed_packages_once()
 
 
 @pytest.fixture
