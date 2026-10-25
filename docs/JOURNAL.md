@@ -1085,3 +1085,20 @@ shared classes). `test/test_journal.py` holds this.
 - **Touched:** scripts/commit.sh, scripts/commit_guard.py, test/test_commit_script.py, CLAUDE.md,
   docs/rules/tithe.md, docs/AGENT.md, pyproject.toml, docs/NAVIGATION-LOG.md.
 - **Class:** decision
+
+### J-050 R-028 (2): the decision index and the next-id script
+- **Who:** Ghost, Claude Opus (reviewing), a fresh Claude Sonnet agent (under J-027).
+- **Intent:** R-028's second tool: theGhost.md read through a one-line index, and no two sessions
+  taking one number.
+- **Found:** `docs/decisions.md` (28 rows: id, title, status, subject), written by
+  `scripts/decisions_index.py` from `scripts/checks/ghost.py`'s parsing; `test_the_real_index_is_current`
+  fails when it is stale and names the command. `scripts/next_id.py decision|journal` fetches origin
+  main and gives one past the largest `### R-nnn` or `### J-nnn` heading, local or main; a failed
+  fetch says so and marks the answer local only. The logic is in `scripts/checks/`, mutation-tested
+  (10 survivors killed by tests, none explained away). Adapted from Ghost-Core's two scripts, read
+  only. CLAUDE.md's first row starts at the index (1,289 words). This entry's id came from it.
+- **Resolved:** Reviewed and committed.
+- **Touched:** docs/decisions.md, scripts/checks/decisions.py, scripts/checks/next_id.py,
+  scripts/decisions_index.py, scripts/next_id.py, test/test_decisions.py, test/test_next_id.py,
+  CLAUDE.md, pyproject.toml, docs/AGENT.md, docs/NAVIGATION-LOG.md.
+- **Class:** decision

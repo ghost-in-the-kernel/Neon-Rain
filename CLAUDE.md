@@ -14,7 +14,7 @@ at the plan.
 
 | Task | Start here | Contract | Tests |
 | --- | --- | --- | --- |
-| A decision, a plan, what to work on | `docs/HANDOFF.md`, `theGhost.md`, `TODO.md` | `theGhost.md` | `test/test_ghost.py` |
+| A decision, a plan, what to work on | `docs/decisions.md` (one line each; then the entry in `theGhost.md`), `docs/HANDOFF.md`, `TODO.md` | `theGhost.md` | `test/test_ghost.py` |
 | Writing down what happened | `docs/JOURNAL.md` (one entry, its fields) | | `test/test_journal.py` |
 | Debriefing a task: what was hard to find | `docs/NAVIGATION-LOG.md` | its header | `test/test_navigation.py` |
 | A tithe: a tithe commit or a phase's tithe pass | `docs/rules/tithe.md` (the steps, in order), `docs/AGENT.md`, `docs/NAVIGATION-LOG.md`; the guard: `scripts/commit.sh` | R-012, R-019, R-023 | `test/test_metrics.py`, `test/test_navigation.py`, `test/test_commit_script.py` |
@@ -54,6 +54,7 @@ the metrics line; quote its last line in the commit. After changing CLAUDE.md or
 file, grepped for failures (`FAILED`, `Error`, `refused`, `unexplained`); read the file only if
 there are some.
 Data and artifacts are fetched, never committed (R-006).
+`.venv/bin/python scripts/next_id.py decision` (or `journal`) gives the next free id after fetching `main`: take one from it before writing a decision or a journal entry. `docs/decisions.md` is written by `scripts/decisions_index.py`.
 
 ## When X happens, read Y
 

@@ -25,3 +25,9 @@ Last review: e722195 (2026-10-24, a tithe, J-045: five debriefs, entries wiped)
 - **Opened:** CLAUDE.md, theGhost.md (R-028, R-012), docs/rules/tithe.md, /home/user/ghost-core/scripts/commit.sh, scripts/precommit.sh, pyproject.toml, scripts/checks/supply_chain.py, test/conftest.py, docs/NAVIGATION-LOG.md
 - **Complaints:** R-012 says "every eighth commit" without saying whether the count starts at the tithe or after it, so the threshold (seven, then the tithe) is my reading. No routing row for a script under scripts/ that is not a document check, so I had to read pyproject.toml to learn mutmut's `also_copy` needs any file a test reaches. Readability's ban on `*args` was found only by running the fast loop.
 - **Suggestions:** A row "A script that makes or guards a commit" pointing at scripts/commit.sh. A line in the CLAUDE.md Commands or MUTATION notes that a new script a test calls must be added to `also_copy`.
+
+### 2026-10-25 R-028 (2) the decisions index and the next-id script (Claude Sonnet)
+- **Task:** R-028 (2): docs/decisions.md generated from theGhost.md and checked; scripts/next_id.py fetching main first
+- **Opened:** CLAUDE.md, theGhost.md (R-028), scripts/checks/ghost.py, scripts/commit_guard.py, pyproject.toml, docs/AGENT.md (AGT-05), /home/user/ghost-core/scripts/decisions_index.py, next_id.py, docs/decisions.md, test/conftest.py
+- **Complaints:** No routing row says where pure logic of a script goes; I chose scripts/checks/ (mutation-tested) with a thin CLI in scripts/, and learned only from commit_guard.py's docstring that scripts/ is the other option. The `*args` ban in readability.py was again found only by the fast loop (the commit-guard debrief said the same).
+- **Suggestions:** A row "A script that is not a document check" saying: logic in scripts/checks/ (mutated), the CLI thin, and the CLI added to `also_copy`. A line in readability's docstring is not enough; CLAUDE.md's Commands could name the `*args` ban.
