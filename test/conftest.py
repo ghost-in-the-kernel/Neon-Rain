@@ -1,12 +1,44 @@
 """Shared fixtures: the repository root the doc tests read. One hook: under mutmut, the cheapest test runs first."""
+import functools
 import gc
 import json
 import os
+from collections.abc import Iterator
 from pathlib import Path
 
 import pytest
 
 ROOT = Path(__file__).resolve().parent.parent
+
+
+# Decision: R-024 (c). Every test that makes a commit in a throwaway repository ran the machine's own git config: in a
+# cloud session that signs each commit by starting an ssh signer, about 90 ms a commit, 150 commits in the fast loop.
+# A test of a throwaway repository wants no one's global config (the tests name their own author), so none is read.
+@pytest.fixture(autouse=True, scope="session")
+def no_global_git_config() -> Iterator[None]:
+    """For the whole session, git reads neither the user's nor the system's config; the environment is restored after."""
+    patch = pytest.MonkeyPatch()
+    patch.setenv("GIT_CONFIG_GLOBAL", os.devnull)
+    patch.setenv("GIT_CONFIG_NOSYSTEM", "1")
+    yield
+    patch.undo()
+
+
+# Decision: R-024 (c). scripts.checks.supply_chain asks importlib.metadata for the installed packages' import names on
+# every call, a walk of every installed file (about 0.2 s), and fourteen tests and every supply_chain mutant's run
+# make the call. The installed packages do not change during a session, so the answer is kept; each caller gets a copy.
+@pytest.fixture(autouse=True, scope="session")
+def installed_packages_asked_once() -> Iterator[None]:
+    """For the whole session, supply_chain's packages_distributions() walks the installed files once."""
+    from scripts.checks import supply_chain
+    real = supply_chain.packages_distributions
+    if hasattr(real, "cache_info"):  # already wrapped: a warmed process runs many sessions, and keeps the answer
+        yield
+        return
+    kept = functools.cache(real)
+    supply_chain.packages_distributions = lambda: {name: list(found) for name, found in kept().items()}
+    supply_chain.packages_distributions.cache_info = kept.cache_info  # type: ignore[attr-defined]
+    yield  # left wrapped: the answer is the same for the rest of the process
 
 
 @pytest.fixture
