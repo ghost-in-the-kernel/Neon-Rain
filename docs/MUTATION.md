@@ -64,3 +64,5 @@ Only these. Anything else gets a test.
   A mutation to a *reported* number is never harmless — those are the project's output.
 
 A performance-only difference is not harmless; it is untested behaviour with a plausible excuse.
+| `neonrain.universe.prices.x_load__mutmut_45` | neonrain/universe/prices.py : `load` | `first < day` instead of `first <= day` in the empty-session test | Equivalent under every reachable input: `first` is the smallest date with a row, so it is in `seen` and `day not in seen` is already false for it. | 2026-10-25 |
+| `neonrain.universe.prices.x_load__mutmut_46` | neonrain/universe/prices.py : `load` | `day < last` instead of `day <= last` in the empty-session test | Equivalent under every reachable input: `last` is the largest date with a row, so it is in `seen` and `day not in seen` is already false for it. | 2026-10-25 |

@@ -39,16 +39,6 @@ Check: (a) the calendar gives the NYSE's sessions for hand-checked years and clo
 Juneteenth from 2022, 2001-09-11 to 09-14, 2012-10-29 and 30, the national days of mourning);
 (b) every ticker has dates in and out, and the gap is a finding. (a) is done (J-039); (b) is next.
 
-### 2.2 Daily prices
-
-Plan: the harness's price frame (`neonrain/harness/market.py`'s layout) from the yearly parquet, by
-`scripts/fetch/wiki.py` and a pure loader: the adjusted columns (`adj_open` to `adj_volume`, split
-and dividend adjusted), so a return is a total return; raw `close` kept beside them for the
-dollar-volume filter. A WIKI date that is no session of the calendar, or a session with no prices
-for any ticker, is a finding, never silently dropped.
-Check: OHLCV for ten or more years, fetched by script from `neon-rain-data` and manifested (R-006);
-every price date is a session of 2.1's calendar.
-
 ### 2.3 Price-derived features
 
 Check: each family has a glossary term and a pure function from prices with a unit test against a

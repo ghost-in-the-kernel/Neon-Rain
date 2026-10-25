@@ -45,7 +45,10 @@
     "neonrain.universe.membership.spans",
     "neonrain.universe.membership.median_dollar_volume",
     "neonrain.universe.membership.universe",
-    "neonrain.universe.periods.wiki_period"
+    "neonrain.universe.periods.wiki_period",
+    "neonrain.universe.verified.read_verified",
+    "neonrain.universe.prices.load",
+    "neonrain.universe.prices.for_membership"
    ]
   },
   "features": {

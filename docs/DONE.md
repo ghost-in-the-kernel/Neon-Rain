@@ -155,3 +155,14 @@ gave each of the phase's debriefs a verdict. The separate fresh-agent trial ran 
 drifted into phase-2 work on a follow-up; Ghost retired it (R-023). `docs/rules/tithe.md` is the
 one procedure, reviewed by Claude Fable. Check: AGENT.md re-measured; every debrief given a
 verdict, the log wiped and "Last review" moved; open questions in the journal. ✓
+
+### 2.2 Daily prices — done 2026-10-25 (J-053)
+
+`neonrain/universe/verified.py` checks `index.tsv` against the manifest and every year against its
+index line before any byte is returned; `neonrain/universe/prices.py` loads the harness's price frame
+from WIKI's adjusted columns (a total-return close; raw close and volume kept for dollar volume).
+On the 2017-11-07 sample: 20 years verified, 11,965,009 rows on 4,996 sessions, 3,194 tickers; 165
+rows on 120 dates off the calendar, refused by `check_market`, kept aside in `Loaded.off_calendar`
+(NR-F-08); no session without rows; NR-F-05's tickers kept whole. Built by a fresh Claude Sonnet
+agent under J-027. Check: ten or more years of OHLCV from neon-rain-data by script, manifested; every
+price date a session or a finding. ✓ (No result is reported: WIKI's licence is unverified.)

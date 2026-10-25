@@ -56,3 +56,4 @@ Written by `python3 -I scripts/journal_index.py` from `docs/journal/`; do not ed
 | J-050 | R-028 (2): the decision index and the next-id script | decision | `J-041-050.md` |
 | J-051 | R-028 (3): the escalation register | decision | `J-051-060.md` |
 | J-052 | Tithe: R-028 (4), the journal split | measurement | `J-051-060.md` |
+| J-053 | Step 2.2: WIKI's daily prices, hash-checked before any read | measurement | `J-051-060.md` |
