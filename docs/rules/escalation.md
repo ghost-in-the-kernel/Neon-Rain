@@ -14,7 +14,7 @@ after your first attempt at a code change. (Your system prompt names your model.
   the escalation: stop, and report the task, your diff and the failing output to the agent that
   spawned you, which takes it to Claude Opus. Do not keep trying (J-032: one such agent spent 108
   minutes on a metric no edit of its could fix).
-- **Name the escalation** in the journal entry (`docs/JOURNAL.md`).
+- **Name the escalation** in the journal entry (`docs/JOURNAL.md`) and add a row to `docs/ESCALATIONS.md`, by kind; three open rows of one kind go to Ghost under HANDOFF's "For Ghost".
 
 Why: the cheaper model does the routine work; the costly failure is retrying a hard fix until
 something passes for the wrong reason, which in this project is the failure the harness exists to

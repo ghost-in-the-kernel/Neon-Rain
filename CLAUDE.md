@@ -15,7 +15,7 @@ at the plan.
 | Task | Start here | Contract | Tests |
 | --- | --- | --- | --- |
 | A decision, a plan, what to work on | `docs/decisions.md` (one line each; then the entry in `theGhost.md`), `docs/HANDOFF.md`, `TODO.md` | `theGhost.md` | `test/test_ghost.py` |
-| Writing down what happened | `docs/JOURNAL.md` (one entry, its fields) | | `test/test_journal.py` |
+| Writing down what happened | `docs/JOURNAL.md` (one entry, its fields); an escalation also a row in `docs/ESCALATIONS.md` (three of a kind go to Ghost) | R-022, R-028 | `test/test_journal.py`, `test/test_escalations.py` |
 | Debriefing a task: what was hard to find | `docs/NAVIGATION-LOG.md` | its header | `test/test_navigation.py` |
 | A tithe: a tithe commit or a phase's tithe pass | `docs/rules/tithe.md` (the steps, in order), `docs/AGENT.md`, `docs/NAVIGATION-LOG.md`; the guard: `scripts/commit.sh` | R-012, R-019, R-023 | `test/test_metrics.py`, `test/test_navigation.py`, `test/test_commit_script.py` |
 | A word | `docs/GLOSSARY.md` | | `test/test_glossary.py` |

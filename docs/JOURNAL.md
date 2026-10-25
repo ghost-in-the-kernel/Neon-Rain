@@ -1102,3 +1102,21 @@ shared classes). `test/test_journal.py` holds this.
   scripts/decisions_index.py, scripts/next_id.py, test/test_decisions.py, test/test_next_id.py,
   CLAUDE.md, pyproject.toml, docs/AGENT.md, docs/NAVIGATION-LOG.md.
 - **Class:** decision
+
+### J-051 R-028 (3): the escalation register
+- **Who:** Ghost, Claude Opus (reviewing), a fresh Claude Sonnet agent (under J-027).
+- **Intent:** R-028's third tool: escalations counted by kind, three of a kind to Ghost.
+- **Found:** `docs/ESCALATIONS.md` (columns Date, Journal, Task, Kind, Route taken, What was found,
+  Status; status open, fixed or Ghost) and `scripts/checks/escalations.py` with its planted breaks:
+  three open rows of one kind need a numbered "For Ghost" item in HANDOFF naming the kind. Kinds:
+  missing-row, not-read, wrong-row, stale-pointer, hard, and no-advisor (a spawned agent with no Opus
+  to call, J-032's case); Ghost-Core's no-replay dropped (R-022's hand-off is the replay); conflict
+  kept apart, since it goes to Ghost at once with no count (J-023), and a test refuses it as a kind.
+  One row back-filled, J-032's, fixed. Adapted from Ghost-Core's register and check, read only.
+  A mutant of `scripts/checks/modules.py` (`x_file_problems__mutmut_31`), a file not touched,
+  survived one precommit run and was killed on the next with nothing changed: a flake in the
+  mutation run's test selection, to be watched; a second sighting is a task.
+- **Resolved:** Reviewed and committed. CLAUDE.md's journal row names the register (1,306 words).
+- **Touched:** docs/ESCALATIONS.md, scripts/checks/escalations.py, test/test_escalations.py,
+  docs/rules/escalation.md, CLAUDE.md, docs/AGENT.md, docs/NAVIGATION-LOG.md.
+- **Class:** decision
