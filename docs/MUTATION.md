@@ -13,7 +13,11 @@ What the full check costs, and the knobs (R-024 c): a mutant is one `pytest.main
 so a per-run cost is paid 3,896 times. `test/conftest.py` freezes the warmed heap (`gc.freeze()`) at the start of a
 run under mutmut, because pytest's unraisable-exception plugin calls `gc.collect()` twice per run and each call walked
 that heap for about 85 ms. `mutmut run "<module>.*"` runs one module's mutants in seconds, and
-`mutmut results | grep <module>` lists its survivors. To show a survivor equivalent, brute-force the mutated line over
+`mutmut results | grep <module>` lists its survivors. Two more costs taken out of the run (J-053): `test/conftest.py` asks
+`importlib.metadata` for the installed packages once, at import, so the warm-up pays the 0.2 s walk and no forked mutant does
+(it was the cost of every `supply_chain` mutant); and `pytest_add_cli_args = ["-p", "no:cacheprovider"]` leaves the cache
+plugin off, since it wrote `.pytest_cache` in every failing run. A function a test file wraps in a cache must not be one
+under `source_paths`, or a mutant of it would be answered from the cache. To show a survivor equivalent, brute-force the mutated line over
 the function's stated domain and quote the range checked in its row. A new top-level folder the tests import (as
 `scripts/probe/` and `scripts/fetch/`) must be added to `also_copy` in `pyproject.toml`.
 
