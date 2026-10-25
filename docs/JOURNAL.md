@@ -1032,3 +1032,17 @@ shared classes). `test/test_journal.py` holds this.
 - **Touched:** theGhost.md (R-027), docs/modules.json, docs/ROADMAP.md (§3.3, §5), docs/AGENT.md,
   docs/GHOST-IN-THE-KERNEL.md, docs/rules/tithe.md, CLAUDE.md.
 - **Class:** decision
+
+### J-047 R-026 (c): survivor-only data's bias, measured on the synthetic market (NR-F-09)
+- **Who:** Ghost, Claude Opus (reviewing), a fresh Claude Sonnet agent (under J-027).
+- **Intent:** Before any WIKI result, say how optimistic its survivor-only years (1998 to 2013) are.
+- **Found:** `scripts/probe/survivorship.py` ran the frozen harness on the synthetic market (8 seeds,
+  160 tickers, 1,200 sessions, no planted edge), full and survivors-only. Differences in long-short
+  Sharpe at 10 bps, survivors minus full: random about 0 (the control); reversal +0.12 to +0.22;
+  momentum −0.11 to −0.14. Survivor-only flatters buying losers and understates momentum, about as
+  large as the seed spread. Choices and seven limits are in NR-F-09. Not appended to
+  `harness/trials.tsv`: the runs measure the harness, not a model, and would inflate the DSR's N.
+- **Resolved:** Reviewed and committed. R-026 (c) done.
+- **Touched:** scripts/probe/survivorship.py, test/test_survivorship_probe.py, docs/FINDINGS.md,
+  docs/NAVIGATION-LOG.md.
+- **Class:** measurement
