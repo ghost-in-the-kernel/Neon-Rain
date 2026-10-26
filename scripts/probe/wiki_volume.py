@@ -1,6 +1,6 @@
 """Counts from the volume ratio family on the real sample (TODO 2.3); only counts are printed, no volume or ratio (R-006).
 
-    python scripts/probe/wiki_volume.py <neon-rain-data clone>
+    PYTHONPATH=. python scripts/probe/wiki_volume.py <neon-rain-data clone>
 
 Loads `<clone>/wiki/prices` as `wiki_prices.py` does, builds the volume ratio family on the calendar of 1998 to 2017,
 runs the harness's stamp check on the frame, and prints for each lookback the cells with a value and the cells without,

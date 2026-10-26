@@ -1,6 +1,6 @@
 """Counts from loading the real sample through the price loader (TODO 2.2, NR-F-08); only counts are printed (R-006).
 
-    python scripts/probe/wiki_prices.py <neon-rain-data clone>
+    PYTHONPATH=. python scripts/probe/wiki_prices.py <neon-rain-data clone>
 
 Loads `<clone>/wiki/prices` (refused unless the index hashes to the manifest row and each year to its index line) on
 the calendar of 1998 to 2017, runs the harness's layout checks on the frame, and prints what was left out of it.

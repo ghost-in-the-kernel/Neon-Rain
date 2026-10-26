@@ -1,6 +1,6 @@
 # Findings: what the data carries, what the harness caught, what did not work
 
-Numbered NR-F-01 onward; a number is never reused. Each is written **before** any result that
+Numbered NR-F-01 onward; a number is never reused. (The `F-01` to `F-08` of `docs/ROADMAP.md` §1 are another series: facts the plan stands on, from the literature or measured before the build; these NR-F entries are what this project's own data and harness showed.) Each is written **before** any result that
 depends on it is reported (P-03), and every row of `docs/RESULTS.md` cites the findings it carries.
 
 | Id | Finding | Evidence | Qualifies |

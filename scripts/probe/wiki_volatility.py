@@ -1,6 +1,6 @@
 """Counts from the volatility family on the real sample (TODO 2.3); only counts are printed, no price or return (R-006).
 
-    python scripts/probe/wiki_volatility.py <neon-rain-data clone>
+    PYTHONPATH=. python scripts/probe/wiki_volatility.py <neon-rain-data clone>
 
 Loads `<clone>/wiki/prices` as `wiki_prices.py` does, builds the volatility family on the calendar of 1998 to 2017,
 runs the harness's stamp check on the frame, and prints for each lookback the cells with a value and the cells without.

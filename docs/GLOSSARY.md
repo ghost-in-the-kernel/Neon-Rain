@@ -44,5 +44,6 @@ apart. Add a term before using a new word for a concept (Katana R-039's rule).
 | **cut** | the publish-time filter that hides ledger rows at or after the feature date | mask, as-of (as a verb) |
 | **golden** | a frozen harness result that a refactor must reproduce byte-identically (P-02) | snapshot, fixture |
 | **finding** | an entry in `docs/FINDINGS.md`: a bias, a leak, a failed hypothesis, said before the result it qualifies | caveat, limitation, known issue |
+| **fact** | an `F-nn` line in `docs/ROADMAP.md` §1 (F-01 to F-08): a published result or a measured limit the plan stands on, with its implication; not a finding (NR-F-nn, `docs/FINDINGS.md`, a bias this project measured) | finding (for an F-nn) |
 | **forward test** | phase 7: predictions appended to the prediction ledger before their outcome is known | paper trading (implies orders), live test |
 | **tithe** | a commit or pass that improves the agent's environment and changes no result (R-012) | cleanup, refactor (a refactor changes code shape; a tithe may not) |

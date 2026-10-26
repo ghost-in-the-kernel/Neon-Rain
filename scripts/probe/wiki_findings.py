@@ -3,7 +3,7 @@
 Reads the yearly parquet in the data clone (the sample) and the unzipped export CSV (the feed past the sample); prints
 tables and writes nothing. No price, no ticker and no row is printed: only counts, shares and dates (R-006).
 
-    python scripts/probe/wiki_findings.py DATA_CLONE/wiki/prices EXPORT.csv
+    PYTHONPATH=. python scripts/probe/wiki_findings.py DATA_CLONE/wiki/prices EXPORT.csv
 """
 import sys
 from datetime import date
