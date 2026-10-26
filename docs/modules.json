@@ -65,7 +65,9 @@
     "neonrain.features.volume.volume_ratios",
     "neonrain.features.volume.feature_columns",
     "neonrain.features.indicators.indicators",
-    "neonrain.features.indicators.feature_columns"
+    "neonrain.features.indicators.feature_columns",
+    "neonrain.features.normalize.normalize",
+    "neonrain.features.normalize.feature_names"
    ]
   },
   "targets": {

@@ -38,7 +38,7 @@ until a metric is first measured within its target it is "not armed" and not com
 | Results without a trials line | 0 | 0 | P-07 |
 | Results without dispersion | 0 | 0 | R-014 |
 | Datasets without a manifest line | 0 | 0 | R-006 |
-| Docs lines per source line | < 1.5 | 1.11 | records left out; arms as phases 2 to 4 add source (R-024) |
+| Docs lines per source line | < 1.5 | 1.06 | records left out; arms as phases 2 to 4 add source (R-024) |
 
 ## Re-measuring (a tithe pass, R-012)
 

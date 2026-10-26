@@ -39,10 +39,6 @@ Check: (a) the calendar gives the NYSE's sessions for hand-checked years and clo
 Juneteenth from 2022, 2001-09-11 to 09-14, 2012-10-29 and 30, the national days of mourning);
 (b) every ticker has dates in and out, and the gap is a finding. (a) is done (J-039); (b) is next.
 
-### 2.4 Cross-sectional normalization
-
-Check: no feature carries the market level: per day, each is a rank or z-score within the universe.
-
 ### 2.5 The feature table
 
 Check: cached to the artifact store by content hash (`scripts/fetch/artifacts.py`); a fetch rebuilds

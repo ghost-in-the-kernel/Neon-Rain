@@ -176,3 +176,13 @@ ratios (`volr_5`, `volr_21`, `volr_63`), and the indicators (`rsi_14`, `macd`, `
 Each feature stamped t (HAR-12), null across any gap, never infinite; reused tickers kept whole
 (NR-F-05). Check: each family has a glossary term and a pure function from prices with a unit test
 against a hand-computed window. ✓
+
+### 2.4 Cross-sectional normalization — done 2026-10-26 (J-064)
+
+`neonrain/features/normalize.py`: each feature as a centred rank within the day's universe,
+`(rank - 1) / (n - 1) - 0.5`, ties averaged, nulls left out, null below 20 names (HAR-02's minimum).
+The two questions J-056 left open, answered: a family's frame keeps the price frame's cells; the
+normalized frame has exactly the universe's cells, and a name outside the universe on a date has no
+row and no part in that date's ranks. Applying it to every family and caching the table is 2.5's.
+Built by a fresh Claude Sonnet agent under J-027. Check: per day, each feature a rank within the
+universe; no feature carries the market level (a day's mean is 0). ✓
