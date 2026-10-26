@@ -3,6 +3,8 @@ import functools
 import gc
 import json
 import os
+import shutil
+import tempfile
 from collections.abc import Iterator
 from pathlib import Path
 
@@ -64,6 +66,23 @@ def pytest_collection_modifyitems(items: list[pytest.Item]) -> None:
 # the test modules) for 85 ms, twice per mutant, about half the mutation run. Freezing it moves that heap out of the
 # collector's walk; nothing is skipped and the plugin still runs. Only under mutmut, which sets this variable.
 def pytest_sessionstart(session: pytest.Session) -> None:
-    """Under mutmut, freeze what the warmed process already holds so the per-run gc.collect() calls are cheap."""
+    """Under mutmut, freeze what the warmed process already holds so the per-run gc.collect() calls are cheap, and give
+    the run its own temporary folder."""
     if "MUTANT_UNDER_TEST" in os.environ:
         gc.freeze()
+        own_temporary_root(session.config)
+
+
+# Decision: R-024 (c). Four mutants run at once, each one pytest.main, and every pytest session keeps its tmp_path folders
+# under one shared /tmp/pytest-of-<user>. At the end of a session pytest walks that folder for dead symlinks while another
+# session, starting, unlinks and recreates the symlink "pytest-current" in it; when the walk finds the link gone between
+# two of its calls, FileNotFoundError leaves pytest.main (J-055). mutmut reads an exception out of a mutant's run as exit
+# 255, which it calls a timeout, whatever the tests had said (a killed mutant included), and the gate refuses a timeout as
+# an unexplained survivor; the mutant is clean on the next run. A folder only this session uses has nothing to race with.
+def own_temporary_root(config: pytest.Config) -> None:
+    """Make this session's tmp_path folders live in a new folder nothing else uses, removed when the session ends."""
+    root = tempfile.mkdtemp(prefix="neonrain-mutant-")  # e.g. /tmp/neonrain-mutant-k3x9a_
+    patch = pytest.MonkeyPatch()
+    patch.setenv("PYTEST_DEBUG_TEMPROOT", root)  # pytest's own switch for where pytest-of-<user> goes
+    config.add_cleanup(functools.partial(shutil.rmtree, root, ignore_errors=True))
+    config.add_cleanup(patch.undo)

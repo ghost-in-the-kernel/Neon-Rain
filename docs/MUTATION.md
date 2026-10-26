@@ -16,7 +16,17 @@ that heap for about 85 ms. `mutmut run "<module>.*"` runs one module's mutants i
 `mutmut results | grep <module>` lists its survivors. Two more costs taken out of the run (J-053): `test/conftest.py` asks
 `importlib.metadata` for the installed packages once, at import, so the warm-up pays the 0.2 s walk and no forked mutant does
 (it was the cost of every `supply_chain` mutant); and `pytest_add_cli_args = ["-p", "no:cacheprovider"]` leaves the cache
-plugin off, since it wrote `.pytest_cache` in every failing run. A function a test file wraps in a cache must not be one
+plugin off, since it wrote `.pytest_cache` in every failing run.
+
+A mutant reported in a file nobody touched, which the next run kills with nothing changed, was a race, not a survivor
+(J-055). The four workers kept their `tmp_path` folders under one `/tmp/pytest-of-<user>`; pytest's end-of-session cleanup
+of it raised `FileNotFoundError` out of `pytest.main` when another worker, starting, had just replaced its `pytest-current`
+link. mutmut records an exception out of a mutant's run as exit 255, which it calls a timeout whatever the tests said, and
+the gate refuses a timeout like a survivor. `test/conftest.py` now gives each mutant's run a temporary root of its own
+(`PYTEST_DEBUG_TEMPROOT`, removed when the run ends). A "timeout" on a mutant whose tests take milliseconds is not a hang:
+rerun it by name (`mutmut run "<name>"`); a hang stays a timeout.
+
+A function a test file wraps in a cache must not be one
 under `source_paths`, or a mutant of it would be answered from the cache. To show a survivor equivalent, brute-force the mutated line over
 the function's stated domain and quote the range checked in its row. A new top-level folder the tests import (as
 `scripts/probe/` and `scripts/fetch/`) must be added to `also_copy` in `pyproject.toml`.
