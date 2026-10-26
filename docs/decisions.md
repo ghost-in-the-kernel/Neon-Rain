@@ -32,3 +32,4 @@ Written by `python3 -I scripts/decisions_index.py` from `theGhost.md`; do not ed
 | R-026 | WIKI's sample ends 2017-11-07; its survivor-only years are reported apart and the bias measured | in force | data |
 | R-027 | baselines and training may import universe; CLAUDE.md may grow to 1,400 words | in force | agent environment |
 | R-028 | Four of Ghost-Core's tools adopted; Ghost-Core is read only | in force | agent environment |
+| R-029 | CLAUDE.md's reading goes into conditional files; always-on rules stay inline | in force | agent environment |

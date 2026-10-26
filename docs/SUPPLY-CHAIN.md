@@ -1,7 +1,9 @@
 # Supply chain: what may enter this repository
 
-The binding rules are in `CLAUDE.md`, where every agent reads them. This document is why they are
-what they are, and the detail behind them. `test/test_supply_chain.py` holds what can be held
+The binding rules are in two places (R-029): the three that can bite in any task are in `CLAUDE.md`'s
+"Always" section, which every agent reads (rules 4, 6 and 9 below); the four that apply only when an agent
+touches a dependency, a config or a workflow are in `docs/rules/dependencies.md`, read then (rules 1, 2, 3
+and 5, and 8 below). This document is why they are what they are, and the detail behind them. `test/test_supply_chain.py` holds what can be held
 mechanically.
 
 ## The threat this answers
