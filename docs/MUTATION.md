@@ -22,7 +22,7 @@ A mutant reported in a file nobody touched, which the next run kills with nothin
 (J-055). The four workers kept their `tmp_path` folders under one `/tmp/pytest-of-<user>`; pytest's end-of-session cleanup
 of it raised `FileNotFoundError` out of `pytest.main` when another worker, starting, had just replaced its `pytest-current`
 link. mutmut records an exception out of a mutant's run as exit 255, which it calls a timeout whatever the tests said, and
-the gate refuses a timeout like a survivor. `test/conftest.py` now gives each mutant's run a temporary root of its own
+the gate refuses a timeout like a survivor, and prints it as "unexplained timeout" (each mutant with its own status). `test/conftest.py` now gives each mutant's run a temporary root of its own
 (`PYTEST_DEBUG_TEMPROOT`, removed when the run ends). A "timeout" on a mutant whose tests take milliseconds is not a hang:
 rerun it by name (`mutmut run "<name>"`); a hang stays a timeout.
 

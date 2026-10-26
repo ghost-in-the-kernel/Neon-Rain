@@ -6,14 +6,25 @@ LINE = re.compile(r"^\s*(\S+): (.+)$")
 PRAGMA = re.compile(r"#\s*pragma:\s*no mutate")
 
 
-def survivors(results: str) -> list[str]:
-    """The mutants `mutmut results` lists as anything but killed: "    a.b__mutmut_3: survived" gives ["a.b__mutmut_3"]."""
-    found = []
+def statuses(results: str) -> dict[str, str]:
+    """Each mutant `mutmut results` lists as anything but killed, with its status: "    a.b__mutmut_3: timeout" gives {"a.b__mutmut_3": "timeout"}."""
+    found = {}
     for line in results.splitlines():
         match = LINE.match(line)
         if match and match.group(2) in UNFINISHED:
-            found.append(match.group(1))
+            found[match.group(1)] = match.group(2)
     return found
+
+
+def survivors(results: str) -> list[str]:
+    """The mutants `mutmut results` lists as anything but killed: "    a.b__mutmut_3: survived" gives ["a.b__mutmut_3"]."""
+    return list(statuses(results))
+
+
+def describe(name: str, status: str) -> str:
+    """One refused mutant, with its own status; a timeout says it is usually a crash, not a survivor (J-055)."""
+    hint = " (usually a crash in the run, not a survivor: docs/MUTATION.md, J-055)" if status == "timeout" else ""
+    return f"unexplained {status}: {name}{hint}"
 
 
 def explained(mutation_doc: str) -> set[str]:

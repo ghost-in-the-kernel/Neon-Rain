@@ -31,7 +31,7 @@ at the plan.
 | The trials file, a run's config hash | `neonrain/harness/trials.py` | HAR-01, HAR-09 | `test/test_trials.py` |
 | The adversarial tests (TODO 1.6) | `test/test_harness_adversarial.py`, `test/mirror_har07.py` (written blind; never edit) | HAR-03, HAR-08, HAR-10, HAR-12 | those two, `test/test_mirror.py` |
 | A dataset: fetch, manifest, universe; the calendar; a measuring script (`scripts/probe/`) | `scripts/fetch/`, `data/MANIFEST.md` (phase 2); `neonrain/universe/calendar.py` | R-006 | `test/test_manifest.py`, `test/test_calendar.py` |
-| A feature family (phase 2) | `docs/modules.json` (`features`), `neonrain/harness/market.py` (the feature frame, its stamps) | HAR-12; `docs/GLOSSARY.md` (its term first) | one unit test per feature |
+| A feature family (phase 2) | `docs/modules.json` (`features`), `neonrain/features/returns.py` (the example: one file a family; features cannot import harness), `neonrain/harness/market.py` (the stamps) | HAR-12, MOD-04; `docs/GLOSSARY.md` (its term first) | one unit test per feature |
 | The goldens: the freeze, a harness change | `neonrain/harness/goldens.py`, `scripts/goldens.py` | HAR-14, R-002 | `test/test_golden_files.py`, `test/test_the_freeze.py` |
 | A baseline | `neonrain/baselines/` (phase 3) | R-007 | `harness/goldens/` |
 | The network | `neonrain/models/` (phase 4) | R-009 | `docs/RESULTS.md` |
@@ -40,7 +40,8 @@ at the plan.
 | A bias, a leak, a failed hypothesis | `docs/FINDINGS.md` | P-03 | |
 | The agent's environment: metrics | `docs/AGENT.md`, `scripts/metrics.py` | AGT-01 to AGT-08 (AGENT.md) | `test/test_metrics.py` |
 | A document's test: what it holds | `scripts/checks/<check>.py`, `test/test_<check>.py` | the check's docstring | that test |
-| A surviving mutant, the full check's cost | `docs/MUTATION.md`, `pyproject.toml` (`[tool.mutmut]`) | R-015, R-024 | `scripts/precommit.sh` |
+| A surviving mutant (a `timeout` is often a crash), the fast loop or full check slower | `docs/MUTATION.md` (its knobs), `pyproject.toml` (`[tool.mutmut]`) | R-015, R-024 | `scripts/precommit.sh` (a run outlasts a foreground tool: background it) |
+| A script that is not a document check; a loader of a dataset | logic in scripts/checks (mutated; `scripts/checks/tables.py` is the model) with a thin CLI in scripts (add it to `also_copy`); a loader: `neonrain/universe/verified.py`, `prices.py` | `docs/modules.json` | `test/test_<name>.py` |
 | The supply chain: a dependency, a config | `requirements.lock`, `docs/SUPPLY-CHAIN.md` | the binding rules below | `test/test_supply_chain.py` |
 
 ## Commands

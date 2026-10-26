@@ -16,8 +16,9 @@ def main() -> int:
     results = sys.stdin.read()
     doc = DOC.read_text()
     missing = mutation.unexplained(results, doc)
+    status = mutation.statuses(results)
     for name in missing:
-        print(f"unexplained survivor: {name} (`.venv/bin/mutmut show {name}`; kill it or explain it in docs/MUTATION.md)")
+        print(f"{mutation.describe(name, status[name])} (`.venv/bin/mutmut show {name}`; kill it or explain it in docs/MUTATION.md)")
     for name in mutation.stale(results, doc):
         print(f"stale line in docs/MUTATION.md: {name} no longer survives; remove it")
     print(f"survivors: {len(mutation.survivors(results))}, unexplained: {len(missing)}")

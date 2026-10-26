@@ -51,3 +51,21 @@ def test_an_unlisted_pragma_is_refused() -> None:
 
 def test_an_exemption_s_file_is_not_an_explained_mutant() -> None:
     assert mutation.explained(EXEMPT + DOC) == {"a.x_f__mutmut_2"}
+
+
+def test_each_unfinished_mutant_is_listed_with_its_own_status() -> None:
+    assert mutation.statuses(RESULTS) == {"a.x_f__mutmut_2": "survived", "a.x_g__mutmut_1": "timeout"}
+
+
+def test_a_timeout_is_named_a_timeout_and_still_refused() -> None:
+    assert mutation.describe("a.x_g__mutmut_1", "timeout") == (
+        "unexplained timeout: a.x_g__mutmut_1 (usually a crash in the run, not a survivor: docs/MUTATION.md, J-055)")
+    assert mutation.describe("a.x_f__mutmut_2", "survived") == "unexplained survived: a.x_f__mutmut_2"
+    assert mutation.unexplained(RESULTS, DOC) == ["a.x_g__mutmut_1"]
+
+
+def test_every_status_that_blocks_has_its_own_word_in_the_report() -> None:
+    for status in mutation.UNFINISHED:
+        results = f"    a.x_h__mutmut_4: {status}\n"
+        assert mutation.unexplained(results, "") == ["a.x_h__mutmut_4"]
+        assert mutation.describe("a.x_h__mutmut_4", status).startswith(f"unexplained {status}: ")
