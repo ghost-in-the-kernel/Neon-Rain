@@ -311,8 +311,9 @@ it is `in force`.
   project's use: research, a portfolio, and Ghost trading his own money if he does (a license that
   forbids the last is noted, and that use waits on it); the manifest line says so (2026-10-24,
   J-040; the commercial-use rule of 2026-10-23 withdrawn). WIKI entered before its check (2026-10-24,
-  J-042), the one exception: it stays, private, marked unverified, and no result on it is reported
-  until Ghost has read its terms (Ghost, 2026-10-25, J-048). Until a news feed is supplied the same way, phase 5 is blocked and phases 1–4 proceed.
+  J-042), the one exception: it stays, private. Ghost closed its check on 2026-10-26: the project neither licenses
+  its work nor uses it commercially, so WIKI is accepted for private research and a portfolio piece
+  (J-058). Until a news feed is supplied the same way, phase 5 is blocked and phases 1–4 proceed.
 - **Why:** NR-F-01: from this workspace every market-data and news host is refused, GitHub Releases
   and LFS uploads are refused for this session type, and plain git pushes are the one write that
   works. A second repository keeps blobs out of the code repository's history (R-006's reason) and

@@ -67,17 +67,13 @@ J-018). Nothing under `neonrain/models/` or `neonrain/baselines/` exists yet; 1.
 
 ## For Ghost: waiting on you
 
-1. **Read WIKI's terms** in a browser where you are logged in to Nasdaq Data Link: the WIKI Prices page
-   (https://data.nasdaq.com/databases/WIKIP), any License or Terms tab, and Nasdaq Data Link's Terms of
-   Use. Paste the text back for a clause-by-clause reading against the project's uses (J-048). Until
-   then the data stays, private, and no WIKI result is reported.
-2. **Delete the `probe-plain` branch** on GitHub.
-3. **Approve `pip install` if the classifier blocks it**, or say how you would rather it be done.
-4. **Phase 5's news feed is blocked on you** (NR-F-01): a dataset with publish timestamps, obtained
+1. **Delete the `probe-plain` branch** on GitHub.
+2. **Approve `pip install` if the classifier blocks it**, or say how you would rather it be done.
+3. **Phase 5's news feed is blocked on you** (NR-F-01): a dataset with publish timestamps, obtained
    where there is network access and pushed to `neon-rain-data`. FNSPID on Hugging Face is the
    leading candidate — 15M+ timestamped items with tickers — and its license is yours to check
    before it enters: CC BY-NC is fine for research and a portfolio (R-016(d)). Phases 1 to 4 do not wait on this.
-5. **The calibration set, phase 5.3**: 200 news stories hand-labelled by you (bullish / bearish /
+4. **The calibration set, phase 5.3**: 200 news stories hand-labelled by you (bullish / bearish /
    neutral, and which ticker), which is what the scorer's own accuracy is measured against. You are
    the first reviewer here as you are on Katana.
 

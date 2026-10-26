@@ -61,3 +61,4 @@ Written by `python3 -I scripts/journal_index.py` from `docs/journal/`; do not ed
 | J-055 | The flaky "survivors" of the mutation gate were a race in pytest's temporary folders (R-024 c) | failure-caught | `J-051-060.md` |
 | J-056 | Step 2.3, its first family: returns | measurement | `J-051-060.md` |
 | J-057 | Tithe: the navigation log reviewed; the gate names each mutant's status | measurement | `J-051-060.md` |
+| J-058 | WIKI's licence check closed by Ghost | decision | `J-051-060.md` |

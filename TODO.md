@@ -61,8 +61,6 @@ wiped and "Last review" moved; open questions in the journal (R-023).
 
 ## Phase 3: baselines
 
-No result built on WIKI is reported until Ghost has read its terms (R-016 (d), J-048).
-
 ## Phase 4: the network
 
 ## Phase 5: news
