@@ -61,7 +61,9 @@
     "neonrain.features.returns.returns",
     "neonrain.features.returns.feature_columns",
     "neonrain.features.volatility.volatility",
-    "neonrain.features.volatility.feature_columns"
+    "neonrain.features.volatility.feature_columns",
+    "neonrain.features.volume.volume_ratios",
+    "neonrain.features.volume.feature_columns"
    ]
   },
   "targets": {

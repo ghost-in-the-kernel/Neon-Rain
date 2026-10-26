@@ -25,12 +25,13 @@ from datetime import date
 
 import polars as pl
 
+from neonrain.features.common import STAMP_SUFFIX, OffCalendar, positioned, usable
+
 LOOKBACKS: tuple[int, ...] = (3, 5, 21, 63)  # the four horizons, in sessions of the calendar
-STAMP_SUFFIX = "_stamp"  # the harness's (neonrain.harness.market.STAMP_SUFFIX); features may not import the harness
 
-
-class OffCalendar(ValueError):
-    """A price row on a date that is not on the calendar: its place in the sessions is unknown."""
+# The helpers moved to common.py at the third family; they stay importable from here under their old names.
+__all__ = ["LOOKBACKS", "STAMP_SUFFIX", "OffCalendar", "feature_columns", "name", "of_lookback", "positioned", "returns",
+           "usable"]
 
 
 def name(lookback: int) -> str:
@@ -41,21 +42,6 @@ def name(lookback: int) -> str:
 def feature_columns() -> list[str]:
     """The feature frame's columns after the keys, in order: each feature then its stamp."""
     return [column for k in LOOKBACKS for column in (name(k), name(k) + STAMP_SUFFIX)]
-
-
-def usable(close: str = "close") -> pl.Expr:
-    """Whether a close can be divided by: present, finite and above zero."""
-    return pl.col(close).is_not_null() & pl.col(close).is_finite() & (pl.col(close) > 0)
-
-
-def positioned(prices: pl.DataFrame, calendar: list[date]) -> pl.DataFrame:
-    """The price rows with `pos`, the index of the row's date on the calendar; refuses a date the calendar lacks."""
-    places = pl.DataFrame({"date": calendar, "pos": range(len(calendar))}, schema={"date": pl.Date, "pos": pl.Int64})
-    framed = prices.select("ticker", "date", "close").join(places, on="date", how="left")
-    off = framed.filter(pl.col("pos").is_null()).sort("ticker", "date")
-    if off.height:
-        raise OffCalendar(f"price row ({off['ticker'][0]}, {off['date'][0]}) is off the calendar")
-    return framed
 
 
 # Decision: NR-F-05 (no gap is crossed and no ticker is merged), HAR-12 (the stamp is the date of the latest close used)

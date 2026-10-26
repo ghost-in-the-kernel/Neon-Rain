@@ -64,3 +64,4 @@ Written by `python3 -I scripts/journal_index.py` from `docs/journal/`; do not ed
 | J-058 | WIKI's licence check closed by Ghost | decision | `J-051-060.md` |
 | J-059 | Licence facts and decisions move to the data repository's theGhost.md | decision | `J-051-060.md` |
 | J-060 | Step 2.3, its second family: volatility | measurement | `J-051-060.md` |
+| J-061 | Step 2.3, its third family: volume ratios; the families' shared helpers in one file | measurement | `J-061-070.md` |

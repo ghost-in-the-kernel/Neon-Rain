@@ -43,7 +43,7 @@ Juneteenth from 2022, 2001-09-11 to 09-14, 2012-10-29 and 30, the national days 
 
 Check: each family has a glossary term and a pure function from prices with a unit test against a
 hand-computed window.
-Done so far: returns (`neonrain/features/returns.py`, J-056); volatility (`neonrain/features/volatility.py`, J-060). Next: volume ratios, the indicators, one family each.
+Done so far: returns (`neonrain/features/returns.py`, J-056); volatility (`neonrain/features/volatility.py`, J-060); volume ratios (`neonrain/features/volume.py`, shared helpers in `neonrain/features/common.py`). Next: the indicators, one family each.
 
 ### 2.4 Cross-sectional normalization
 

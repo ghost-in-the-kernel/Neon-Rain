@@ -58,6 +58,8 @@ the tests hold the code, and a long one means they do not.
 | `neonrain.features.volatility.x_of_lookback__mutmut_4` | neonrain/features/volatility.py : `of_lookback` | passes `min_samples=None` to `rolling_std` | Equivalent under every reachable input: polars reads None as the window size, which is what `lookback` is. | 2026-10-26 |
 | `neonrain.features.volatility.x_of_lookback__mutmut_7` | neonrain/features/volatility.py : `of_lookback` | leaves out `min_samples` | Equivalent under every reachable input: polars' default is the window size, which is what `lookback` is. | 2026-10-26 |
 | `neonrain.features.volatility.x_of_lookback__mutmut_8` | neonrain/features/volatility.py : `of_lookback` | leaves out `ddof` | Equivalent under every reachable input: polars' default `ddof` is 1, which is what `DDOF` is; `DDOF` is a module constant, which mutmut does not mutate; its value is held by the test of the divisor (the 0, 1, 3, 3, 6, 10 series). | 2026-10-26 |
+| `neonrain.features.volume.x_of_lookback__mutmut_4` | neonrain/features/volume.py : `of_lookback` | passes `min_samples=None` to `rolling_mean` | Equivalent under every reachable input: polars reads None as the window size, which is what `lookback` is. | 2026-10-26 |
+| `neonrain.features.volume.x_of_lookback__mutmut_6` | neonrain/features/volume.py : `of_lookback` | leaves out `min_samples` | Equivalent under every reachable input: polars' default is the window size, which is what `lookback` is. | 2026-10-26 |
 
 ## Exempt from mutation
 

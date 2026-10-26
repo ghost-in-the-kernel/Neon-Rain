@@ -3,7 +3,7 @@
 Pure functions from the price frame (docs/HARNESS.md: `ticker`, `date`, the adjusted `close`, a total-return price) to
 the harness's feature frame: `ticker`, `date`, then for each lookback k the feature `vol_k` and its stamp `vol_k_stamp`
 (HAR-12). One row for each price row, in the order (ticker, date) ascending. The frame layout, the calendar check
-(`OffCalendar`), the usable-close test and the strict gap rule are the returns family's, imported from it, not copied.
+(`OffCalendar`), the usable-close test and the strict gap rule are shared (`neonrain.features.common`), not copied.
 
 **Lookbacks** are counted in sessions of the calendar, as in the returns family: `vol_k` at *t* is taken over the k
 daily returns of the sessions *t*-k+1 to *t*, which read the k+1 closes of *t*-k to *t*. They are 5, 21 and 63, the
@@ -37,7 +37,7 @@ from datetime import date
 
 import polars as pl
 
-from neonrain.features.returns import STAMP_SUFFIX, OffCalendar, positioned, usable
+from neonrain.features.common import STAMP_SUFFIX, OffCalendar, positioned, usable
 
 LOOKBACKS: tuple[int, ...] = (5, 21, 63)  # the horizons but the 3: three returns are two degrees of freedom
 ESTIMATOR = "log"  # the daily return is ln(close_t / close_(t-1)) on the adjusted close
