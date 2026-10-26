@@ -59,7 +59,9 @@
    ],
    "entryPoints": [
     "neonrain.features.returns.returns",
-    "neonrain.features.returns.feature_columns"
+    "neonrain.features.returns.feature_columns",
+    "neonrain.features.volatility.volatility",
+    "neonrain.features.volatility.feature_columns"
    ]
   },
   "targets": {
