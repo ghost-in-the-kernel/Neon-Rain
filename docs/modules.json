@@ -57,7 +57,10 @@
     "universe",
     "ledger"
    ],
-   "entryPoints": []
+   "entryPoints": [
+    "neonrain.features.returns.returns",
+    "neonrain.features.returns.feature_columns"
+   ]
   },
   "targets": {
    "purpose": "The four horizons' labels: direction and rank (R-004).",

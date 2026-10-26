@@ -18,6 +18,8 @@ apart. Add a term before using a new word for a concept (Katana R-039's rule).
 | **rank** | the percentile of the horizon's return within the universe that day | score (that is the scorer's), ordering |
 | **feature** | one input column of the feature table, per ticker per day | signal (a signal is a trading rule's output), input, indicator (an indicator is one family of features) |
 | **feature family** | features that share a source and an ablation: price-derived, indicator, news | feature group, feature set |
+| **lookback** | how many sessions of the calendar a feature looks back from its date: a count of sessions, never of calendar days. The returns family uses 3, 5, 21 and 63, the four horizons (TODO 2.3) | window (a window may look forward; the horizon is the forward count), lag |
+| **return** | the feature `ret_k`: the adjusted close at *t* over the adjusted close *k* sessions earlier, minus 1, a total return; null when any of the *k*+1 sessions has no price (TODO 2.3). | gain, performance, change, momentum (a trading rule built on returns) |
 | **harness** | the evaluation code: splits, cost model, metrics, trials file (R-002, frozen) | backtester, framework, oracle (Katana's word; here the harness has no oracle but the future) |
 | **synthetic market** | the seeded fake market of HAR-10, with an edge of known strength planted in it | simulation, toy data, fake market |
 | **fold** | one walk-forward step: its training span, embargo and test span | split (a split is the whole grid), slice |
