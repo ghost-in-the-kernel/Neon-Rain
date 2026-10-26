@@ -66,3 +66,4 @@ Written by `python3 -I scripts/journal_index.py` from `docs/journal/`; do not ed
 | J-060 | Step 2.3, its second family: volatility | measurement | `J-051-060.md` |
 | J-061 | Step 2.3, its third family: volume ratios; the families' shared helpers in one file | measurement | `J-061-070.md` |
 | J-062 | CLAUDE.md's reading moved into when-files (R-029) | decision | `J-061-070.md` |
+| J-063 | Step 2.3, its last family: the standard indicators; 2.3 done | measurement | `J-061-070.md` |

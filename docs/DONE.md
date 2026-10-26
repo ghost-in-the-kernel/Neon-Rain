@@ -166,3 +166,13 @@ rows on 120 dates off the calendar, refused by `check_market`, kept aside in `Lo
 (NR-F-08); no session without rows; NR-F-05's tickers kept whole. Built by a fresh Claude Sonnet
 agent under J-027. Check: ten or more years of OHLCV from neon-rain-data by script, manifested; every
 price date a session or a finding. ✓ (No result is reported: WIKI's licence is unverified.)
+
+### 2.3 Price-derived features — done 2026-10-26 (J-056, J-060, J-061, J-063)
+
+Four families in `neonrain/features/`, sharing `common.py`, one fresh Claude Sonnet agent each under
+J-027: returns (`ret_3`, `ret_5`, `ret_21`, `ret_63`), volatility (`vol_5`, `vol_21`, `vol_63`), volume
+ratios (`volr_5`, `volr_21`, `volr_63`), and the indicators (`rsi_14`, `macd`, `macd_hist`, `mar_5`,
+`mar_21`, `mar_63`; the textbook settings, every one a finite window of whole sessions ending at t).
+Each feature stamped t (HAR-12), null across any gap, never infinite; reused tickers kept whole
+(NR-F-05). Check: each family has a glossary term and a pure function from prices with a unit test
+against a hand-computed window. ✓

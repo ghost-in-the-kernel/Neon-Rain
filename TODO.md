@@ -39,12 +39,6 @@ Check: (a) the calendar gives the NYSE's sessions for hand-checked years and clo
 Juneteenth from 2022, 2001-09-11 to 09-14, 2012-10-29 and 30, the national days of mourning);
 (b) every ticker has dates in and out, and the gap is a finding. (a) is done (J-039); (b) is next.
 
-### 2.3 Price-derived features
-
-Check: each family has a glossary term and a pure function from prices with a unit test against a
-hand-computed window.
-Done so far: returns (`neonrain/features/returns.py`, J-056); volatility (`neonrain/features/volatility.py`, J-060); volume ratios (`neonrain/features/volume.py`, shared helpers in `neonrain/features/common.py`). Next: the indicators, one family each.
-
 ### 2.4 Cross-sectional normalization
 
 Check: no feature carries the market level: per day, each is a rank or z-score within the universe.
