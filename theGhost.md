@@ -306,14 +306,11 @@ it is `in force`.
   the hash it depends on. (c) Struck 2026-10-24 (J-042): it said a fetch script reaches only
   the data repository, which recorded NR-F-01's refused hosts rather than a reason; a session may
   download a dataset from a host Ghost has allowed, and the hash on its manifest line (R-006) is
-  what every run checks. (d) The license of
-  every dataset is checked by Ghost before it enters the data repository, and must permit this
-  project's use: research, a portfolio, and Ghost trading his own money if he does (a license that
-  forbids the last is noted, and that use waits on it); the manifest line says so (2026-10-24,
-  J-040; the commercial-use rule of 2026-10-23 withdrawn). WIKI entered before its check (2026-10-24,
-  J-042), the one exception: it stays, private. Ghost closed its check on 2026-10-26: the project neither licenses
-  its work nor uses it commercially, so WIKI is accepted for private research and a portfolio piece
-  (J-058). Until a news feed is supplied the same way, phase 5 is blocked and phases 1–4 proceed.
+  what every run checks. (d) The licence rule and each dataset's licence decision live in
+  `neon-rain-data`'s `theGhost.md` (D-001, D-002), moved there on 2026-10-26 (J-059). Ghost:
+  "license data should live with the data, and decisions around the license data should live with
+  the data's ghost record. that keeps the data and its usage clearly boxed into one visible area."
+  Until a news feed is supplied the same way, phase 5 is blocked and phases 1–4 proceed.
 - **Why:** NR-F-01: from this workspace every market-data and news host is refused, GitHub Releases
   and LFS uploads are refused for this session type, and plain git pushes are the one write that
   works. A second repository keeps blobs out of the code repository's history (R-006's reason) and
