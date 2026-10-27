@@ -23,8 +23,9 @@ periods apart, before 2014-04-01 (survivor-only) and from it (R-026, NR-F-03).
 
 ### 2.6 Tithe pass 2
 
-Plan: `docs/rules/tithe.md`. Check: AGENT.md re-measured; every debrief given a verdict, the log
-wiped and "Last review" moved; open questions in the journal (R-023).
+Plan: `docs/rules/tithe.md`.
+Check: AGENT.md re-measured; every debrief given a verdict, the log wiped and "Last review" moved;
+open questions in the journal (R-023).
 
 ## Phase 3: baselines
 
