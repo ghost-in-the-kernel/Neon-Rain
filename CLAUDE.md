@@ -42,7 +42,7 @@ at the plan.
 | The agent's environment: metrics | `docs/AGENT.md`, `scripts/metrics.py` | AGT-01 to AGT-08 (AGENT.md) | `test/test_metrics.py` |
 | A document's test: what it holds | `scripts/checks/<check>.py`, `test/test_<check>.py` | the check's docstring | that test |
 | A surviving mutant (a `timeout` is often a crash), the fast loop or full check slower | `docs/MUTATION.md` (its knobs), `pyproject.toml` (`[tool.mutmut]`) | R-015, R-024 | `scripts/precommit.sh` (a run outlasts a foreground tool: background it) |
-| A script that is not a document check; a loader of a dataset | logic in scripts/checks (mutated; `scripts/checks/tables.py` is the model) with a thin CLI in scripts (add it to `also_copy`); a loader: `neonrain/universe/verified.py`, `prices.py` | `docs/modules.json` | `test/test_<name>.py` |
+| A script that is not a document check; a loader of a dataset | logic in scripts/checks (mutated; `scripts/checks/tables.py` is the model) with a thin CLI in scripts (add it to `pyproject.toml`'s `also_copy`); a loader: `neonrain/universe/verified.py`, `prices.py` | `docs/modules.json` | `test/test_<name>.py` |
 | The supply chain: a dependency, a config | `requirements.lock`, `docs/SUPPLY-CHAIN.md` | `docs/rules/dependencies.md`, the Always section | `test/test_supply_chain.py` |
 
 ## Commands

@@ -329,12 +329,31 @@ Decisions recorded: the cost default; the embargo length; the group count *k*; H
 
 3.1 Zero, momentum (12-1), short-term reversal (1-month), each through the harness at all four
     horizons, mean ± dispersion, trials lines.
+    *Check:* (a) zero, a score of 0.5 for every cell (the median's excess is 0), through the frozen
+    harness on the feature table at all four horizons, each period apart (R-026): a line in
+    `harness/trials.tsv` per (horizon, metric) with both axes' dispersion (HAR-08) and the three cost
+    levels (HAR-06), by a runner in `neonrain/baselines/` that calls the harness and reimplements none
+    of it, every golden byte-identical (HAR-14); (b) 12-1 momentum and (c) 1-month reversal, each a
+    glossary term and a stamped signal from the verified prices (HAR-12), through the same runner,
+    the same lines. Three tasks, (a) first; no number reaches `docs/RESULTS.md` before 3.3.
 3.2 LightGBM on the full feature table, walk-forward, with a small fixed hyperparameter set chosen
     once and recorded (no search; a search is trials and is counted if it happens).
+    *Check:* the tree trains on the feature table's sixteen features, one model per grid cell, with a
+    hyperparameter set recorded once as a decision in `theGhost.md` and carried in the config hash
+    (HAR-01), no search; its lines in `harness/trials.tsv` as 3.1's, both periods apart; the lock
+    unchanged (LightGBM 4.7.0 is in it) and every golden byte-identical.
 3.3 `harness/goldens/baseline_*.json`; `docs/RESULTS.md` gets its first honest table. The
     expectation, written now: the baselines are near chance at three months and show a small edge
     at short horizons that may not survive costs.
+    *Check:* `harness/goldens/baseline_<name>.json` for each of the four, listed in `index.json` with
+    its hash and `changed_by` 3.3, held byte-identical by the fast loop with no data (AGT-01) and
+    rewritten only by its run under a decision (HAR-14); `docs/RESULTS.md`'s baseline table has a row
+    per (run, horizon, period, metric) and `test/test_results.py` is green with rows present (HAR-13:
+    a trials line, both dispersions, the three costs, the dropped counts in the golden, NR-F-03 and
+    NR-F-04 cited); the expectation above is set against what came, and a miss is a finding (P-03).
 3.4 **Tithe pass 3.**
+    *Check:* AGENT.md re-measured; every debrief given a verdict, the log wiped and "Last review"
+    moved; open questions in the journal (R-023); Opus's phase-boundary report to Ghost (R-030 (d)).
 
 ### Phase 4: the network (about three weeks)
 

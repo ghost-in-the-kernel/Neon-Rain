@@ -12,8 +12,7 @@ fresh Claude Sonnet agent, reviewed before it is pushed (J-027).
 Four rules an agent meets only by running the loops (J-057), so they are here, where the loop is
 run: (a) no function takes `*args` or `**kwargs` (`scripts/checks/readability.py`); (b) no string in
 `neonrain/features/` contains the word "ledger", docstrings included (MOD-04, `scripts/checks/modules.py`);
-(c) CLAUDE.md's "Files a routing row opens" metric counts every backticked name in a Start-here cell,
-and a folder as its files, so a row stays at five or fewer; (d) ruff's ANN rules want type hints on every function,
+(c) CLAUDE.md's "Files a routing row opens" metric counts every backticked path in a Start-here cell (a name with a slash or a dot, or one that exists in the repository; a bare word such as a key opens nothing), and a folder as its files, so a row stays at five or fewer; (d) ruff's ANN rules want type hints on every function,
 test functions included (`def test_x() -> None:`).
 
 An open question your work leaves, one a later item depends on (a contract not precise enough, a choice

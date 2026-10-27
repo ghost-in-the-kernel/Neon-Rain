@@ -27,7 +27,7 @@ def order_problems(todo: str) -> list[str]:
 
 
 def first_item_problems(todo: str) -> list[str]:
-    """The first open item's body (up to the next heading) has a `Check:` line."""
+    """The first open item's body (up to the next heading) has a line beginning `Check:`; mid-line it does not count (J-068)."""
     match = ITEM.search(todo)
     if match is None:
         return []
@@ -36,7 +36,7 @@ def first_item_problems(todo: str) -> list[str]:
     body = rest[: following.start()] if following else rest
     if re.search(r"^Check:", body, flags=re.MULTILINE):
         return []
-    return [f"the first open item, {match.group(1)}.{match.group(2)}, has no Check: line"]
+    return [f"the first open item, {match.group(1)}.{match.group(2)}, has no line beginning `Check:`"]
 
 
 def problems(todo: str, done: str) -> list[str]:

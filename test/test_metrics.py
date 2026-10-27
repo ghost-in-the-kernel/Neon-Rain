@@ -179,3 +179,10 @@ def test_docs_per_source_leaves_the_records_out(tmp_path: Path) -> None:
     assert metrics.docs_per_source(tmp_path) == 0.5
     (tmp_path / "docs" / "HARNESS.md").write_text("h\n" * 3)
     assert metrics.docs_per_source(tmp_path) == 2.0
+
+
+def test_a_bare_word_opens_nothing(tmp_path: Path) -> None:
+    # A key or an option inside a file the row names costs no read (J-057, J-069).
+    claude = "| Task | Start here | Contract | Tests |\n| --- | --- | --- | --- |\n| A | `x.md` (`features`), `also_copy` | | |\n"
+    assert metrics.routing_files(claude, tmp_path) == 1
+    assert metrics.opened("features", tmp_path) == 0

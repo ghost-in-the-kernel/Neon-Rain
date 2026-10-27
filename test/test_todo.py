@@ -30,7 +30,7 @@ def test_phases_out_of_order_are_caught() -> None:
 
 def test_a_first_item_without_a_check_is_caught() -> None:
     unchecked = CHAIN.replace("Check: x\n", "")
-    assert todo.problems(unchecked, "") == ["the first open item, 0.2, has no Check: line"]
+    assert todo.problems(unchecked, "") == ["the first open item, 0.2, has no line beginning `Check:`"]
 
 
 def test_a_later_item_without_a_check_is_allowed() -> None:
@@ -47,10 +47,17 @@ def test_an_empty_chain_holds() -> None:
 
 def test_a_check_after_the_next_heading_does_not_count() -> None:
     assert todo.problems("## Phase 0\n\n### 0.2 a\n\nNote.\n\n### 0.5 b\n\nCheck: y\n\n### 0.6 c\n", "") == [
-        "the first open item, 0.2, has no Check: line"
+        "the first open item, 0.2, has no line beginning `Check:`"
     ]
 
 
 def test_a_last_item_reads_to_the_end_of_the_file() -> None:
     assert todo.problems("## Phase 0\n\n### 0.2 a\n\nCheck: x\n", "") == []
-    assert todo.problems("## Phase 0\n\n### 0.2 a\n\nNote.\n", "") == ["the first open item, 0.2, has no Check: line"]
+    assert todo.problems("## Phase 0\n\n### 0.2 a\n\nNote.\n", "") == ["the first open item, 0.2, has no line beginning `Check:`"]
+
+
+def test_a_check_mid_line_does_not_count() -> None:
+    # 2.6's slip: "Plan: ... Check: ..." on one line left the first open item unchecked (J-068).
+    assert todo.problems("## Phase 0\n\n### 0.2 a\n\nPlan: p. Check: x\n", "") == [
+        "the first open item, 0.2, has no line beginning `Check:`"
+    ]

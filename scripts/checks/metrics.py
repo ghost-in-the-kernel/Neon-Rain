@@ -16,12 +16,16 @@ def python_lines(root: Path, tops: tuple[str, ...]) -> list[int]:
 
 
 def opened(name: str, root: Path) -> int:
-    """The files one backticked name opens: a folder ("neonrain/harness/") its .py files, anything else one.
-    A folder not built yet counts as one: the row still sends the agent there."""
+    """The files one backticked name opens: a folder ("neonrain/harness/") its .py files; a path or file name
+    ("TODO.md", "prices.py", or a name that exists under root) one; a bare word ("features", "also_copy": a key or
+    an option inside a file the row names) none. A folder not built yet counts as one: the row still sends the agent
+    there."""
     folder = root / name
     if name.endswith("/") and folder.is_dir():
         return max(1, len(list(folder.glob("*.py"))))
-    return 1
+    if "/" in name or "." in name or folder.exists():
+        return 1
+    return 0
 
 
 def routing_files(claude: str, root: Path) -> int:
