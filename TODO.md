@@ -21,11 +21,6 @@ sample is 1998-01-02 to 2017-11-07: the calendar's first year to the last sessio
 holes (R-026, NR-F-07; the plan's first date was 2017-12-29). Every result on it is reported for two
 periods apart, before 2014-04-01 (survivor-only) and from it (R-026, NR-F-03). 
 
-### 2.5 The feature table
-
-Check: cached to the artifact store by content hash (`scripts/fetch/artifacts.py`); a fetch rebuilds
-it byte for byte.
-
 ### 2.6 Tithe pass 2
 
 Plan: `docs/rules/tithe.md`. Check: AGENT.md re-measured; every debrief given a verdict, the log

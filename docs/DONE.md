@@ -194,3 +194,14 @@ normalized frame has exactly the universe's cells, and a name outside the univer
 row and no part in that date's ranks. Applying it to every family and caching the table is 2.5's.
 Built by a fresh Claude Sonnet agent under J-027. Check: per day, each feature a rank within the
 universe; no feature carries the market level (a day's mean is 0). ✓
+
+### 2.5 The feature table — done 2026-10-27 (J-068)
+
+`neonrain/features/table.py` joins the four families, each normalized within the universe (2.4): one row
+per universe cell, 34 columns in a fixed order (keys, then 16 features each with its stamp). Built from
+the verified prices by `scripts/fetch/feature_table.py` into 20 yearly parquet files and an index
+(158 MB in all), the same bytes on every build with polars 2.0.0 (the version is written into each file's
+footer, so it is recorded beside the hash). Its row in `data/MANIFEST.md`: index sha256 f3c9e950…d325.
+Built by a fresh Claude Sonnet agent under R-030. Check: cached to the artifact store by content hash;
+a fetch rebuilds it byte for byte: the reviewer rebuilt it (same hash), stored all 21 files in
+`neon-rain-artifacts`, fetched them into a fresh clone, and every file compared identical. ✓

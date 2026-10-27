@@ -6,6 +6,7 @@ Every dataset: source, license, fetch command, date range, hash as last fetched 
 | --- | --- | --- | --- | --- | --- |
 | wiki-prices-raw | Quandl WIKI/PRICES via Nasdaq Data Link, the export (`qopts.export=true`), snapshot 2026-02-03 | public domain as described; accepted for private research (data D-002) | `neon-rain-data` `raw/wiki/`: five parts, `cat WIKI_PRICES.zip.part-* > WIKI_PRICES.zip` | the frozen feed (to 2018-04); the sample 1998-01-02 to 2017-11-07 (R-026) | sha256 d1b89242ebaf629e541f2a3c77c718f01819fa72dc687a30dadc764c8983e3f6 |
 | wiki-prices | the sample of `wiki-prices-raw`, one parquet file per year, columns as exported, rows sorted by ticker then date | public domain as described; accepted for private research (data D-002) | `python scripts/fetch/wiki.py <neon-rain-data clone> <scratch dir>` writes `wiki/prices/<year>.parquet` (each under 100 MB) and `wiki/prices/index.tsv` (year, file, SHA-256) in `neon-rain-data`, refusing the raw parts unless they hash to the row above | 1998-01-02 to 2017-11-07 (R-026) | sha256 867d708b43bd772a8f820211885d9e6603b3aaaa602188ce115b950128370a65 (of `index.tsv`) |
+| feature-table | built from `wiki-prices` (index sha256 867d708b43bd772a8f820211885d9e6603b3aaaa602188ce115b950128370a65): the four price families (returns, volatility, volume ratios, indicators) each ranked within the day's universe (`neonrain/features/table.py`, `normalize.py`, `membership.py`), 34 columns, one row per universe cell, one parquet file per year | derived from `wiki-prices`; public domain as described, accepted for private research (data D-002); kept in the private artifact store only, never in this repository (R-006) | `PYTHONPATH=. python scripts/fetch/feature_table.py <neon-rain-data clone> <scratch dir>` writes `<year>.parquet` (each under 100 MB) and `index.tsv` (year, file, SHA-256), the same bytes each run; the files and the index are stored with `scripts/fetch/artifacts.py put`, each by its own hash (index first in the section below) | 1998-04-02 to 2017-11-07 (the universe starts 63 sessions after the first price row) | sha256 f3c9e9505e8f3267f37cf317e61479c8f599290cc2739e85cc91c6da8b55d325 (of `index.tsv`; built with polars 2.0.0, whose version is written into every file, so the bytes hold only with it) |
 
 ## The artifact store (R-016 b)
 
@@ -17,3 +18,11 @@ this repository; the remote is `$NEONRAIN_ARTIFACTS_REMOTE` or the GitHub URL. `
 stores a file (commit as Ghost, push) and prints its hash; storing bytes already there is no commit.
 `scripts/fetch/artifacts.py get HASH DEST` copies a file out and refuses, writing nothing, if the bytes do not hash to
 the name. Files are under 100 MB (R-016 a). Held by `test/test_artifacts.py`.
+
+**The feature table is recorded as a row of the table above** (hash of its `index.tsv`, as `wiki-prices` is), not in
+this section: it is a dataset the loaders and `test/test_manifest.py` hold to six columns, its index has the same
+`year<TAB>file<TAB>sha256` layout, and the one hash names the whole table, since the index names every file's hash. The
+row names its input (the `wiki-prices` index hash) and its code (the files it names; the commit that records the row
+is the version of that code); a different input hash, a different polars version or a changed parquet setting gives a
+different hash, so the row is stale on any of them. To fetch it: `artifacts.py get <index hash> index.tsv`, then `get`
+each file's hash from that index; `feature_table.py` rebuilds the same bytes from the data repository (TODO 2.5).

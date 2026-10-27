@@ -67,7 +67,9 @@
     "neonrain.features.indicators.indicators",
     "neonrain.features.indicators.feature_columns",
     "neonrain.features.normalize.normalize",
-    "neonrain.features.normalize.feature_names"
+    "neonrain.features.normalize.feature_names",
+    "neonrain.features.table.feature_table",
+    "neonrain.features.table.columns"
    ]
   },
   "targets": {
