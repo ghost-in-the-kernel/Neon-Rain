@@ -14,3 +14,7 @@ run: (a) no function takes `*args` or `**kwargs` (`scripts/checks/readability.py
 `neonrain/features/` contains the word "ledger", docstrings included (MOD-04, `scripts/checks/modules.py`);
 (c) CLAUDE.md's "Files a routing row opens" metric counts every backticked name in a Start-here cell,
 and a folder as its files, so a row stays at five or fewer.
+
+An open question your work leaves, one a later item depends on (a contract not precise enough, a choice
+Ghost has not made), is written into that TODO item, its plan or its check, as well as the journal, so
+the agent who takes the item finds it there and not only in a journal entry (Ghost, 2026-10-27, J-066).

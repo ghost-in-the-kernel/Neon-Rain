@@ -87,19 +87,27 @@ def file_problems(files: dict[str, str]) -> list[str]:
     return found
 
 
+def heading_lines(text: str) -> dict[str, int]:
+    """The line (from 1) of each entry's heading in its file: "# x\n### J-001 y\n" gives {"J-001": 2}."""
+    return {m.group(1): text[: m.start()].count("\n") + 1 for m in HEADING.finditer(text)}
+
+
 def index_rows(files: dict[str, str]) -> list[str]:
-    """One table row per entry in name order: "| J-001 | Founding | decision | `J-001-010.md` |"."""
+    """One table row per entry in name order, its place as file:line: "| J-001 | Founding | decision | `J-001-010.md:3` |"."""
     rows = []
     for name in sorted(files):
         classes = {entry: fields.get("Class", "") for entry, fields in entries(files[name]).items()}
-        rows += [f"| {i} | {decisions.cell(title)} | {classes[i]} | `{name}` |" for i, title in TITLE.findall(files[name])]
+        lines = heading_lines(files[name])
+        rows += [
+            f"| {i} | {decisions.cell(title)} | {classes[i]} | `{name}:{lines[i]}` |" for i, title in TITLE.findall(files[name])
+        ]
     return rows
 
 
 HEADER = (
     "# Journal, one line each\n\n"
     f"Written by `{COMMAND}` from `docs/journal/`; do not edit here. The fields and the rules are in `docs/JOURNAL.md`.\n\n"
-    "| Entry | Title | Class | File |\n| --- | --- | --- | --- |\n"
+    "| Entry | Title | Class | File:line |\n| --- | --- | --- | --- |\n"
 )
 
 

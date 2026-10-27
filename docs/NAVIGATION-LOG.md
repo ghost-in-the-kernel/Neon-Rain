@@ -14,3 +14,9 @@ instance. Record the review in the journal, then set the line below to the revie
 Last review: 0b2227f (2026-10-26, a tithe, J-065: six debriefs, entries wiped)
 
 ## Entries
+
+### 2026-10-27 J-065's four answers (Claude Sonnet)
+- **Task:** F-09 in ROADMAP, the licence in the dataset row, line numbers in the journal INDEX, the open-question rule in done.md
+- **Opened:** CLAUDE.md, docs/journal/J-061-070.md, docs/ROADMAP.md, docs/rules/done.md, scripts/checks/journal.py, test/test_journal.py, scripts/checks/metrics.py
+- **Complaints:** none; J-065's Found and J-066 together said exactly what to do. docs/JOURNAL.md also describes the index's columns, which no row of the task named.
+- **Suggestions:** have the journal-index row in CLAUDE.md or JOURNAL.md say where the column list is written (scripts/checks/journal.py HEADER and docs/JOURNAL.md), so a column change finds both.

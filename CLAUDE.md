@@ -30,7 +30,7 @@ at the plan.
 | Dispersion over folds and groups | `neonrain/harness/dispersion.py` | HAR-08 | `test/test_dispersion.py` |
 | The trials file, a run's config hash | `neonrain/harness/trials.py` | HAR-01, HAR-09 | `test/test_trials.py` |
 | The adversarial tests (TODO 1.6) | `test/test_harness_adversarial.py`, `test/mirror_har07.py` (written blind; never edit) | HAR-03, HAR-08, HAR-10, HAR-12 | those two, `test/test_mirror.py` |
-| A dataset: fetch, manifest, universe; the calendar; a measuring script (`scripts/probe/`, run with `PYTHONPATH=.`) | `scripts/fetch/`, `data/MANIFEST.md` (phase 2); `neonrain/universe/calendar.py` | R-006 | `test/test_manifest.py`, `test/test_calendar.py` |
+| A dataset: fetch, manifest, universe; the calendar; a measuring script (`scripts/probe/`, run with `PYTHONPATH=.`) | `scripts/fetch/`, `data/MANIFEST.md` (phase 2); `neonrain/universe/calendar.py` | R-006; a dataset's licence: `neon-rain-data`'s theGhost.md (D-001, D-002) | `test/test_manifest.py`, `test/test_calendar.py` |
 | A feature family (phase 2) | `docs/modules.json` (`features`), `neonrain/features/returns.py` (the example: one file a family; features cannot import harness), `neonrain/features/common.py` (the shared helpers), `neonrain/harness/market.py` (the stamps) | HAR-12, MOD-04; `docs/GLOSSARY.md` (its term first) | one unit test per feature |
 | The goldens: the freeze, a harness change | `neonrain/harness/goldens.py`, `scripts/goldens.py` | HAR-14, R-002 | `test/test_golden_files.py`, `test/test_the_freeze.py` |
 | A measurement through the frozen harness (a probe of the harness, not a trial, HAR-09) | `scripts/probe/survivorship.py` (the model; run with `PYTHONPATH=.`), `test/test_survivorship_probe.py` | NR-F-09, HAR-09 | its own test |

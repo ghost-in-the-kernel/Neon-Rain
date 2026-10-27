@@ -61,6 +61,10 @@ beats the tree baseline after costs; that is a result, written up as one.
   reachable from here is fetched by Ghost and attached, or replaced.
 - **F-08** The organization's GitHub Actions minutes are reserved for other projects and Ghost's
   desktop is not stable enough to run on (Ghost, 2026-10-22). Held by R-003.
+- **F-09** The network is expected to learn most of the standard indicators (RSI, MACD, moving-average
+  ratios) from the returns at several lookbacks, since each is a fixed function of past prices. Source:
+  no published result is cited; it is the expectation behind step 2.3, kept as a prediction, not a
+  finding. Implication: the indicators are kept for the ablation, which says what they are worth.
 
 ---
 
@@ -314,7 +318,7 @@ Decisions recorded: the cost default; the embargo length; the group count *k*; H
     lookbacks, realized volatility, volume ratios, and the standard indicators (RSI, MACD, moving
     average ratios), each computed by a pure function from prices alone with a unit test against a
     hand-computed window. The indicators are kept because Ghost asked for them and because the
-    ablation will say what they are worth; the expectation (F-03) is that the network learns most of
+    ablation will say what they are worth; the expectation (F-09) is that the network learns most of
     them from returns.
 2.4 **Cross-sectional normalization** per day (rank or z-score within the universe), so no feature
     carries the market level.

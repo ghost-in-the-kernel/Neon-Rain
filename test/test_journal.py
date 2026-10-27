@@ -122,16 +122,36 @@ def test_the_index_has_a_row_per_entry_in_id_order(tmp_path: Path) -> None:
     files = journal.read_files(folder(tmp_path, None))
     assert list(files) == ["J-001-010.md", "J-011-020.md"]
     assert journal.render(files).removeprefix(journal.HEADER).splitlines() == [
-        "| J-001 | Something | trial | `J-001-010.md` |",
-        "| J-002 | Something | conflict | `J-001-010.md` |",
-        "| J-011 | b \\| c | decision | `J-011-020.md` |",
+        "| J-001 | Something | trial | `J-001-010.md:1` |",
+        "| J-002 | Something | conflict | `J-001-010.md:5` |",
+        "| J-011 | b \\| c | decision | `J-011-020.md:1` |",
     ]
     assert journal.render(files).endswith("|\n") and not journal.render(files).endswith("\n\n")
     assert journal.COMMAND in journal.HEADER and "docs/JOURNAL.md" in journal.HEADER
 
 
 def test_an_entry_with_no_class_has_an_empty_class_cell() -> None:
-    assert journal.index_rows({"J-001-010.md": "### J-001 Bare\n- **Who:** x\n"}) == ["| J-001 | Bare |  | `J-001-010.md` |"]
+    assert journal.index_rows({"J-001-010.md": "### J-001 Bare\n- **Who:** x\n"}) == ["| J-001 | Bare |  | `J-001-010.md:1` |"]
+
+
+def test_an_entrys_line_is_its_heading_line_in_its_file() -> None:
+    text = "# Journal\n\nintro\n### J-001 A\n- **Class:** trial\n\n### J-002 B\n- **Class:** trial\n"
+    assert journal.heading_lines(text) == {"J-001": 4, "J-002": 7}
+    assert journal.heading_lines("### J-001 A\n") == {"J-001": 1}
+    assert journal.heading_lines("") == {}
+    assert journal.heading_lines("\n### J-001 A\n\n### J-002 B\n") == {"J-001": 2, "J-002": 4}
+    assert journal.index_rows({"J-001-010.md": text}) == [
+        "| J-001 | A | trial | `J-001-010.md:4` |", "| J-002 | B | trial | `J-001-010.md:7` |"
+    ]
+
+
+def test_an_index_with_a_wrong_line_is_stale(tmp_path: Path) -> None:
+    root = folder(tmp_path, None)
+    index = root / "docs" / "journal" / "INDEX.md"
+    index.write_text(journal.render(journal.read_files(root)))
+    assert journal.stale_problems(root) == []
+    index.write_text(index.read_text().replace("`J-001-010.md:5`", "`J-001-010.md:4`"))
+    assert len(journal.stale_problems(root)) == 1
 
 
 def test_a_stale_or_missing_index_is_caught_and_names_the_command(tmp_path: Path) -> None:
