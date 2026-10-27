@@ -156,6 +156,14 @@ drifted into phase-2 work on a follow-up; Ghost retired it (R-023). `docs/rules/
 one procedure, reviewed by Claude Fable. Check: AGENT.md re-measured; every debrief given a
 verdict, the log wiped and "Last review" moved; open questions in the journal. ✓
 
+### 2.1 Universe — done 2026-10-24 (J-039, J-043; closed in TODO J-066)
+
+(a) The NYSE calendar by rule (`neonrain/universe/calendar.py`, J-039). (b) WIKI as yearly parquet in
+`neon-rain-data` and the point-in-time universe of 1,000 names by trailing median dollar volume
+(`neonrain/universe/membership.py`, J-043); the survivorship gap is NR-F-03 (no ticker leaves before
+2014-04-01), with NR-F-04 to NR-F-08 beside it. The item stayed open in TODO by oversight until J-066.
+Check: (a) hand-checked sessions and closures ✓; (b) every ticker has dates in and out, the gap a finding ✓.
+
 ### 2.2 Daily prices — done 2026-10-25 (J-053)
 
 `neonrain/universe/verified.py` checks `index.tsv` against the manifest and every year against its

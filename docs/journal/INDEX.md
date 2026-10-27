@@ -69,3 +69,4 @@ Written by `python3 -I scripts/journal_index.py` from `docs/journal/`; do not ed
 | J-063 | Step 2.3, its last family: the standard indicators; 2.3 done | measurement | `J-061-070.md` |
 | J-064 | Step 2.4: cross-sectional normalization, a centred rank within the day's universe | measurement | `J-061-070.md` |
 | J-065 | Tithe: the log reviewed, the F- series told apart, a quiet re-measure | measurement | `J-061-070.md` |
+| J-066 | Autonomous development by the roadmap (R-030); 2.1 closed in TODO | decision | `J-061-070.md` |

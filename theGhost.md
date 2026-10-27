@@ -575,3 +575,25 @@ it is `in force`.
 - **Status:** in force
 - **See also:** R-027, R-024, R-013, R-003
 - **subject:** agent environment
+
+### R-030 Autonomous development by the roadmap: an escalation ladder, and human items moved back
+- **Decision:** (a) Roadmap items are taken in order, one fresh Claude Sonnet agent each (J-027), run one
+  at a time; Claude Opus reviews each, commits it through `scripts/commit.sh` and starts the next. (b) The
+  ladder: a question an agent or Opus cannot settle goes to a Claude Fable instance first; Fable decides
+  it, and escalates to Ghost only a question that is genuinely uncertain, never one whose benefits weigh
+  clearly to one side. A failure (a check still red after one attempt, R-022) goes to Opus. A question
+  Fable returns goes to Ghost. (c) An item that needs a human (a purchase, an approval, a dataset, a
+  hand-labelled set) and blocks no later item is moved back in TODO.md and marked "moved", with where it
+  came from; an item that blocks later ones stops the chain and goes to Ghost. (d) The aim is low-hanging
+  fruit, about a day of development from 2026-10-27; Opus reports to Ghost at each phase boundary and
+  whenever the ladder reaches him.
+- **Why:** Ghost, 2026-10-27: "lets spin sonnet agents up sequentially for each item on the roadmap.
+  escelate questions to fable, escalate failures to opus, and if fable comes back with questions,
+  escalate to me. A sub goal here is autonomous development according to the roadmap." And: "put the
+  question to fable first ... it should be a very uncertain question that is asked, not one that has
+  clear benefits weighing heavily on one side."
+- **Held by:** TODO.md (moved items marked); the journal (each item and each escalation); docs/ESCALATIONS.md.
+- **Source:** Ghost, 2026-10-27.
+- **Status:** in force
+- **See also:** R-022, R-023, R-027, R-028
+- **subject:** agent environment
