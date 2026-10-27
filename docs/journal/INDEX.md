@@ -72,3 +72,4 @@ Written by `python3 -I scripts/journal_index.py` from `docs/journal/`; do not ed
 | J-066 | Autonomous development by the roadmap (R-030); 2.1 closed in TODO | decision | `J-061-070.md:98` |
 | J-067 | J-065's four answers: F-09, the licence in the dataset row, INDEX lines, open questions into TODO | decision | `J-061-070.md:111` |
 | J-068 | Step 2.5: the feature table, built byte for byte and round-tripped through the artifact store | measurement | `J-061-070.md:126` |
+| J-069 | Tithe pass 2: phase 2's routing measured; phase 2 done | measurement | `J-061-070.md:148` |

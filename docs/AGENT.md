@@ -30,15 +30,15 @@ until a metric is first measured within its target it is "not armed" and not com
 | Metric | Phase 0 target | Measured | Why it matters to the agent |
 | --- | --- | --- | --- |
 | Mandatory context (words) | < 1,400 | 1324 | every task pays it |
-| Fast loop (s) | < 30 | 20.94 | run after every edit |
-| Full check, `precommit.sh` (min) | < 10 | 4.83 | paid before every push while there is no CI |
+| Fast loop (s) | < 30 | 22.90 | run after every edit |
+| Full check, `precommit.sh` (min) | < 10 | 4.80 | paid before every push while there is no CI |
 | Largest source file (lines) | < 400 | 383 | fits a read without paging |
 | Files a routing row opens | ≤ 5 | 5 | first five reads decide the task |
 | Decisions without `See also` | 0 | 0 | links find what grep misses |
 | Results without a trials line | 0 | 0 | P-07 |
 | Results without dispersion | 0 | 0 | R-014 |
 | Datasets without a manifest line | 0 | 0 | R-006 |
-| Docs lines per source line | < 1.5 | 1.03 | records left out; arms as phases 2 to 4 add source (R-024) |
+| Docs lines per source line | < 1.5 | 1.04 | records left out; arms as phases 2 to 4 add source (R-024) |
 
 ## Re-measuring (a tithe pass, R-012)
 

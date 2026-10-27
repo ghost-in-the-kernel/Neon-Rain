@@ -9,11 +9,12 @@ before it is a footnote (P-03). A function that holds a decision cites it, `# De
 eighth commit is a tithe (R-012). A finished step is merged to `main` at once. A new task goes to a
 fresh Claude Sonnet agent, reviewed before it is pushed (J-027).
 
-Three rules an agent meets only by running the loops (J-057), so they are here, where the loop is
+Four rules an agent meets only by running the loops (J-057), so they are here, where the loop is
 run: (a) no function takes `*args` or `**kwargs` (`scripts/checks/readability.py`); (b) no string in
 `neonrain/features/` contains the word "ledger", docstrings included (MOD-04, `scripts/checks/modules.py`);
 (c) CLAUDE.md's "Files a routing row opens" metric counts every backticked name in a Start-here cell,
-and a folder as its files, so a row stays at five or fewer.
+and a folder as its files, so a row stays at five or fewer; (d) ruff's ANN rules want type hints on every function,
+test functions included (`def test_x() -> None:`).
 
 An open question your work leaves, one a later item depends on (a contract not precise enough, a choice
 Ghost has not made), is written into that TODO item, its plan or its check, as well as the journal, so

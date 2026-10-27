@@ -20,6 +20,6 @@ under 300 lines so a file is read whole (AGT-04 asks for sections past 400). An 
 `### J-nnn Title` and the fields above, one `- **Field:** text` each, newest last. Take the id from
 `python3 -I scripts/next_id.py journal`, and append the entry to the end of the newest file; when
 that file holds its tenth id, start the next one, `J-nnn-mmm.md`, headed
-`# Journal, J-nnn to J-mmm`. `docs/journal/INDEX.md` has one line per entry (id, title, class, and file:line to jump to); it
-is written by `python3 -I scripts/journal_index.py`, and `test/test_journal.py` fails, naming that
+`# Journal, J-nnn to J-mmm`. `docs/journal/INDEX.md` has one line per entry (id, title, class, and file:line to jump to; the columns are `HEADER` in `scripts/checks/journal.py`, so a column change
+edits it and this line); it is written by `python3 -I scripts/journal_index.py`, and `test/test_journal.py` fails, naming that
 command, when it is stale. Run it after adding an entry.

@@ -205,3 +205,12 @@ footer, so it is recorded beside the hash). Its row in `data/MANIFEST.md`: index
 Built by a fresh Claude Sonnet agent under R-030. Check: cached to the artifact store by content hash;
 a fetch rebuilds it byte for byte: the reviewer rebuilt it (same hash), stored all 21 files in
 `neon-rain-artifacts`, fetched them into a fresh clone, and every file compared identical. ✓
+
+### 2.6 Tithe pass 2 — done 2026-10-27 (J-069)
+
+The navigation log reviewed (two debriefs) and phase 2's routing measured across J-039 to J-068; four
+document fixes (TODO's header on the line-start `Check:`, `done.md`'s rule on test annotations, the
+journal index's columns named where they are written, the manifest's rule for a multi-file artifact).
+Fast loop 22.9 s, full check 4.8 min, on a quiet machine. By a fresh Claude Sonnet agent under
+`docs/rules/tithe.md`. Check: AGENT.md re-measured; every debrief given a verdict, the log wiped and
+"Last review" moved; open questions in the journal. ✓ Phase 2 is done.

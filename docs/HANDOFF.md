@@ -3,20 +3,17 @@
 Read `CLAUDE.md` first, then this. `TODO.md` is the chain in order; `docs/DONE.md` is what is
 finished. This file says what the next session should actually do, and what it must not assume.
 
-## Where the project stands (2026-10-23)
+## Where the project stands (2026-10-27)
 
-Phase 0 is done but for Ghost's items (0.2, 0.4). Phase 1: 1.1 to 1.5 are done (J-013 to J-018,
-J-026): the synthetic market, the targets (delisting ends, J-024), the splits, the cost model and
-metrics with HAR-07's mirror written blind, and the trials file with HAR-01's config hash; then
-`neonrain/harness/market.py`, the frame layouts and HAR-12's stamp refusal (J-029); and 1.6, the
-adversarial tests (J-030, J-031); 1.7, the freeze (J-032): the harness is frozen, and a change
-that moves a golden needs a decision in force; and 1.8, tithe pass 1 (J-033). Phase 1 is done.
-Phase 0 is done (0.4, J-038). Phase 2 is open: its items are in `TODO.md`, and 2.1(a), the NYSE
-calendar, is built (`neonrain/universe/calendar.py`, J-039). **Next is 2.1(b)**, from Quandl's WIKI prices,
-staged in `neon-rain-data` (J-042). Its trading calendar is the exact NYSE
-calendar, derived in the repository from a holiday data file, no new dependency (Ghost, 2026-10-23;
-J-033). The slow tests (`pytest -m slow`) run in `precommit.sh`. No real data, no
-model, no result.
+Phases 0, 1 and 2 are done (`docs/DONE.md`). Phase 1 built and froze the harness (J-013 to J-033);
+phase 2 brought in real data: Quandl's WIKI prices, 1998-01-02 to 2017-11-07, hash-checked from
+`neon-rain-data` (J-042, J-053), the NYSE calendar by rule (J-039), a point-in-time universe of
+1,000 names (J-043), four feature families of 16 features (J-056 to J-063), a centred rank within
+each day's universe (J-064), and the feature table, byte for byte, in `neon-rain-artifacts` (J-068).
+WIKI is survivor-only before 2014-04-01 (NR-F-03): every result is reported for both periods (R-026),
+and NR-F-09 measures how much the first flatters. **Next is phase 3, the baselines**, run by the
+roadmap under R-030 (one Sonnet agent an item; questions to Fable, then Ghost). The slow tests
+(`pytest -m slow`) run in `precommit.sh`. No model and no reported result yet.
 
 No decision is `proposed`. **R-011** is in force: the repository is private, all rights reserved.
 R-001 (Python), R-002 (harness first) and R-016 (data and artifacts through two private

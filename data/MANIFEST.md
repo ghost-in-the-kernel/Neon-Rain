@@ -19,7 +19,8 @@ stores a file (commit as Ghost, push) and prints its hash; storing bytes already
 `scripts/fetch/artifacts.py get HASH DEST` copies a file out and refuses, writing nothing, if the bytes do not hash to
 the name. Files are under 100 MB (R-016 a). Held by `test/test_artifacts.py`.
 
-**The feature table is recorded as a row of the table above** (hash of its `index.tsv`, as `wiki-prices` is), not in
+**A multi-file artifact is recorded as one row of the table above, by the hash of its index** (the feature table is the
+first; a ledger snapshot or weights in parts follow it). **The feature table's row** (hash of its `index.tsv`, as `wiki-prices` is), not in
 this section: it is a dataset the loaders and `test/test_manifest.py` hold to six columns, its index has the same
 `year<TAB>file<TAB>sha256` layout, and the one hash names the whole table, since the index names every file's hash. The
 row names its input (the `wiki-prices` index hash) and its code (the files it names; the commit that records the row
