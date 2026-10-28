@@ -14,3 +14,9 @@ instance. Record the review in the journal, then set the line below to the revie
 Last review: 95b090d (2026-10-27, tithe pass 2, J-069: two debriefs and phase 2's routing, entries wiped)
 
 ## Entries
+
+### 2026-10-27 3.1 a (Claude Sonnet)
+- **Task:** 3.1 (a), the runner and the zero baseline
+- **Opened:** CLAUDE.md, TODO.md (3.1), docs/ROADMAP.md (§6), docs/HARNESS.md, neonrain/harness/goldens.py, neonrain/harness/{split,trials,portfolio,metrics}.py, docs/modules.json, theGhost.md (R-026), scripts/checks/results.py
+- **Complaints:** the "A baseline" row points at `neonrain/baselines/` and `harness/goldens/` and nothing else, so the three things this task needed were found by reading: that `baselines` may not import `targets` (docs/modules.json only), that trials.tsv has no period column (found in scripts/checks/results.py's comment that one hash names one period), and that HARNESS.md does not say how folds fall within a period. The moving-clock rule (MOD-05) for the run date also took a search.
+- **Suggestions:** a line in the "A baseline" row naming docs/modules.json (`baselines` imports) and scripts/checks/results.py (how a period shows in trials.tsv); HARNESS.md a sentence on periods.

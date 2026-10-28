@@ -74,3 +74,5 @@ Written by `python3 -I scripts/journal_index.py` from `docs/journal/`; do not ed
 | J-068 | Step 2.5: the feature table, built byte for byte and round-tripped through the artifact store | measurement | `J-061-070.md:126` |
 | J-069 | Tithe pass 2: phase 2's routing measured; phase 2 done | measurement | `J-061-070.md:148` |
 | J-070 | Claude Fable's three rulings (R-030): phase 3's checks, the chain test's message, paths only in a row | decision | `J-061-070.md:167` |
+| J-071 | Step 3.1 (a): the baseline runner, and the zero baseline run on WIKI (the first real trials) | measurement | `J-071-080.md:5` |
+| J-072 | The fast loop over its target on a slower box: measured, shaved where it could be, re-based to 40 s (R-031) | decision | `J-071-080.md:27` |

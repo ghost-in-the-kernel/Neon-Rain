@@ -1,0 +1,152 @@
+"""The baseline runner (TODO 3.1 a): a score frame through the frozen harness, at every horizon, each period apart.
+
+Given prices, the universe, the calendar and a score for each cell (ticker, date, score, stamp), `evaluate` runs
+HAR-02's labels (handed in, see below), HAR-03's folds, HAR-05's ticker groups, HAR-07's metrics, the portfolio at the
+three costs of HAR-06 and R-021, and keeps every (fold, group) cell, so HAR-08's dispersion can be read off any metric.
+It reimplements nothing of the harness: every number is a call into `neonrain.harness`.
+
+**How folds fall within a period (R-026).** The folds are HAR-03's, laid on the whole calendar and the same for all
+four horizons and both periods (J-015). A period is then a selection of test dates: a cell's test rows, and the rows its
+portfolio trades, are those of the fold's test span that fall on the period's side of `periods.BOUNDARY`. A fold whose
+test span crosses the boundary is a cell in both periods, each with its own dates; a fold with no test date in a period
+is no cell there. Training is never cut by period, and a baseline with no model trains on nothing. A sleeve opened
+on the period's last test date runs on past the boundary (HAR-07), so a period's portfolio can hold days of the other.
+
+**Labels are handed in, not imported.** `baselines` may import `harness` and `universe` and not `targets`
+(docs/modules.json), so the caller passes `labels_for(horizon)`, `neonrain.targets.labels` with the market bound in,
+and the same `min_tickers` it used. Pure apart from what the caller's functions do (HAR-11).
+"""
+from collections.abc import Callable
+from typing import NamedTuple, Protocol
+
+import numpy as np
+import polars as pl
+
+from neonrain.harness import metrics, portfolio, split
+from neonrain.harness.market import Market, check_market
+from neonrain.universe import periods
+
+KEYS = ["ticker", "date"]
+PERIOD_NAMES = (periods.SURVIVOR_ONLY, periods.FROM_BOUNDARY)
+GEOMETRY = {"embargo": split.EMBARGO, "step": split.STEP, "min_train": split.MIN_TRAIN}
+GROUP_SEED = 0  # HAR-05's default seed
+LEVELS = sorted({*portfolio.COST_LEVELS_BPS, portfolio.DEFAULT_COST_BPS})
+
+
+class Labelled(Protocol):
+    """What the runner reads of `neonrain.targets.Labels` (HAR-02): the frame and its four counts."""
+
+    frame: pl.DataFrame
+    dropped_missing: int
+    dropped_ties: int
+    dropped_thin_dates: int
+    delisting_ends: int
+
+
+class Run(NamedTuple):
+    """What a run is, apart from its data: all of it goes into the config hash (HAR-01)."""
+
+    name: str
+    feature_columns: list[str]
+    data_manifest: dict[str, str]
+    geometry: dict[str, int | None] = {**GEOMETRY, "window": None}
+    group_seed: int = GROUP_SEED
+    groups: int = split.GROUPS
+    min_tickers: int = metrics.MIN_TICKERS
+    horizons: tuple[int, ...] = split.HORIZONS
+
+
+class Cell(NamedTuple):
+    """One (fold, group) cell in one period: the held-out group's test rows, scored."""
+
+    fold: int
+    group: int
+    test_rows: int
+    accuracy: float | None
+    balanced_accuracy: float | None
+    ic: metrics.IC
+    nets: dict[float, np.ndarray]  # the after-cost daily series at each of LEVELS
+
+
+class Horizon(NamedTuple):
+    """One horizon: its label counts (whole sample, HAR-02) and its cells in each period."""
+
+    horizon: int
+    found: Labelled
+    cells: dict[str, list[Cell]]
+
+
+def in_period(period: str) -> pl.Expr:
+    """Whether a row's date falls in `period`: before periods.BOUNDARY, or on it and after."""
+    before = pl.col("date") < periods.BOUNDARY
+    return before if period == periods.SURVIVOR_ONLY else ~before
+
+
+def scored_market(prices: pl.DataFrame, universe: pl.DataFrame, calendar: list, scores: pl.DataFrame) -> Market:
+    """The harness's Market with the score as its one feature, stamped; refused (HAR-12) if the layout or a stamp is wrong."""
+    if list(scores.columns) != [*KEYS, "score", "stamp"]:
+        raise ValueError(f"the score frame has columns {scores.columns}, expected ticker, date, score, stamp")
+    if scores["score"].null_count() or scores["score"].is_nan().any():
+        raise ValueError("the score frame has a null or NaN score: a cell without a score is left out of it")
+    market = Market(prices, universe, scores.rename({"stamp": "score_stamp"}), calendar)
+    check_market(market)
+    return market
+
+
+def window_prices(prices: pl.DataFrame, calendar: list, fold: split.Fold, horizon: int) -> pl.DataFrame:
+    """The prices a fold's portfolios read: the test span and `horizon` dates past it, where the last sleeves end."""
+    last = min(fold.test_end + horizon, len(calendar) - 1)
+    return prices.filter(pl.col("date").is_between(calendar[fold.test_start], calendar[last]))
+
+
+# Decision: R-021 (a cell's portfolio is scored on every row of its test span that has a score, at all three costs)
+def make_cell(fold: int, group: int, test: pl.DataFrame, tested: pl.DataFrame, prices: pl.DataFrame,
+              calendar: list, run: Run, horizon: int) -> Cell:
+    """HAR-07's metrics on one held-out group's test rows `test` (labelled) and `tested` (every scored row)."""
+    nets = {bps: portfolio.daily(tested, prices, calendar, horizon, bps)["net"].to_numpy() for bps in LEVELS}
+    ic = metrics.information_coefficient(test.select("date", "score", "rank"), run.min_tickers)
+    return Cell(fold, group, test.height, metrics.accuracy(test), metrics.balanced_accuracy(test), ic, nets)
+
+
+def period_cells(fold: split.Fold, test: pl.DataFrame, tested: pl.DataFrame, prices: pl.DataFrame,
+                 groups: dict[str, int], calendar: list, run: Run, horizon: int) -> list[Cell]:
+    """The cells of one fold within one period: one per group that has a scored row on the period's test dates."""
+    found = []
+    for group in range(run.groups):
+        held = [name for name, number in groups.items() if number == group]
+        mine = tested.filter(pl.col("ticker").is_in(held))
+        if mine.height:
+            found.append(make_cell(fold.number, group, test.filter(pl.col("ticker").is_in(held)), mine,
+                                   prices.filter(pl.col("ticker").is_in(held)), calendar, run, horizon))
+    return found
+
+
+def evaluate_horizon(market: Market, found: Labelled, groups: dict[str, int], run: Run, horizon: int) -> Horizon:
+    """One horizon's grid: every fold of HAR-03, in each period, by every held-out group of HAR-05."""
+    scores = market.features.select(*KEYS, "score")
+    rows = found.frame.join(scores, on=KEYS)
+    cells: dict[str, list[Cell]] = {period: [] for period in PERIOD_NAMES}
+    for fold in split.folds(len(market.calendar), **run.geometry):  # type: ignore[arg-type]
+        test, tested = split.testing(rows, fold, market.calendar), split.testing(scores, fold, market.calendar)
+        prices = window_prices(market.prices, market.calendar, fold, horizon)
+        for period in PERIOD_NAMES:
+            there = in_period(period)
+            cells[period] += period_cells(fold, test.filter(there), tested.filter(there), prices, groups,
+                                          market.calendar, run, horizon)
+    return Horizon(horizon, found, cells)
+
+
+def evaluate(market: Market, labels_for: Callable[[int], Labelled], run: Run) -> dict[int, Horizon]:
+    """The run's grid at each of its horizons; `market.features` is the score frame (`scored_market`)."""
+    groups = split.ticker_groups(market.features["ticker"].unique().to_list(), run.groups, run.group_seed)
+    return {h: evaluate_horizon(market, labels_for(h), groups, run, h) for h in run.horizons}
+
+
+def scalar_metrics() -> dict[str, Callable[[Cell], float | None]]:
+    """Each metric a cell reports by its trials-file name, as a function of the cell: accuracy, balanced accuracy,
+    the IC's mean and the Sharpe at each cost level (DSR needs the trial count and is made in `record`)."""
+    found: dict[str, Callable[[Cell], float | None]] = {
+        "accuracy": lambda c: c.accuracy, "balanced_accuracy": lambda c: c.balanced_accuracy, "IC": lambda c: c.ic.mean}
+    for bps in portfolio.COST_LEVELS_BPS:
+        found[f"Sharpe_{int(bps)}bps"] = lambda c, b=bps: metrics.sharpe(c.nets[b])  # type: ignore[misc]
+    return found

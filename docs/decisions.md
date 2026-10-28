@@ -33,3 +33,5 @@ Written by `python3 -I scripts/decisions_index.py` from `theGhost.md`; do not ed
 | R-027 | baselines and training may import universe; CLAUDE.md may grow to 1,400 words | in force | agent environment |
 | R-028 | Four of Ghost-Core's tools adopted; Ghost-Core is read only | in force | agent environment |
 | R-029 | CLAUDE.md's reading goes into conditional files; always-on rules stay inline | in force | agent environment |
+| R-030 | Autonomous development by the roadmap: an escalation ladder, and human items moved back | in force | agent environment |
+| R-031 | The fast loop's target re-based to 40 s | in force | agent environment |

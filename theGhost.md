@@ -576,7 +576,7 @@ it is `in force`.
 - **See also:** R-027, R-024, R-013, R-003
 - **subject:** agent environment
 
-### R-030 Autonomous development by the roadmap: an escalation ladder, and human items moved back
+### R-030: Autonomous development by the roadmap: an escalation ladder, and human items moved back
 - **Decision:** (a) Roadmap items are taken in order, one fresh Claude Sonnet agent each (J-027), run one
   at a time; Claude Opus reviews each, commits it through `scripts/commit.sh` and starts the next. (b) The
   ladder: a question an agent or Opus cannot settle goes to a Claude Fable instance first; Fable decides
@@ -596,4 +596,21 @@ it is `in force`.
 - **Source:** Ghost, 2026-10-27.
 - **Status:** in force
 - **See also:** R-022, R-023, R-027, R-028
+- **subject:** agent environment
+
+### R-031: The fast loop's target re-based to 40 s
+- **Decision:** AGT-02's fast loop runs under 40 s (was 30 s). It stays wall-clock on the session's box
+  (AGT-07: the session is the machine); no CPU-time or calibrated measure. A test file new to the fast loop
+  is measured with `--durations` before it is handed back.
+- **Why:** After a container restart, the box measured HEAD's fast loop at 32.9 s (median of three, warm),
+  against the 22.9 s recorded on the box the target was set on; with step 3.1 (a) it measured 39.3 s. Every
+  other gate check passed. The new tests could not be made much cheaper without weakening them (one
+  compares the runner with the goldens cell by cell, 60 portfolio runs), and moving them to the slow set
+  left 32 mutants unkilled, since mutation runs the fast tests only. Claude Fable ruled the question to Ghost
+  in R-024's form (J-072).
+- **Held by:** docs/AGENT.md (AGT-02, the table); `scripts/checks/agent_table.py`; `test/test_metrics.py`.
+- **Source:** Ghost, 2026-10-28, choosing "Re-base to 40 s" over keeping 30 s and waiting for a faster
+  box, or 35 s with the older tests shaved.
+- **Status:** in force
+- **See also:** R-024, R-030
 - **subject:** agent environment

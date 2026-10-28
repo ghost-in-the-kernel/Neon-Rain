@@ -9,7 +9,7 @@ until a metric is first measured within its target it is "not armed" and not com
 
 - **AGT-01 A clean clone installs from the lockfile and runs the fast loop with no data, no model
   and no network** beyond `pip`. Nothing a test needs is fetched.
-- **AGT-02 The fast loop runs under 30 s.** Doc tests and unit tests only; the harness on the
+- **AGT-02 The fast loop runs under 40 s** (R-031). Doc tests and unit tests only; the harness on the
   synthetic market is its own target with its own budget.
 - **AGT-03 Mandatory context stays under 1,400 words** (R-027). `CLAUDE.md` plus whatever an agent must read
   before a task.
@@ -30,7 +30,7 @@ until a metric is first measured within its target it is "not armed" and not com
 | Metric | Phase 0 target | Measured | Why it matters to the agent |
 | --- | --- | --- | --- |
 | Mandatory context (words) | < 1,400 | 1325 | every task pays it |
-| Fast loop (s) | < 30 | 22.90 | run after every edit |
+| Fast loop (s) | < 40 | 22.90 | run after every edit |
 | Full check, `precommit.sh` (min) | < 10 | 4.80 | paid before every push while there is no CI |
 | Largest source file (lines) | < 400 | 383 | fits a read without paging |
 | Files a routing row opens | ≤ 5 | 5 | first five reads decide the task |
@@ -38,7 +38,7 @@ until a metric is first measured within its target it is "not armed" and not com
 | Results without a trials line | 0 | 0 | P-07 |
 | Results without dispersion | 0 | 0 | R-014 |
 | Datasets without a manifest line | 0 | 0 | R-006 |
-| Docs lines per source line | < 1.5 | 1.07 | records left out; arms as phases 2 to 4 add source (R-024) |
+| Docs lines per source line | < 1.5 | 0.94 | records left out; arms as phases 2 to 4 add source (R-024) |
 
 ## Re-measuring (a tithe pass, R-012)
 

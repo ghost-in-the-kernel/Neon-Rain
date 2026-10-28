@@ -114,7 +114,12 @@
     "harness",
     "universe"
    ],
-   "entryPoints": []
+   "entryPoints": [
+    "neonrain.baselines.runner.scored_market",
+    "neonrain.baselines.runner.evaluate",
+    "neonrain.baselines.record.record",
+    "neonrain.baselines.zero.scores"
+   ]
   },
   "models": {
    "purpose": "The one network (R-009), liftable one way (R-025): given a feature table, scores; it imports nothing of ours.",

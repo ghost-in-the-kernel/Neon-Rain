@@ -44,6 +44,14 @@ of it, every golden byte-identical (HAR-14); (b) 12-1 momentum and (c) 1-month r
 glossary term and a stamped signal from the verified prices (HAR-12), through the same runner,
 the same lines. Three tasks, (a) first; no number reaches `docs/RESULTS.md` before 3.3.
 
+Task (a) is built (`neonrain/baselines/`, `scripts/baseline_run.py`; the zero baseline's lines are in
+`harness/trials.tsv`). Open for Fable, decided provisionally in the code: (1) folds are HAR-03's on the whole
+calendar and a period selects test dates, a straddling fold being a cell in both (HARNESS.md is silent); (2) the
+period is in the config hash's `split` since trials.tsv has no period column; (3) `baselines` may not import `targets`
+(modules.json), so the caller hands in the labels; (4) a constant score still gets a portfolio (ties order by ticker),
+so zero's Sharpe is defined, not undefined as this item expected; (5) the DSR's V is taken from the Sharpe_10bps lines
+in the file, and a rerun of the same config conflicts at its DSR (N has grown, HAR-01).
+
 ### 3.2 LightGBM
 
 Plan: ROADMAP 3.2. The hyperparameters are a decision in `theGhost.md` (take its id from
