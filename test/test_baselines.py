@@ -1,6 +1,7 @@
 """The baseline runner (TODO 3.1 a) on the synthetic market, never real data: it gives the harness's own numbers, splits
 a run at the period boundary, and leaves one trials line per (period, horizon, metric). Trials go to temporary files
 only: harness/trials.tsv is an append-only record (HAR-09)."""
+import re
 import statistics
 from datetime import date, timedelta
 from functools import partial
@@ -181,8 +182,7 @@ def check_a_run_leaves_a_line_per_period_horizon_and_metric(zero_run: dict[int, 
     written = record.record(path, DAY, run_of(), zero_run)
     names = ["accuracy", "balanced_accuracy", "IC", "Sharpe_0bps", "Sharpe_10bps", "Sharpe_25bps", "DSR"]
     assert [(w.period, w.horizon, w.metric) for w in written] == [
-        (p, h, m) for p in runner.PERIOD_NAMES
-        for m, h in [(m, h) for h in HORIZONS for m in names[:6]] + [("DSR", h) for h in HORIZONS]]
+        (p, h, m) for p in runner.PERIOD_NAMES for h in HORIZONS for m in names]  # a horizon's DSR follows its others
     rows = lines_of(path)
     assert len(rows) == len(written) == 2 * 2 * 7
     assert [r[0] for r in rows[:14]] == [record.config_hash(run_of(), periods.SURVIVOR_ONLY)] * 14
@@ -226,9 +226,11 @@ def check_the_dsr_counts_every_dsr_line_before_it_and_takes_v_from_the_sharpes(z
     assert [int(r[6]) for r in dsr] == [0, 1, 2, 3]
     sharpes = [float(r[4]) / 252**0.5 for r in rows if r[3] == "Sharpe_10bps"]
     assert len(sharpes) == 4
-    for line, (count, tried) in zip(dsr, [(1, 2), (2, 2), (3, 4), (4, 4)]):
-        want = f"N={count}; V={statistics.variance(sharpes[:tried])!r} (from the Sharpe_10bps lines)"
-        assert line[7].endswith(want)
+    for count, line in enumerate(dsr, start=1):  # each DSR sees the Sharpes written before it, its own horizon's included
+        shown = "none" if count == 1 else repr(statistics.variance(sharpes[:count]))
+        assert line[7].endswith(f"N={count}; V={shown} (from the Sharpe_10bps lines)")
+    order = [(r[3], r[2]) for r in rows[:14]]
+    assert order.index(("DSR", "3")) == 6 and order.index(("Sharpe_10bps", "63")) == 11
 
 
 def test_the_variance_of_the_sharpes_and_the_count_of_trials_come_from_the_file(tmp_path: Path) -> None:
@@ -276,15 +278,17 @@ def test_a_first_dsr_needs_no_variance_and_a_later_one_uses_it(tmp_path: Path) -
     assert note == f"N=2; V={variance!r} (from the Sharpe_10bps lines)"
 
 
-def check_a_repeat_of_a_run_conflicts_at_its_dsr_because_n_has_grown(zero_run: dict[int, runner.Horizon],
-                                                                    tmp_path: Path) -> None:
+def check_a_repeat_of_a_run_conflicts_at_nothing(zero_run: dict[int, runner.Horizon], tmp_path: Path) -> None:
     tmp_path.mkdir()
     path = tmp_path / "trials.tsv"
     record.record(path, DAY, run_of(), zero_run)
-    with pytest.raises(trials.TrialConflict, match="DSR"):
-        record.record(path, DAY, run_of(), zero_run)
-    again = [r for r in lines_of(path) if r[0] == record.config_hash(run_of(), periods.SURVIVOR_ONLY) and int(r[6]) > 0]
-    assert any(r[3] == "Sharpe_0bps" for r in again) and "CONFLICT" in lines_of(path)[-1][7]
+    record.record(path, DAY, run_of(), zero_run)  # raises TrialConflict if any line conflicts
+    rows = lines_of(path)
+    first, again = rows[:28], rows[28:]
+    assert len(again) == 28 and not any("CONFLICT" in r[7] for r in rows)
+    assert [r[:6] for r in again if r[3] != "DSR"] == [r[:6] for r in first if r[3] != "DSR"]
+    assert [int(r[6]) for r in again if r[3] == "DSR"] == [4, 5, 6, 7]  # N has grown: the DSR differs by design
+    assert [re.search(r"N=\d+", r[7]).group() for r in again if r[3] == "DSR"] == ["N=5", "N=6", "N=7", "N=8"]  # type: ignore[union-attr]
 
 
 def test_the_count_and_ic_notes_are_exact() -> None:
@@ -340,7 +344,7 @@ def test_a_zero_run_leaves_its_lines(zero_across: dict[int, runner.Horizon], tmp
     check_a_run_leaves_a_line_per_period_horizon_and_metric(got, tmp_path / "a")
     check_the_ic_of_a_constant_is_a_line_with_no_number_and_says_why(got, tmp_path / "b")
     check_the_dsr_counts_every_dsr_line_before_it_and_takes_v_from_the_sharpes(got, tmp_path / "c")
-    check_a_repeat_of_a_run_conflicts_at_its_dsr_because_n_has_grown(got, tmp_path / "d")
+    check_a_repeat_of_a_run_conflicts_at_nothing(got, tmp_path / "d")
 
 
 def test_a_line_without_an_extra_note_ends_at_the_counts(tmp_path: Path) -> None:

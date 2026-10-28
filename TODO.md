@@ -33,24 +33,28 @@ its results may be reported, none licensed or sold. Every result is for two peri
 Plan: ROADMAP 3.1. One item, three tasks in order, a fresh agent each: (a) the zero baseline and the
 runner, (b) momentum (12-1), (c) short-term reversal (1 month). The zero baseline scores 0.5 for
 every cell (predicting the median is predicting excess 0, HAR-02); the harness reports what that
-gives (accuracy as it is, IC and the portfolio undefined, every date in `dropped_flat`), and that is
+gives (accuracy as it is; IC undefined with every date in `dropped_flat`; the portfolio as HAR-07 gives a
+constant: the tie-break's book, its after-cost Sharpe the turnover floor, NR-F-10), and that is
 the result. The feature table has no 12-month return: momentum and reversal are signals from the
 verified prices (`neonrain/universe/prices.py`), each with a glossary term before its file (P-08).
 Check: (a) zero, a score of 0.5 for every cell (the median's excess is 0), through the frozen
 harness on the feature table at all four horizons, each period apart (R-026): a line in
 `harness/trials.tsv` per (horizon, metric) with both axes' dispersion (HAR-08) and the three cost
 levels (HAR-06), by a runner in `neonrain/baselines/` that calls the harness and reimplements none
-of it, every golden byte-identical (HAR-14); (b) 12-1 momentum and (c) 1-month reversal, each a
+of it, every golden byte-identical (HAR-14); for zero the IC is undefined with every date in
+`dropped_flat`, and the portfolio as HAR-07 gives a constant: the tie-break's book, its after-cost
+Sharpe the turnover floor (NR-F-10); (b) 12-1 momentum and (c) 1-month reversal, each a
 glossary term and a stamped signal from the verified prices (HAR-12), through the same runner,
 the same lines. Three tasks, (a) first; no number reaches `docs/RESULTS.md` before 3.3.
 
 Task (a) is built (`neonrain/baselines/`, `scripts/baseline_run.py`; the zero baseline's lines are in
-`harness/trials.tsv`). Open for Fable, decided provisionally in the code: (1) folds are HAR-03's on the whole
+`harness/trials.tsv`). Fable ruled on five questions (decision R-032, to be written by Opus); provisional in the code until then: (1) folds are HAR-03's on the whole
 calendar and a period selects test dates, a straddling fold being a cell in both (HARNESS.md is silent); (2) the
 period is in the config hash's `split` since trials.tsv has no period column; (3) `baselines` may not import `targets`
 (modules.json), so the caller hands in the labels; (4) a constant score still gets a portfolio (ties order by ticker),
-so zero's Sharpe is defined, not undefined as this item expected; (5) the DSR's V is taken from the Sharpe_10bps lines
-in the file, and a rerun of the same config conflicts at its DSR (N has grown, HAR-01).
+so zero's Sharpe is defined, not undefined as this item expected (ruled: reported as the harness computes it, NR-F-10);
+(5) the DSR's V is taken from the Sharpe_10bps lines in the file (HAR-07, HAR-09), and a rerun of the same config marks
+no line: the DSR is excepted from HAR-01's conflict rule.
 
 ### 3.2 LightGBM
 

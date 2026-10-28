@@ -64,7 +64,8 @@ canonical JSON of the object
 - `feature_columns`: the names of the feature columns used, as a list sorted ascending (so their
   order cannot change the hash); a name twice is refused.
 - `target`: the target definition, including `min_tickers` (HAR-02). `split`: the split parameters,
-  including `E`, the step, the rolling window or its absence, the `k` and `seed` of HAR-05. `cost`:
+  including `E`, the step, the rolling window or its absence, the `k` and `seed` of HAR-05, and the period, where a
+  result is reported by period (R-026). `cost`:
   the cost parameters of HAR-06. `data_manifest`: dataset name to its manifest hash. Each is a JSON
   object whose values are strings, numbers, booleans, null, lists or objects.
 - `harness_version`: the string `"0"` while phase 1 built the harness; the freeze (ROADMAP 1.7) set it to `"1"`.
@@ -80,6 +81,7 @@ Two runs with the same config hash must produce identical numbers; a line whose 
 metric match an earlier line that has a mean, but whose mean or dispersion text differs, is a failure:
 it is still appended (the trial happened), with `CONFLICT: numbers differ from an earlier line with
 this hash` at the start of its note, and reported as an error, never averaged away.
+The DSR is excepted: its N and V are read from the file (HAR-07, HAR-09), so a repeat's DSR line differs by design, is not a conflict and is not marked; its note says N and V.
 
 ## HAR-02 The four horizons and their two labels
 
@@ -137,6 +139,9 @@ that cross, by brute force on calendar positions, for the unpurged set (non-zero
 
 **There is no random k-fold, no shuffled split, and no stratified sampling over dates, ever.** A
 function in the harness that shuffles rows across dates is a defect.
+
+Where a result is reported by period (R-026), the folds are HAR-03's folds on the whole calendar, and a period's
+cells are each fold's test dates on that period's side of the boundary (`neonrain/universe/periods.py`).
 
 ## HAR-04 Nothing in a fold's training may postdate its test span
 
@@ -251,7 +256,10 @@ per (i, t); for rank, a real-valued score per (i, t) whose order is what matters
   where `SR` is the non-annualized Sharpe of the `T` daily returns (`mean / sd`, `sd` with divisor
   `T − 1`) and `skew`, `kurt` are their moment estimates with divisor `T`: `skew = m₃ / m₂^1.5`,
   `kurt = m₄ / m₂²` (kurtosis not excess), `mₖ` the mean of `(x − mean)ᵏ`. `V` is the sample variance
-  (divisor `N − 1`) of the trials' **non-annualized** Sharpes, the same unit as `SR`. With `N = 1`
+  (divisor `N − 1`) of the trials' **non-annualized** Sharpes, the same unit as `SR`. Exactly, V is read from the
+  trials file (HAR-09) when the DSR line is written: the sample variance (divisor one less than their count) of the
+  `mean` of every `Sharpe_10bps` line in the file up to and including this trial's own, each divided by √252. A
+  line with no mean counts in N but is left out of V. With `N = 1`
   nothing was selected: `SR₀ = 0` and `V` is not needed (the formula's `Z⁻¹(0)` is −∞; J-017), so the
   DSR is then the probabilistic Sharpe ratio. If the term under the square root is not positive the
   DSR is undefined. `DSR` is the probability the true Sharpe exceeds zero given the selection. A
@@ -293,7 +301,9 @@ each (horizon, metric) pair it reports (HAR-01). `trials_so_far` is the count of
 that share the metric, whatever their hash or horizon and whether they failed or not — a run's own
 earlier lines count, and so does a repeat of an earlier run. The `N` of HAR-07's DSR is
 `trials_so_far + 1`: this line counts as a trial too, so `N ≥ 1` on the first. The deflation grows as
-the project searches. A number quoted in `docs/RESULTS.md` with no line here does not exist
+the project searches. The `V` of that DSR is read from this file as well: the `mean` of each `Sharpe_10bps` line
+written before this one (and this trial's own Sharpe line, which a run writes before its DSR line, each horizon's DSR
+line after that horizon's other lines), each divided by √252, as HAR-07 says; a line with no mean is left out. A number quoted in `docs/RESULTS.md` with no line here does not exist
 (`test/test_results.py`).
 
 Each field, exactly. Every line ends with `\n` (never `\r\n`), the file is UTF-8, and no field holds a

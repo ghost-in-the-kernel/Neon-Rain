@@ -333,7 +333,9 @@ Decisions recorded: the cost default; the embargo length; the group count *k*; H
     harness on the feature table at all four horizons, each period apart (R-026): a line in
     `harness/trials.tsv` per (horizon, metric) with both axes' dispersion (HAR-08) and the three cost
     levels (HAR-06), by a runner in `neonrain/baselines/` that calls the harness and reimplements none
-    of it, every golden byte-identical (HAR-14); (b) 12-1 momentum and (c) 1-month reversal, each a
+    of it, every golden byte-identical (HAR-14); for zero the IC is undefined with every date in
+    `dropped_flat`, and the portfolio as HAR-07 gives a constant: the tie-break's book, its after-cost
+    Sharpe the turnover floor (NR-F-10); (b) 12-1 momentum and (c) 1-month reversal, each a
     glossary term and a stamped signal from the verified prices (HAR-12), through the same runner,
     the same lines. Three tasks, (a) first; no number reaches `docs/RESULTS.md` before 3.3.
 3.2 LightGBM on the full feature table, walk-forward, with a small fixed hyperparameter set chosen

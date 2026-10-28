@@ -35,3 +35,4 @@ Written by `python3 -I scripts/decisions_index.py` from `theGhost.md`; do not ed
 | R-029 | CLAUDE.md's reading goes into conditional files; always-on rules stay inline | in force | agent environment |
 | R-030 | Autonomous development by the roadmap: an escalation ladder, and human items moved back | in force | agent environment |
 | R-031 | The fast loop's target re-based to 40 s | in force | agent environment |
+| R-032 | Results by period, the DSR line outside the conflict rule, and V defined exactly | in force | harness |

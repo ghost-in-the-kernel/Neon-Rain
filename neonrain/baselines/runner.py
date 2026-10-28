@@ -76,6 +76,7 @@ class Horizon(NamedTuple):
     cells: dict[str, list[Cell]]
 
 
+# Decision: R-026 (a period selects the test dates of HAR-03's folds, laid on the whole calendar)
 def in_period(period: str) -> pl.Expr:
     """Whether a row's date falls in `period`: before periods.BOUNDARY, or on it and after."""
     before = pl.col("date") < periods.BOUNDARY

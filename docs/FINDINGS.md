@@ -14,6 +14,7 @@ depends on it is reported (P-03), and every row of `docs/RESULTS.md` cites the f
 | NR-F-07 | The feed decays at its end, but not in the ticker count. Corporate actions stop first: the first session with no rows at all is 2017-11-08, dividends are missing on 8 of the 14 sessions of 2017-11-10 to 2017-11-30 and then end after 2017-12-05, splits end after 2017-11-28, and nothing is recorded in 2018-01 or 2018-02 (a burst of 59 dividend rows and 2 splits on 2018-03-01 to 07 follows). The adjusted columns after about 2017-11-07 do not carry the actions of those weeks. The ticker count falls steadily, 2,872 (2016-01) to 2,473 (2017-12), 2,444 (2018-02), with no cliff. 2017-12-29 is not the right last date; 2017-11-07 was proposed (below). **Resolved 2026-10-24 by Ghost (R-026): the sample ends 2017-11-07, the proposed date.** | `scripts/probe/wiki_findings.py`, NR-F-07 below | TODO phase 2 (the sample's end), 2.2 |
 | NR-F-08 | WIKI and the calendar disagree in two ways inside the sample: 120 WIKI dates are no session of the calendar (all weekdays, none a weekend; 165 rows on them, at most 9 rows on one date, usually 1), and 1 session has no rows at all (2017-11-08). **Decided in 2.2:** the frame holds only session dates, because `check_market` refuses a price row off the calendar; the 165 rows on the 120 dates (24 tickers, none a weekend) are left out of it and handed back in `Loaded.off_calendar`, counted by `scripts/probe/wiki_prices.py`. On the sample ending 2017-11-07 no session has no rows (2017-11-08 is outside it), and `Loaded.empty_sessions` reports any that would be. | `scripts/probe/wiki_findings.py`, NR-F-08 below | 2.2 |
 | NR-F-09 | A survivor-only sample flatters a price-pattern strategy by a small amount that has a sign: on the synthetic market (160 tickers, 1,200 sessions, 21% of names delisted, no reversal or momentum planted) taking the delisted names out makes **short-term reversal** look better (long-short Sharpe at 10 bps +0.12 to +0.22, DSR +0.01 to +0.04, IC +0.001 to +0.007), **momentum** look worse (Sharpe -0.11 to -0.14, DSR -0.02 to -0.03, IC -0.004 to -0.023) and a **random** score look the same (every difference inside its seed spread). No scorer here has an edge, so every such difference is bias. It is a fraction of one annualized Sharpe unit, smaller than the cost drag at 3 and 5 days, and measured on synthetic delistings only. Table and reading below. | `scripts/probe/survivorship.py`, `test/test_survivorship_probe.py`, NR-F-09 below | R-026 (b) and (c); NR-F-02, NR-F-03; every result on WIKI before 2014-04-01 |
+| NR-F-10 | The zero baseline's portfolio is the tie-break's book, not a null. A constant score ties at every cell, HAR-07 breaks ties by ticker, so the portfolio trades an alphabetical book; its 0 bps Sharpe (about -0.07) is noise, and its after-cost Sharpe is the harness's turnover floor, about 1/h in scale (10 bps, survivor-only / from 2014: h3 -3.32 / -3.71, h5 -2.02 / -2.09, h21 -0.53 / -0.59, h63 -0.20 / -0.36). Reported as the harness computes it (Fable, 2026-10-28). Possible harness v2, not done now, for Ghost: a date whose scores are all equal opens no sleeve. | `harness/trials.tsv` (the zero baseline's lines), `neonrain/baselines/zero.py`, NR-F-10 below | 3.1 (a); the cost floor every later baseline and the network is read against |
 
 ## NR-F-03 to NR-F-08: WIKI membership, 2026-10-24 (TODO 2.1 b)
 
@@ -244,3 +245,21 @@ are `Stock_news/All_external.csv` (5.7 GB) and `Stock_news/nasdaq_exteral_data.c
 prices in `Stock_price/full_history.zip`. Each is far past this session's disk and R-016's 100 MB
 per git file, so nothing was downloaded and R-016's route is unchanged until Ghost decides
 otherwise.
+
+## NR-F-10: the zero baseline is an alphabetical book, 2026-10-28 (TODO 3.1 a)
+
+The zero baseline scores every cell 0.5. HAR-07's IC is then undefined (every date is in `dropped_flat`), but the portfolio
+is not: with every score tied, HAR-07 breaks ties by ticker, so each date's long and short legs are the alphabetically first
+and last names, and the portfolio trades that book. Its 0 bps Sharpe (about -0.07) is noise. Its after-cost Sharpe is the
+harness's turnover floor, about 1/h in scale. 10 bps, survivor-only / from 2014:
+
+| Horizon | Sharpe at 10 bps, survivor-only | from 2014 |
+| --- | --- | --- |
+| 3 | -3.32 | -3.71 |
+| 5 | -2.02 | -2.09 |
+| 21 | -0.53 | -0.59 |
+| 63 | -0.20 | -0.36 |
+
+Decided (Fable, 2026-10-28): zero is reported as the harness computes it. A later baseline is read against these floors, not
+against zero. Possible harness v2, not done now and for Ghost to decide (it would move a golden, HAR-14): a date whose scores
+are all equal opens no sleeve.

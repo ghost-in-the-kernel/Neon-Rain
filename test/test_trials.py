@@ -173,6 +173,18 @@ def test_a_repeat_with_other_numbers_but_another_horizon_metric_or_hash_is_no_co
     assert len(lines(path)) == 7
 
 
+def test_a_dsr_line_under_the_same_hash_is_appended_unmarked_while_another_metric_still_conflicts(tmp_path: Path) -> None:
+    path = tmp_path / "trials.tsv"
+    append(path, metric=trials.DEFLATED)
+    assert trials.DEFLATED == "DSR"
+    assert append(path, metric=trials.DEFLATED, mean=0.03) == 1  # N and V come from the file: no conflict
+    append(path, metric="Sharpe")
+    with pytest.raises(trials.TrialConflict):
+        append(path, metric="Sharpe", mean=0.03)
+    assert ["CONFLICT" in row for row in lines(path)[1:5]] == [False, False, False, True]
+    assert lines(path)[2].split("\t")[4] == "0.03"
+
+
 def test_a_failed_earlier_line_is_no_conflict(tmp_path: Path) -> None:
     path = tmp_path / "trials.tsv"
     append(path, mean=None, dispersion=None, note="crashed")

@@ -13,6 +13,7 @@ HASH_DIGITS = 16
 HEADER = "\t".join(TRIALS_COLUMNS)
 METRIC = TRIALS_COLUMNS.index("metric")
 SEPARATORS = "\t\r\n"
+DEFLATED = "DSR"  # the one metric HAR-01's conflict rule leaves out: its N and V are read from the file
 
 
 class TrialConflict(Exception):
@@ -81,9 +82,12 @@ def check_file(text: str) -> None:
 
 
 def conflicting(earlier: list[list[str]], line: list[str]) -> bool:
-    """Whether a line with numbers repeats an earlier line's config hash, horizon and metric with other numbers."""
+    """Whether a line with numbers repeats an earlier line's config hash, horizon and metric with other numbers.
+
+    The DSR is excepted (HAR-01): its N and V come from the file, so a repeat's differs by design.
+    """
     key = line[:1] + line[2:4]
-    return bool(line[4]) and any(
+    return bool(line[4]) and line[METRIC] != DEFLATED and any(
         row[:1] + row[2:4] == key and row[4] and row[4:6] != line[4:6] for row in earlier)
 
 

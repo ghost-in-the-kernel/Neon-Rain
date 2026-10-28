@@ -20,3 +20,9 @@ Last review: 95b090d (2026-10-27, tithe pass 2, J-069: two debriefs and phase 2'
 - **Opened:** CLAUDE.md, TODO.md (3.1), docs/ROADMAP.md (§6), docs/HARNESS.md, neonrain/harness/goldens.py, neonrain/harness/{split,trials,portfolio,metrics}.py, docs/modules.json, theGhost.md (R-026), scripts/checks/results.py
 - **Complaints:** the "A baseline" row points at `neonrain/baselines/` and `harness/goldens/` and nothing else, so the three things this task needed were found by reading: that `baselines` may not import `targets` (docs/modules.json only), that trials.tsv has no period column (found in scripts/checks/results.py's comment that one hash names one period), and that HARNESS.md does not say how folds fall within a period. The moving-clock rule (MOD-05) for the run date also took a search.
 - **Suggestions:** a line in the "A baseline" row naming docs/modules.json (`baselines` imports) and scripts/checks/results.py (how a period shows in trials.tsv); HARNESS.md a sentence on periods.
+
+### 2026-10-28 3.1 (a) rulings (Claude Sonnet)
+- **Task:** apply Fable's five rulings on 3.1 (a) (HARNESS.md, trials.py's DSR exception, record.py's order), then one repeat run
+- **Opened:** CLAUDE.md, docs/rules/done.md, neonrain/baselines/{record,runner}.py, neonrain/harness/trials.py, docs/HARNESS.md (HAR-01, 03, 07, 09, 14), test/test_the_freeze.py, test/test_baselines.py, test/test_trials.py, docs/FINDINGS.md, TODO.md, docs/ROADMAP.md
+- **Complaints:** the routing table has no row for "a ruled change to the frozen harness": HAR-14 says a decision, but which tests catch a change (goldens.py, test_the_freeze.py) was found by reading. The ROADMAP check text and TODO's check text are copies kept by hand, and nothing says so.
+- **Suggestions:** in the "The goldens" row, a clause: a harness change that moves no golden is shown by `scripts/goldens.py` ("identical").

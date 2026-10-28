@@ -614,3 +614,24 @@ it is `in force`.
 - **Status:** in force
 - **See also:** R-024, R-030
 - **subject:** agent environment
+
+### R-032: Results by period, the DSR line outside the conflict rule, and V defined exactly
+- **Decision:** (a) Where a result is reported by period (R-026), the folds are HAR-03's on the whole calendar
+  and a period's cells are each fold's test dates on its side of the boundary; the period is part of the
+  config hash's `split` (HAR-01, HAR-03). (b) The DSR line is excepted from HAR-01's conflict rule: its N and
+  V are read from the trials file, so a repeat's DSR differs by design, is not a conflict and is not marked
+  (`trials.DEFLATED`). (c) V is the sample variance (divisor one less than their count) of the `mean` of every
+  `Sharpe_10bps` line in the file up to and including this trial's own, each divided by √252; a line with no
+  mean counts in N and is left out of V. Each horizon's DSR line is written after that horizon's other lines
+  (HAR-07, HAR-09). The goldens are unchanged; `harness_version` stays "1" (HAR-14).
+- **Why:** Step 3.1 (a)'s first real run (J-071) raised five questions the contract did not settle; a
+  repeat would have marked every DSR line a conflict, since N grows with the file. The first run's eight DSR
+  lines were written in the old order (every Sharpe of a period before its DSRs), so their V covers the whole
+  period; the file is append-only (HAR-09) and they stay as written.
+- **Held by:** docs/HARNESS.md (HAR-01, HAR-03, HAR-07, HAR-09); `neonrain/harness/trials.py` (`DEFLATED`,
+  `conflicting`); `neonrain/baselines/record.py`; `test/test_trials.py`; `test/test_baselines.py`.
+- **Source:** ruled by Claude Fable, 2026-10-27, under R-030 (nothing escalated to Ghost); applied 2026-10-28
+  (J-073).
+- **Status:** in force
+- **See also:** R-002, R-026, R-030
+- **subject:** harness
