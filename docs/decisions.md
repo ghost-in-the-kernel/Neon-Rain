@@ -38,3 +38,4 @@ Written by `python3 -I scripts/decisions_index.py` from `theGhost.md`; do not ed
 | R-032 | Results by period, the DSR line outside the conflict rule, and V defined exactly | in force | harness |
 | R-033 | The context canary: every reply starts with "Context Canary" | in force | agent environment |
 | R-034 | The tree baseline's hyperparameters, fixed and chosen blind | in force | baselines |
+| R-035 | A speed change to the frozen harness: `portfolio.daily` partitions its scores by date once | in force | harness |

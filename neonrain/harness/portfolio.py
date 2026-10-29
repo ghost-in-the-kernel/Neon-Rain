@@ -88,8 +88,10 @@ def daily(scores: pl.DataFrame, prices: pl.DataFrame, calendar: list[date], hori
     index = {d: i for i, d in enumerate(calendar)}
     gross, paid = np.zeros(len(calendar)), np.zeros(len(calendar))
     opens = sorted(index[d] for d in set(scores["date"].to_list()))
+    # Once for all dates, not a filter per open date; `legs` sorts, so a part's row order cannot matter.
+    by_date = scores.select("date", "ticker", "score").partition_by("date", as_dict=True)
     for opened in opens:
-        group = scores.filter(pl.col("date") == calendar[opened]).select("ticker", "score").iter_rows()
+        group = by_date[(calendar[opened],)].select("ticker", "score").iter_rows()
         priced = [(t, s) for t, s in group if not math.isnan(closes[opened, column[t]])]
         short, long = legs(priced, column)
         if not long:

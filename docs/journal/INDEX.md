@@ -83,3 +83,4 @@ Written by `python3 -I scripts/journal_index.py` from `docs/journal/`; do not ed
 | J-077 | Step 3.2 (a): the tree's fit path, its hyperparameters ruled, one fit timed on the real data | decision | `J-071-080.md:126` |
 | J-078 | Step 3.2 (b)'s wiring; the feature table found on the wrong universe; the suite made cheaper | failure-caught | `J-071-080.md:148` |
 | J-079 | The feature table rebuilt on the raw-ranked universe, stored and round-tripped | failure-caught | `J-071-080.md:178` |
+| J-080 | `portfolio.daily` partitions by date once (R-035); the first hand-back without the canary | decision | `J-071-080.md:199` |

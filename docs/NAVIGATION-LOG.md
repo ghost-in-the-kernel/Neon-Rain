@@ -63,3 +63,9 @@ Last review: 95b090d (2026-10-27, tithe pass 2, J-069: two debriefs and phase 2'
 - **Opened:** CLAUDE.md, docs/rules/done.md, J-078 and J-068, scripts/fetch/feature_table.py, neonrain/universe/{prices,membership}.py, scripts/baseline_run.py, data/MANIFEST.md, test/test_feature_table.py, test/test_prices.py, docs/modules.json
 - **Complaints:** nothing says that membership is meant to be called only through `prices.for_membership`; `scripts/probe/wiki_normalize.py` had the same defect and only a grep for `membership.universe` found it. The scratch location for a rebuild (outside both repositories) is in the script's docstring only.
 - **Suggestions:** MANIFEST's `feature-table` row could say the universe it was built on; `membership.universe`'s docstring could point at `prices.universe`.
+
+### 2026-10-29 portfolio.daily partitioned by date (Claude Sonnet)
+- **Task:** make `portfolio.daily` cheaper (one partition by date, not a filter per open date), no number changed
+- **Opened:** CLAUDE.md, docs/rules/done.md, docs/HARNESS.md (HAR-14), test/test_the_freeze.py, neonrain/harness/portfolio.py, docs/journal/J-071-080.md (J-078), docs/MUTATION.md
+- **Complaints:** what HAR-14 asks of a harness change that moves no golden (nothing beyond `scripts/goldens.py` saying "identical") is found only by reading both HAR-14 and the freeze test; the routing row "The portfolio and its costs" does not say which goldens or freeze tests cover a portfolio change. A mutation survivor on an argument that cannot matter (`maintain_order`) is better removed than explained; MUTATION.md does not say so.
+- **Suggestions:** in the "The portfolio and its costs" row, a clause: a speed change is shown by `scripts/goldens.py` and the slow tests of `test/test_the_freeze.py`. In MUTATION.md, a line: an argument whose mutant survives because it cannot matter is dropped from the code.

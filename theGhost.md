@@ -671,3 +671,17 @@ it is `in force`.
 - **Status:** in force
 - **See also:** R-007, R-030, R-032
 - **subject:** baselines
+
+### R-035: A speed change to the frozen harness: `portfolio.daily` partitions its scores by date once
+- **Decision:** `portfolio.daily` splits the score frame by date once, instead of filtering it once per open date.
+  No number changes: every golden is byte-identical, `harness_version` stays "1", no test's assertion changed
+  (HAR-14 allows a harness change that moves no golden). A speed change to the harness is shown by
+  `scripts/goldens.py` ("identical") and the slow freeze tests, run by the agent and again by the reviewer.
+- **Why:** `daily` sits under many tests, in the fast loop and the mutation run. The fast loop went from a median
+  of 31.7 s to 29.2 s, and the full check to 6.97 min.
+- **Held by:** `neonrain/harness/portfolio.py`; `test/test_the_freeze.py`; `test/test_portfolio.py`.
+- **Source:** proposed by a Claude Sonnet agent (J-078); Ghost, 2026-10-29: "yes, go ahead with the portfolio.daily
+  change"; J-080.
+- **Status:** in force
+- **See also:** R-002, R-024, R-031
+- **subject:** harness
