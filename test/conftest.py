@@ -5,12 +5,25 @@ import json
 import os
 import shutil
 import tempfile
+import time
 from collections.abc import Iterator
 from pathlib import Path
 
 import pytest
 
 ROOT = Path(__file__).resolve().parent.parent
+
+
+# Decision: R-024 (c). The fast loop's frames are small (a few hundred rows a date), and polars still wakes its thread
+# pool for each of the 45,000 eager calls of a run: 17 s of the loop's system time, and a third of its wall clock (37.9 s
+# against 30.6 s on the same box, the same 911 tests passing). The loop and the mutants, which run the same tests
+# (-m "not slow"), take one polars thread, as scripts/probe/survivorship.py already does; the slow set (the goldens
+# compared byte for byte, the harness on the synthetic market) keeps polars' own threading, so it is still the proof
+# that the numbers do not depend on it. A value already in the environment is left as it is.
+def pytest_configure(config: pytest.Config) -> None:
+    """Before any test module imports polars: give the fast loop one polars thread; leave a slow run's as it is."""
+    if config.option.markexpr == "not slow":
+        os.environ.setdefault("POLARS_MAX_THREADS", "1")
 
 
 # Decision: R-024 (c). Every test that makes a commit in a throwaway repository ran the machine's own git config: in a
@@ -50,15 +63,56 @@ def root() -> Path:
     return ROOT
 
 
+# Decision: R-024 (c). mutmut times only a test's call, so a test whose cost is a module fixture (a market, three whole
+# evaluations) looked free and ran first, paying that fixture in every mutant that reached it: half of all the test seconds
+# of a full mutation run (the progress test of test_baseline_run alone, 1,973 runs of 0.3 s). The stats run now also times
+# each fixture's setup, and a mutant's tests are ordered by their call plus the fixtures they ask for. Only the order
+# changes; the tests, and what kills a mutant, do not.
+FIXTURE_SECONDS = "fixture-seconds.json"  # beside mutmut-stats.json, in mutants/
+_fixture_runs: dict[str, list[float]] = {}
+
+
+def fixture_key(fixturedef: pytest.FixtureDef) -> str:
+    """The name a fixture is timed under, e.g. "test/test_baseline_run.py::fitted"."""
+    return f"{fixturedef.baseid}::{fixturedef.argname}"
+
+
+@pytest.hookimpl(wrapper=True)
+def pytest_fixture_setup(fixturedef: pytest.FixtureDef, request: pytest.FixtureRequest) -> Iterator[None]:
+    """In mutmut's stats run, time each fixture's own setup (the fixtures it asks for are timed apart)."""
+    started = time.perf_counter()
+    try:
+        return (yield)
+    finally:
+        if os.environ.get("MUTANT_UNDER_TEST") == "stats":
+            _fixture_runs.setdefault(fixture_key(fixturedef), []).append(time.perf_counter() - started)
+
+
+def pytest_sessionfinish(session: pytest.Session) -> None:
+    """In mutmut's stats run, keep the mean seconds of each fixture's setup where the mutants' runs will read it."""
+    if os.environ.get("MUTANT_UNDER_TEST") == "stats":
+        Path(FIXTURE_SECONDS).write_text(json.dumps({k: sum(v) / len(v) for k, v in _fixture_runs.items()}))
+
+
+def fixtures_seconds(item: pytest.Item, seconds: dict[str, float]) -> float:
+    """What the fixtures a test asks for (each of its names, however deep) cost to set up, from the stats run."""
+    info = getattr(item, "_fixtureinfo", None)
+    made = info.name2fixturedefs.values() if info else []
+    return sum(seconds.get(fixture_key(defs[-1]), 0.0) for defs in made if defs)
+
+
 # Decision: R-024 (c). mutmut runs a mutant's tests with -x, in the order of a set, so a mutant a cheap test kills
 # waits for a dear one first half the time. Only the order changes; the tests, and what kills a mutant, do not.
 def pytest_collection_modifyitems(items: list[pytest.Item]) -> None:
-    """In a mutant's own run (not stats, not a clean run), order its tests by the seconds mutmut timed them at."""
+    """In a mutant's own run (not stats, not a clean run), order its tests by the seconds mutmut timed them at, with
+    the setup of the fixtures they ask for added."""
     if "__mutmut_" not in os.environ.get("MUTANT_UNDER_TEST", ""):
         return
     stats = Path("mutmut-stats.json")  # mutmut runs a mutant's tests inside mutants/, where it keeps its stats
     seconds = json.loads(stats.read_text())["duration_by_test"] if stats.is_file() else {}
-    items.sort(key=lambda item: seconds.get(item.nodeid, 0.0))
+    fixtures = Path(FIXTURE_SECONDS)
+    setups = json.loads(fixtures.read_text()) if fixtures.is_file() else {}
+    items.sort(key=lambda item: seconds.get(item.nodeid, 0.0) + fixtures_seconds(item, setups))
 
 
 # Decision: R-024 (c). pytest's unraisable-exception plugin runs gc.collect() at the start and end of every pytest.main,

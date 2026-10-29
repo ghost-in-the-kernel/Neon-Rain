@@ -1,6 +1,7 @@
 """docs/SUPPLY-CHAIN.md's rules a file can show (test/test_supply_chain.py): no workflow, no hook, no worm,
 and every outside import under neonrain/ is in requirements.lock or the standard library."""
 import json
+import os
 import re
 import sys
 from importlib.metadata import packages_distributions
@@ -12,9 +13,15 @@ WORM_FILES: frozenset[str] = frozenset({"setup_bun.js", "bun_environment.js", "M
 SKIPPED_DIRS: frozenset[str] = frozenset({".git", ".venv", "mutants", "__pycache__", ".pytest_cache", ".ruff_cache"})
 
 
+# Decision: R-024 (c). rglob("*") walked every folder of the venv (tens of thousands of files, 2.3 s) to throw them away
+# after; pruning a skipped folder as it is met gives the same files without ever entering it.
 def ours(root: Path) -> list[Path]:
-    """Every file under root but the ones git, the venv and the tools make."""
-    return [path for path in root.rglob("*") if path.is_file() and not SKIPPED_DIRS & set(path.relative_to(root).parts)]
+    """Every file under root but the ones git, the venv and the tools make, however deep a skipped folder is."""
+    found = []
+    for folder, dirs, files in os.walk(root):
+        dirs[:] = sorted(name for name in dirs if name not in SKIPPED_DIRS)
+        found += [path for path in (Path(folder) / name for name in sorted(files) if name not in SKIPPED_DIRS) if path.is_file()]
+    return found
 
 
 def worm_problems(root: Path) -> list[str]:

@@ -34,6 +34,12 @@ def commit(repo: Path, subject: str) -> subprocess.CompletedProcess:
     return run(repo, ["--allow-empty", "-m", subject])
 
 
+def seeded(repo: Path, count: int) -> None:
+    """`count` empty commits made by git itself, not the script: the state a test starts from, never what it claims."""
+    for n in range(count):
+        git(repo, ["-c", "user.name=Ghost", "-c", "user.email=g@example.org", "commit", "-q", "--allow-empty", "-m", f"work {n}"])
+
+
 def test_seven_pass_and_the_eighth_is_refused(repo: Path) -> None:
     for n in range(7):
         assert commit(repo, f"work {n}").returncode == 0
@@ -44,8 +50,7 @@ def test_seven_pass_and_the_eighth_is_refused(repo: Path) -> None:
 
 
 def test_a_tithe_is_accepted_when_due_and_resets_the_count(repo: Path) -> None:
-    for n in range(7):
-        commit(repo, f"work {n}")
+    seeded(repo, 7)
     assert commit(repo, "tithe: tidy").returncode == 0
     assert run(repo, ["--check"]).returncode == 0
     for n in range(7):
@@ -65,8 +70,7 @@ def test_no_tithe_yet_counts_from_the_first_commit(repo: Path) -> None:
 
 
 def test_check_reports_a_due_tithe_and_commits_nothing(repo: Path) -> None:
-    for n in range(7):
-        commit(repo, f"work {n}")
+    seeded(repo, 7)
     done = run(repo, ["--check"])
     assert done.returncode == 1 and "tithe is due" in done.stdout
     assert git(repo, ["rev-list", "--count", "HEAD"]).strip() == "7"
@@ -87,8 +91,7 @@ def test_configured_author_is_kept(repo: Path) -> None:
 
 
 def test_message_from_a_file_and_from_stdin(repo: Path, tmp_path_factory: pytest.TempPathFactory) -> None:
-    for n in range(7):
-        commit(repo, f"work {n}")
+    seeded(repo, 7)
     message = tmp_path_factory.mktemp("msg") / "m.txt"
     message.write_text("work 7\n\nbody\n")
     assert run(repo, ["--allow-empty", "-F", str(message)]).returncode == 1

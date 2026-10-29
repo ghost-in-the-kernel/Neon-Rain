@@ -3,6 +3,7 @@
 Everything is built in a temporary folder from invented prices (R-006): 25 tickers on the sessions 150 to 330 of 1998 and 1999 (the universe starts 63 sessions in, so both years have rows).
 """
 import random
+import subprocess
 from pathlib import Path
 
 import polars as pl
@@ -33,18 +34,31 @@ def export() -> pl.DataFrame:
     )
 
 
+def invented_clone(root: Path) -> tuple[Path, str]:
+    """A data clone under `root` holding invented `wiki/prices` and the manifest text that carries its index hash."""
+    folder = root / "data" / "wiki" / "prices"
+    wiki.write_years(export().lazy(), folder)
+    digest = artifacts.sha256_of(folder / "index.tsv")
+    return root / "data", f"| wiki-prices | s | l | f | r | sha256 {digest} (of index.tsv) |\n"
+
+
 @pytest.fixture
 def clone(tmp_path: Path) -> tuple[Path, str]:
     """A data clone holding invented `wiki/prices` and the manifest text that carries its index hash."""
-    folder = tmp_path / "data" / "wiki" / "prices"
-    wiki.write_years(export().lazy(), folder)
-    digest = artifacts.sha256_of(folder / "index.tsv")
-    return tmp_path / "data", f"| wiki-prices | s | l | f | r | sha256 {digest} (of index.tsv) |\n"
+    return invented_clone(tmp_path)
 
 
-def test_the_files_and_the_index(clone: tuple[Path, str], tmp_path: Path) -> None:
-    out = tmp_path / "out"
-    digest = feature_table.build(clone[0], clone[1], out)
+@pytest.fixture(scope="module")
+def built(tmp_path_factory: pytest.TempPathFactory) -> tuple[Path, str]:
+    """The table built once from the invented prices: its output folder and its index's hash. The tests read it, never
+    write it; the build repeating itself is `test_the_same_input_gives_the_same_bytes`'s claim, which builds again."""
+    root = tmp_path_factory.mktemp("built")
+    data, manifest = invented_clone(root)
+    return root / "out", feature_table.build(data, manifest, root / "out")
+
+
+def test_the_files_and_the_index(built: tuple[Path, str]) -> None:
+    out, digest = built
     assert sorted(p.name for p in out.iterdir()) == ["1998.parquet", "1999.parquet", "index.tsv"]
     entries = verified.parse_index((out / "index.tsv").read_text())
     assert list(entries) == ["1998", "1999"]
@@ -53,29 +67,28 @@ def test_the_files_and_the_index(clone: tuple[Path, str], tmp_path: Path) -> Non
     assert digest == artifacts.sha256_of(out / "index.tsv")
 
 
-def test_the_same_input_gives_the_same_bytes(clone: tuple[Path, str], tmp_path: Path) -> None:
-    first = feature_table.build(clone[0], clone[1], tmp_path / "a")
+def test_the_same_input_gives_the_same_bytes(built: tuple[Path, str], clone: tuple[Path, str], tmp_path: Path) -> None:
+    first = built[1]
     second = feature_table.build(clone[0], clone[1], tmp_path / "b")
     assert first == second
     for name in ("1998.parquet", "1999.parquet", "index.tsv"):
-        assert (tmp_path / "a" / name).read_bytes() == (tmp_path / "b" / name).read_bytes()
+        assert (built[0] / name).read_bytes() == (tmp_path / "b" / name).read_bytes()
 
 
-def test_the_files_hold_the_table_in_order(clone: tuple[Path, str], tmp_path: Path) -> None:
-    feature_table.build(clone[0], clone[1], tmp_path / "out")
+def test_the_files_hold_the_table_in_order(built: tuple[Path, str]) -> None:
+    out = built[0]
     for year in (1998, 1999):
-        frame = pl.read_parquet(tmp_path / "out" / f"{year}.parquet")
+        frame = pl.read_parquet(out / f"{year}.parquet")
         assert frame.columns == table.columns()
         assert (frame["date"].dt.year() == year).all()
         assert frame.equals(frame.sort("ticker", "date"))
-    assert pl.read_parquet(tmp_path / "out" / "1999.parquet").height > 0
+    assert pl.read_parquet(out / "1999.parquet").height > 0
 
 
-def test_the_parquet_settings_are_the_documented_ones(clone: tuple[Path, str], tmp_path: Path) -> None:
+def test_the_parquet_settings_are_the_documented_ones(built: tuple[Path, str]) -> None:
     import pyarrow.parquet as pq
 
-    feature_table.build(clone[0], clone[1], tmp_path / "out")
-    meta = pq.ParquetFile(tmp_path / "out" / "1999.parquet").metadata
+    meta = pq.ParquetFile(built[0] / "1999.parquet").metadata
     column = meta.row_group(0).column(2)
     assert column.compression == "ZSTD" and column.is_stats_set
     assert feature_table.PARQUET == {
@@ -121,3 +134,59 @@ def test_the_command_line(clone: tuple[Path, str], tmp_path: Path, capsys: pytes
     assert feature_table.main(["only-one"]) == 2
     assert feature_table.main([str(tmp_path / "no-such-clone"), str(tmp_path / "out")]) == 1
     assert "refused" in capsys.readouterr().err
+
+
+FEATURES = ["macd", "macd_hist", "mar_21", "mar_5", "mar_63", "ret_21", "ret_3", "ret_5", "ret_63", "rsi_14", "vol_21",
+            "vol_5", "vol_63", "volr_21", "volr_5", "volr_63"]
+
+
+def test_the_feature_names_are_the_sixteen_without_keys_or_stamps() -> None:
+    assert feature_table.feature_names() == FEATURES
+    assert set(FEATURES) | {f"{name}_stamp" for name in FEATURES} | {"ticker", "date"} == set(table.columns())
+
+
+@pytest.fixture(scope="module")
+def stored(built: tuple[Path, str], tmp_path_factory: pytest.TempPathFactory) -> tuple[str, Path, str, pl.DataFrame]:
+    """The table built from the invented prices, its files and index put in a local bare repository standing in for the
+    artifact store: the manifest text of its row, a clone path, the remote, and the table (sorted). The tests only read
+    the store, but for one artifact the refusing test adds (an index for another table), which no other test names."""
+    tmp_path = tmp_path_factory.mktemp("stored")
+    remote = tmp_path / "store.git"
+    subprocess.run(["git", "init", "--quiet", "--bare", "--initial-branch=main", str(remote)], check=True)
+    out, index = built
+    for path in sorted(out.iterdir()):
+        artifacts.put(path, tmp_path / "put-clone", str(remote))
+    manifest = f"| {feature_table.DATASET} | s | l | f | r | sha256 {index} (of index.tsv) |\n"
+    whole = pl.concat([pl.read_parquet(out / "1998.parquet"), pl.read_parquet(out / "1999.parquet")]).sort("ticker", "date")
+    return manifest, tmp_path / "get-clone", str(remote), whole
+
+
+def test_load_gives_the_table_from_the_store_sorted_by_ticker_and_date_and_keeps_no_copy(
+        stored: tuple[str, Path, str, pl.DataFrame], tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    manifest, clone, remote, whole = stored
+    scratch = tmp_path / "tmp"
+    scratch.mkdir()
+    monkeypatch.setenv("TMPDIR", str(scratch))
+    monkeypatch.setattr("tempfile.tempdir", None)
+    loaded = feature_table.load(manifest, clone, remote)
+    assert loaded.equals(whole) and loaded.columns == table.columns() and loaded.height > 1000
+    assert loaded["date"].dt.year().n_unique() == 2  # both years' files, joined in the table's (ticker, date) order
+    assert list(scratch.iterdir()) == []  # the fetched files were in a temporary folder, gone now
+
+
+def test_load_refuses_an_index_the_manifest_does_not_name_and_a_year_the_store_lacks(
+        stored: tuple[str, Path, str, pl.DataFrame], tmp_path: Path) -> None:
+    manifest, clone, remote, _ = stored
+    wrong = f"| {feature_table.DATASET} | s | l | f | r | sha256 {'0' * 64} |\n"
+    with pytest.raises(artifacts.ArtifactError, match="no artifact"):
+        feature_table.load(wrong, clone, remote)  # nothing in the store has that hash: no unchecked copy is read instead
+    with pytest.raises(verified.Unverified, match="no row"):
+        feature_table.load("| other | s | l | f | r | sha256 " + "0" * 64 + " |\n", clone, remote)
+    other = tmp_path / "other"
+    other.mkdir()
+    (other / "index.tsv").write_text(f"1998\t1998.parquet\t{'1' * 64}\n")
+    artifacts.put(other / "index.tsv", tmp_path / "put-clone", remote)
+    made = f"| {feature_table.DATASET} | s | l | f | r | sha256 {artifacts.sha256_of(other / 'index.tsv')} |\n"
+    with pytest.raises(artifacts.ArtifactError, match="no artifact 1111"):
+        feature_table.load(made, clone, remote)  # the index names a year the store lacks
+    assert feature_table.load(manifest, clone, remote).height > 0

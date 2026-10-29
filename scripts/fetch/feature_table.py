@@ -16,14 +16,18 @@ own writer). The writer does put its own version in the file's footer (`created_
 the polars version too, pinned by `requirements.lock`; the manifest row records that version beside the hash.
 Pure apart from reading and writing files; no clock, no network.
 """
+import io
 import sys
+import tempfile
 from pathlib import Path
 
 import polars as pl
 
-from neonrain.features import table
-from neonrain.universe import calendar, membership, prices
+from neonrain.features import returns, table
+from neonrain.universe import calendar, membership, prices, verified
 from scripts.fetch import artifacts, wiki
+
+DATASET = "feature-table"
 
 FIRST_YEAR = 1998
 LAST_YEAR = 2017
@@ -60,6 +64,28 @@ def build(clone: Path, manifest: str, out: Path) -> str:
     members = membership.universe(loaded.prices, sessions)
     write_years(table.feature_table(loaded.prices, sessions, members), out)
     return artifacts.sha256_of(out / "index.tsv")
+
+
+def feature_names() -> list[str]:
+    """The table's feature columns, sorted by name: `table.columns()` without the keys and the stamps (sixteen)."""
+    return sorted(c for c in table.columns() if c not in table.KEYS and not c.endswith(returns.STAMP_SUFFIX))
+
+
+def fetch(manifest: str, folder: Path, clone: Path, remote: str) -> None:
+    """The index, by the hash on the manifest row `feature-table`, and each year's file, by its hash in that index,
+    from the artifact store into `folder`. The store refuses bytes that do not hash to their name (`artifacts.get`)."""
+    artifacts.get(verified.manifest_hash(manifest, DATASET), folder / "index.tsv", clone, remote)
+    for name, digest in verified.parse_index((folder / "index.tsv").read_text()).values():
+        artifacts.get(digest, folder / name, clone, remote)
+
+
+def load(manifest: str, clone: Path, remote: str) -> pl.DataFrame:
+    """The feature table from the artifact store, every year in order, after the index hashes to the manifest row and
+    each file to its index line (`verified.read_verified`), sorted by (ticker, date) as the table is defined. Nothing is read from a local copy that was not checked."""
+    with tempfile.TemporaryDirectory(prefix="neonrain-feature-table-") as folder:
+        fetch(manifest, Path(folder), clone, remote)
+        files = verified.read_verified(Path(folder), manifest, DATASET)
+    return pl.concat([pl.read_parquet(io.BytesIO(files[year])) for year in sorted(files)]).sort(table.KEYS)
 
 
 def main(argv: list[str]) -> int:

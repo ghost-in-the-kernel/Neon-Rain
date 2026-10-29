@@ -18,6 +18,17 @@ that heap for about 85 ms. `mutmut run "<module>.*"` runs one module's mutants i
 (it was the cost of every `supply_chain` mutant); and `pytest_add_cli_args = ["-p", "no:cacheprovider"]` leaves the cache
 plugin off, since it wrote `.pytest_cache` in every failing run.
 
+Three more costs taken out (R-024 c): (1) mutmut times a test's call only, so a test whose cost was a module fixture
+(a market, three whole evaluations) looked free, ran first and paid that fixture in every mutant that reached it, about half of
+all the test seconds of a run (the progress test of `test_baseline_run`: 1,973 runs of 0.3 s). The stats run now also times each
+fixture's setup (`mutants/fixture-seconds.json`, written by `test/conftest.py`), and a mutant's tests are ordered by their call
+plus the setup of the fixtures they ask for; the full mutation run went from 600 s to 374 s. (2) The fast loop and so the
+mutants take one polars thread (`POLARS_MAX_THREADS=1`, only under `-m "not slow"`): the frames are small and the thread pool's
+wake-ups were a third of the loop's wall clock; the slow set keeps polars' own threading, so it still shows the numbers do not
+depend on it. (3) `supply_chain.ours` prunes the venv as it walks instead of listing it and throwing it away (2.3 s a call).
+To see where a run's minutes go, add to `test/conftest.py` for one run a `pytest_runtest_logreport` hook that appends
+`MUTANT_UNDER_TEST`, the test's id, the phase (setup or call), its seconds and its outcome to a file outside the repository, and sum by test.
+
 A mutant reported in a file nobody touched, which the next run kills with nothing changed, was a race, not a survivor
 (J-055). The four workers kept their `tmp_path` folders under one `/tmp/pytest-of-<user>`; pytest's end-of-session cleanup
 of it raised `FileNotFoundError` out of `pytest.main` when another worker, starting, had just replaced its `pytest-current`

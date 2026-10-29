@@ -81,3 +81,4 @@ Written by `python3 -I scripts/journal_index.py` from `docs/journal/`; do not ed
 | J-075 | The context canary in CLAUDE.md (R-033) | decision | `J-071-080.md:92` |
 | J-076 | Step 3.1 (c): the 1-month reversal baseline on WIKI; 3.1 done | measurement | `J-071-080.md:102` |
 | J-077 | Step 3.2 (a): the tree's fit path, its hyperparameters ruled, one fit timed on the real data | decision | `J-071-080.md:126` |
+| J-078 | Step 3.2 (b)'s wiring; the feature table found on the wrong universe; the suite made cheaper | failure-caught | `J-071-080.md:148` |

@@ -25,6 +25,10 @@ those training rows' features and labels, never a test row, a date or a ticker.
 **Labels are handed in, not imported.** `baselines` may import `harness` and `universe` and not `targets`
 (docs/modules.json), so the caller passes `labels_for(horizon)`, `neonrain.targets.labels` with the market bound in,
 and the same `min_tickers` it used. Pure apart from what the caller's functions do (HAR-11).
+
+**Progress (TODO 3.2 b).** `evaluate` takes an optional `progress`, called as `progress(horizon, fold, folds)` once
+each time a (horizon, fold) is done, so a run of hours can say it is alive. It is told nothing of the data and changes
+no number; left out, nothing is called.
 """
 from collections.abc import Callable
 from typing import NamedTuple, Protocol
@@ -41,6 +45,12 @@ PERIOD_NAMES = (periods.SURVIVOR_ONLY, periods.FROM_BOUNDARY)
 GEOMETRY = {"embargo": split.EMBARGO, "step": split.STEP, "min_train": split.MIN_TRAIN}
 GROUP_SEED = 0  # HAR-05's default seed
 LEVELS = sorted({*portfolio.COST_LEVELS_BPS, portfolio.DEFAULT_COST_BPS})
+
+
+class Progress(Protocol):
+    """Told after each (horizon, fold) of a run is done: the horizon, the fold's number and how many folds there are."""
+
+    def __call__(self, horizon: int, fold: int, folds: int) -> None: ...
 
 
 class Labelled(Protocol):
@@ -186,26 +196,29 @@ def fitted_rows(market: Market, found: Labelled, groups: dict[str, int], run: Ru
 
 
 def evaluate_horizon(market: Market, found: Labelled, groups: dict[str, int], run: Run, horizon: int,
-                     fit: Fit | None = None) -> Horizon:
+                     fit: Fit | None = None, progress: Progress | None = None) -> Horizon:
     """One horizon's grid: every fold of HAR-03, in each period, by every held-out group of HAR-05."""
     rows_of = fixed_rows(market, found) if fit is None else fitted_rows(market, found, groups, run, horizon, fit)
     cells: dict[str, list[Cell]] = {period: [] for period in PERIOD_NAMES}
-    for fold in split.folds(len(market.calendar), **run.geometry):  # type: ignore[arg-type]
+    every = split.folds(len(market.calendar), **run.geometry)  # type: ignore[arg-type]
+    for fold in every:
         test, tested = rows_of(fold)
         prices = window_prices(market.prices, market.calendar, fold, horizon)
         for period in PERIOD_NAMES:
             there = in_period(period)
             cells[period] += period_cells(fold, test.filter(there), tested.filter(there), prices, groups,
                                           market.calendar, run, horizon)
+        if progress is not None:
+            progress(horizon, fold.number, len(every))
     return Horizon(horizon, found, cells)
 
 
-def evaluate(market: Market, labels_for: Callable[[int], Labelled], run: Run,
-             fit: Fit | None = None) -> dict[int, Horizon]:
+def evaluate(market: Market, labels_for: Callable[[int], Labelled], run: Run, fit: Fit | None = None,
+             progress: Progress | None = None) -> dict[int, Horizon]:
     """The run's grid at each of its horizons; `market.features` is the score frame (`scored_market`), or with a `fit`
-    the feature table, each model's scores made per cell."""
+    the feature table, each model's scores made per cell. `progress`, if given, is called after each (horizon, fold)."""
     groups = split.ticker_groups(market.features["ticker"].unique().to_list(), run.groups, run.group_seed)
-    return {h: evaluate_horizon(market, labels_for(h), groups, run, h, fit) for h in run.horizons}
+    return {h: evaluate_horizon(market, labels_for(h), groups, run, h, fit, progress) for h in run.horizons}
 
 
 def scalar_metrics() -> dict[str, Callable[[Cell], float | None]]:

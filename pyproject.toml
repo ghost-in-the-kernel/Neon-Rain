@@ -34,4 +34,4 @@ process_isolation = "forkserver"
 # R-024 (c): a mutant is one pytest.main, and the cache plugin wrote .pytest_cache in every one that failed (about 10 ms
 # of 45); nothing reads that cache under mutmut. Only the plugin is off: every test runs and every assertion holds.
 pytest_add_cli_args = ["-p", "no:cacheprovider"]
-also_copy = ["docs/", "data/", "harness/", "theGhost.md", "TODO.md", "CLAUDE.md", "README.md", "requirements.lock", "scripts/probe/", "scripts/fetch/", "scripts/metrics.py", "scripts/commit.sh", "scripts/commit_guard.py", "scripts/decisions_index.py", "scripts/journal_index.py", "scripts/next_id.py"]
+also_copy = ["docs/", "data/", "harness/", "theGhost.md", "TODO.md", "CLAUDE.md", "README.md", "requirements.lock", "scripts/probe/", "scripts/fetch/", "scripts/baseline_run.py", "scripts/metrics.py", "scripts/commit.sh", "scripts/commit_guard.py", "scripts/decisions_index.py", "scripts/journal_index.py", "scripts/next_id.py"]

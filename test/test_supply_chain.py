@@ -83,6 +83,27 @@ def test_worm_artefacts_inside_the_tools_folders_are_not_ours(tmp_path: Path, ro
     assert found == [".claude/setup.mjs is a known worm artefact: stop, change nothing, report it"]
 
 
+def test_a_skipped_folder_is_skipped_at_any_depth_and_a_folder_beside_it_is_not(tmp_path: Path, root: Path) -> None:
+    files = {"a/b/__pycache__/setup_bun.js": "", "a/.venv/Math_Symbol.js": "", "a/b/bun_environment.js": "",
+             "pycache/gh-token-monitor": ""}
+    found = supply_chain.problems(plant(tmp_path, root, files))
+    assert sorted(found) == [
+        "a/b/bun_environment.js is a known worm artefact: stop, change nothing, report it",
+        "pycache/gh-token-monitor is a known worm artefact: stop, change nothing, report it",
+    ]
+
+
+def test_ours_lists_every_file_but_a_directory_or_a_dangling_link(tmp_path: Path) -> None:
+    (tmp_path / "d" / "e").mkdir(parents=True)
+    (tmp_path / "d" / "e" / "f.txt").write_text("x")
+    (tmp_path / "g.txt").write_text("x")
+    (tmp_path / "dangling").symlink_to(tmp_path / "nowhere")
+    (tmp_path / "via").symlink_to(tmp_path / "g.txt")
+    (tmp_path / ".git").write_text("gitdir: elsewhere")  # a worktree's .git is a file; it is git's, so skipped like the folder
+    assert sorted(p.relative_to(tmp_path).as_posix() for p in supply_chain.ours(tmp_path)) == [
+        "d/e/f.txt", "g.txt", "via"]
+
+
 def test_hooks_in_local_settings_are_caught(tmp_path: Path, root: Path) -> None:
     found = supply_chain.problems(plant(tmp_path, root, {".claude/settings.local.json": '{"hooks": {}}'}))
     assert found == [".claude/settings.local.json has hooks"]
