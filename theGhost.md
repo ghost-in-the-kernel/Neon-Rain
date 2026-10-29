@@ -635,3 +635,19 @@ it is `in force`.
 - **Status:** in force
 - **See also:** R-002, R-026, R-030
 - **subject:** harness
+
+### R-033: The context canary: every reply starts with "Context Canary"
+- **Decision:** CLAUDE.md's Always section asks every agent to start every reply and every hand-back with the
+  words "Context Canary". A reply or hand-back without them is a sign that CLAUDE.md has slipped from the
+  agent's attention; the reviewer then reads that agent's work more closely. The line is not trimmed as noise
+  by a tithe.
+- **Why:** Ghost, 2026-10-29: "Add one line to your AGENT.md. Start every reply with a word, say, "Context
+  Canary". ... in long sessions it tells you when the agent has quietly stopped listening. Context canary goes
+  missing a turn or two before things start going sideways. Might be helpful with sonnet agents." It goes in
+  CLAUDE.md, the file every agent loads, not docs/AGENT.md (the metrics, read on demand). It shows whether the
+  file is still attended to, not whether it was understood.
+- **Held by:** CLAUDE.md (Always).
+- **Source:** Ghost, 2026-10-29.
+- **Status:** in force
+- **See also:** R-027, R-029, R-030
+- **subject:** agent environment

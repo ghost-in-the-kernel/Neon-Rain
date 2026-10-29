@@ -78,3 +78,4 @@ Written by `python3 -I scripts/journal_index.py` from `docs/journal/`; do not ed
 | J-072 | The fast loop over its target on a slower box: measured, shaved where it could be, re-based to 40 s (R-031) | decision | `J-071-080.md:27` |
 | J-073 | Step 3.1 (a)'s rulings applied, and the zero baseline repeated | decision | `J-071-080.md:46` |
 | J-074 | Step 3.1 (b): the 12-1 momentum baseline, run twice on WIKI; a test market built at import overran mutmut's CPU limit | failure-caught | `J-071-080.md:64` |
+| J-075 | The context canary in CLAUDE.md (R-033) | decision | `J-071-080.md:92` |
