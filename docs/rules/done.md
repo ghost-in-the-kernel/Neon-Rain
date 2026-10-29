@@ -15,6 +15,14 @@ run: (a) no function takes `*args` or `**kwargs` (`scripts/checks/readability.py
 (c) CLAUDE.md's "Files a routing row opens" metric counts every backticked path in a Start-here cell (a name with a slash or a dot, or one that exists in the repository; a bare word such as a key opens nothing), and a folder as its files, so a row stays at five or fewer; (d) ruff's ANN rules want type hints on every function,
 test functions included (`def test_x() -> None:`).
 
+Three traps of phase 3, met by agents running the gate (J-072, J-074, J-076): (e) a test module computes nothing at
+import (no synthetic market, scores or labels at module level): build it in a `@pytest.fixture(scope="module")`, since
+mutmut sets each mutant's CPU limit from test times, which leave out import, and a market built at import stalled the
+gate for hours (exit -24, J-074); (f) a new or changed test file is measured with `.venv/bin/pytest <file>
+--durations=0` before it is handed back, and its cost is said; (g) a process is stopped by its PID, never by a
+pattern (`pkill -f` matches the shell that runs it), and only one you started. The gate's line is found with
+`grep "^precommit:"`, never by the file's last line.
+
 An open question your work leaves, one a later item depends on (a contract not precise enough, a choice
 Ghost has not made), is written into that TODO item, its plan or its check, as well as the journal, so
 the agent who takes the item finds it there and not only in a journal entry (Ghost, 2026-10-27, J-066).
