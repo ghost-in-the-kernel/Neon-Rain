@@ -78,7 +78,7 @@ done (`runner.evaluate`'s optional `progress`); the three fixed-score baselines 
 `for_membership`), so they cannot drift again; the new index hash is in MANIFEST's `feature-table` row, and the
 `feature_market` guard passes on the rebuilt files. **Next:** Opus stores the 21 files in `neon-rain-artifacts` and
 fetches them into a fresh clone to compare; then the full run, about 3.3 hours in the background, all four
-horizons, after the final code and the gate. Until the files are stored, `feature_table.load` cannot fetch the table.
+horizons, after the final code and the gate. Until the files are stored, `feature_table.load` cannot fetch the table. **The run is resumable, horizon by horizon** (the first attempt died at horizon 21, fold 19 of 32, after 2 hours, with nothing written): `scripts/baseline_run.py tree <clone> <date> <progress log> <checkpoint dir> [--horizons 3,5,21,63]` saves each finished horizon in `neonrain/baselines/checkpoint.py`'s file (a zip of JSON, parquet and .npy, no pickle; atomic rename; named by the run's name, config hash and horizon) outside the repository, loads what is saved on the next start, and writes the lines only when all four are present; `--horizons` computes only those named and exits 0 with no line. Open: the config hash holds no code version, so a change to the runner or `tree.py` under unchanged hyperparameters keeps a checkpoint's name; delete the directory after such a change.
 Check: the tree trains on the feature table's sixteen features, one model per grid cell, with a
 hyperparameter set recorded once as a decision in `theGhost.md` and carried in the config hash
 (HAR-01), no search; its lines in `harness/trials.tsv` as 3.1's, both periods apart; the lock

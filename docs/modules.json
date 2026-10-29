@@ -119,6 +119,7 @@
     "neonrain.baselines.runner.scored_market",
     "neonrain.baselines.runner.evaluate",
     "neonrain.baselines.record.record",
+  "neonrain.baselines.checkpoint.resume",
     "neonrain.baselines.zero.scores",
     "neonrain.baselines.momentum.scores",
     "neonrain.baselines.reversal.scores",

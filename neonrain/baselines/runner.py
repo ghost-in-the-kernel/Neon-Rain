@@ -213,11 +213,16 @@ def evaluate_horizon(market: Market, found: Labelled, groups: dict[str, int], ru
     return Horizon(horizon, found, cells)
 
 
+def ticker_groups(market: Market, run: Run) -> dict[str, int]:
+    """HAR-05's ticker groups of the run's market: the same for every horizon of the run."""
+    return split.ticker_groups(market.features["ticker"].unique().to_list(), run.groups, run.group_seed)
+
+
 def evaluate(market: Market, labels_for: Callable[[int], Labelled], run: Run, fit: Fit | None = None,
              progress: Progress | None = None) -> dict[int, Horizon]:
     """The run's grid at each of its horizons; `market.features` is the score frame (`scored_market`), or with a `fit`
     the feature table, each model's scores made per cell. `progress`, if given, is called after each (horizon, fold)."""
-    groups = split.ticker_groups(market.features["ticker"].unique().to_list(), run.groups, run.group_seed)
+    groups = ticker_groups(market, run)
     return {h: evaluate_horizon(market, labels_for(h), groups, run, h, fit, progress) for h in run.horizons}
 
 

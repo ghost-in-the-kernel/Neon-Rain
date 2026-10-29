@@ -85,7 +85,8 @@ def test_the_tree_run_has_the_sixteen_features_and_the_set_of_r_034() -> None:
 def test_the_tree_is_named_apart_from_the_fixed_score_baselines() -> None:
     assert baseline_run.FITTED == "tree" and baseline_run.FITTED not in baseline_run.BASELINES
     assert list(baseline_run.BASELINES) == ["zero", "momentum", "reversal"]
-    assert "tree <neon-rain-data clone> <YYYY-MM-DD> <progress log>" in baseline_run.__doc__  # the usage line is true
+    usage = "tree <neon-rain-data clone> <YYYY-MM-DD> <progress log> <checkpoint dir> [--horizons 3,5,21,63]"
+    assert usage in baseline_run.__doc__  # the usage line is true
 
 
 def test_progress_is_told_once_for_each_horizon_and_fold(fixed: tuple, fitted: Calls) -> None:
@@ -133,10 +134,31 @@ def test_a_log_inside_the_repository_is_not_outside(tmp_path: Path) -> None:
 def test_the_command_line_refuses_misuse_before_it_reads_anything(tmp_path: Path) -> None:
     clone, day = str(tmp_path / "no-clone"), "2026-10-29"
     for argv in ([], ["nothing", clone, day], ["zero", clone], ["zero", clone, day, str(tmp_path / "x.log")],
-                 ["tree", clone, day], ["tree", clone, day, str(tmp_path / "x.log"), "extra"]):
+                 ["tree", clone, day], ["tree", clone, day, str(tmp_path / "x.log")],
+                 ["tree", clone, day, str(tmp_path / "x.log"), str(tmp_path / "saved"), "extra"],
+                 ["zero", clone, day, "--horizons", "3"], ["tree", clone, day, str(tmp_path / "x.log"), "--horizons", "3"],
+                 ["tree", clone, day, str(tmp_path / "x.log"), str(tmp_path / "saved"), "--horizons"],
+                 ["tree", clone, day, str(tmp_path / "x.log"), str(tmp_path / "saved"), "--horizons", "4"],
+                 ["tree", clone, day, str(tmp_path / "x.log"), str(tmp_path / "saved"), "--horizons", "3,x"]):
         assert baseline_run.main(argv) == 2
     inside = baseline_run.ROOT / "tree-progress-test.log"
-    assert baseline_run.main(["tree", clone, day, str(inside)]) == 2 and not inside.exists()
+    assert baseline_run.main(["tree", clone, day, str(inside), str(tmp_path / "saved")]) == 2 and not inside.exists()
+
+
+def test_a_checkpoint_directory_inside_the_repository_is_refused_and_not_made(tmp_path: Path) -> None:
+    clone, day, inside = str(tmp_path / "no-clone"), "2026-10-29", baseline_run.ROOT / "checkpoints-test"
+    assert baseline_run.main(["tree", clone, day, str(tmp_path / "x.log"), str(inside)]) == 2
+    assert baseline_run.main(["tree", clone, day, str(tmp_path / "x.log"), str(inside / ".." / "checkpoints-test")]) == 2
+    assert not inside.exists() and not (tmp_path / "x.log").exists()
+
+
+def test_horizons_are_read_out_of_the_arguments() -> None:
+    assert baseline_run.split_horizons(["tree", "a"]) == (["tree", "a"], None)
+    assert baseline_run.split_horizons(["tree", "--horizons", "21,3", "a"]) == (["tree", "a"], (21, 3))
+    assert baseline_run.split_horizons(["tree", "a", "--horizons", "63"]) == (["tree", "a"], (63,))
+    for bad in (["--horizons"], ["--horizons", "7"], ["--horizons", ""]):
+        with pytest.raises(ValueError):
+            baseline_run.split_horizons(bad)
 
 
 def test_the_feature_market_is_the_feature_table_cut_to_the_sessions(market: synthetic.Market) -> None:
