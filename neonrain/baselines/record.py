@@ -45,7 +45,7 @@ def config_hash(run: Run, period: str) -> str:
         target={"horizons": list(run.horizons), "min_tickers": run.min_tickers},
         split=split_config,
         cost={"levels_bps": list(portfolio.COST_LEVELS_BPS), "default_bps": portfolio.DEFAULT_COST_BPS},
-        model_name=run.name, hyperparameters={}, data_manifest=run.data_manifest)
+        model_name=run.name, hyperparameters=run.hyperparameters, data_manifest=run.data_manifest)
 
 
 def count_note(period: str, part: Horizon, cells: list[Cell]) -> str:

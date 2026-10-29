@@ -651,3 +651,23 @@ it is `in force`.
 - **Status:** in force
 - **See also:** R-027, R-029, R-030
 - **subject:** agent environment
+
+### R-034: The tree baseline's hyperparameters, fixed and chosen blind
+- **Decision:** The LightGBM baseline (TODO 3.2) uses one set, `tree.HYPERPARAMETERS`: objective binary,
+  learning_rate 0.05, num_boost_round 200, num_leaves 31, min_data_in_leaf 1000, feature_fraction 0.8,
+  bagging_fraction 0.5, bagging_freq 1, lambda_l2 10.0, seed 0, deterministic True, force_row_wise True,
+  num_threads 4, verbose -1. Every other parameter is LightGBM 4.7.0's default, as pinned by requirements.lock.
+  No validation set, no early stopping: the round count is fixed. The thread count is in the config hash because
+  the histogram sum's order moves the last bits. The label is HAR-02's `direction` with tie rows left out of
+  training; a feature row with every feature null is scored (its missing-value leaf is the model's, not the
+  runner's choice). One model per (horizon, fold, held-out group), trained on the other groups (HAR-05).
+- **Why:** The set was proposed before any score was seen; the one real fit measured cost, not a metric. A blind,
+  fixed set is one configuration, one trial (HAR-09); amending it after a look, or early stopping on a validation
+  set, would be a search. Each value is conventional regularisation for noisy daily labels. A rank regression
+  would be a second baseline with its own hash. The full run (about 3.3 hours, 640 fits) is run as is: cutting
+  rounds for cost would give a weaker baseline under another hash, and the run costs wall time, not attention.
+- **Held by:** `neonrain/baselines/tree.py`; `test/test_tree.py` (the set pinned); the config hash (HAR-01).
+- **Source:** proposed by a Claude Sonnet agent; ruled by Claude Fable, 2026-10-29, under R-030 (nothing to Ghost); J-077.
+- **Status:** in force
+- **See also:** R-007, R-030, R-032
+- **subject:** baselines

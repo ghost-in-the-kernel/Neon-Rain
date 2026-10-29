@@ -64,6 +64,14 @@ DSR is excepted from HAR-01's conflict rule. Task (b) is built (`neonrain/baseli
 Plan: ROADMAP 3.2. The hyperparameters are a decision in `theGhost.md` (take its id from
 `scripts/next_id.py decision`) and sit in the config hash's `model.hyperparameters` (HAR-01).
 LightGBM 4.7.0 is in `requirements.lock`: no dependency changes.
+Step (a) is built: the runner's per-cell fit (`runner.Fit`, `fitted_rows`: one model for each horizon, fold and
+held-out group, trained on `split.cell`'s purged rows of the other groups, scoring every feature row of the held-out
+group's test span; a fold's two periods share its model; the fixed-score path is untouched), `neonrain/baselines/tree.py`
+with the hyperparameters of R-034 (ruled by Claude Fable: chosen blind, fixed 200 rounds, no early stopping; labels are
+`direction` with ties out; a row with every feature null is scored), `test/test_tree.py`, and one timed real fit with no
+trials line (J-077). Step (b): the `scripts/baseline_run.py tree` entry (the feature table from the artifact store,
+verified by hash) and the full run, about 3.3 hours in the background, all four horizons, after the final code and the
+gate, logging each (horizon, fold) to a scratchpad file.
 Check: the tree trains on the feature table's sixteen features, one model per grid cell, with a
 hyperparameter set recorded once as a decision in `theGhost.md` and carried in the config hash
 (HAR-01), no search; its lines in `harness/trials.tsv` as 3.1's, both periods apart; the lock

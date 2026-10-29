@@ -120,7 +120,8 @@
     "neonrain.baselines.record.record",
     "neonrain.baselines.zero.scores",
     "neonrain.baselines.momentum.scores",
-    "neonrain.baselines.reversal.scores"
+    "neonrain.baselines.reversal.scores",
+    "neonrain.baselines.tree.fit"
    ]
   },
   "models": {

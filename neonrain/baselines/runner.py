@@ -14,6 +14,14 @@ test span crosses the boundary is a cell in both periods, each with its own date
 is no cell there. Training is never cut by period, and a baseline with no model trains on nothing. A sleeve opened
 on the period's last test date runs on past the boundary (HAR-07), so a period's portfolio can hold days of the other.
 
+**A baseline with a model (TODO 3.2 a).** Given a `Fit`, the market's features are the feature table (not a score
+frame) and the runner fits one model for each (horizon, fold, held-out group): the rows are HAR-05's, from
+`split.cell`: the fold's purged training rows of the other four groups (HAR-03), labelled with HAR-02's `direction`
+(a tie has none and is left out), and the model scores every feature row of the held-out group's test span. A
+fold's two periods share its model, since training is never cut by period. The scores then go through the same cells
+as a fixed score frame's, so the metrics, the portfolio and the lines are the harness's alike. A `Fit` sees only
+those training rows' features and labels, never a test row, a date or a ticker.
+
 **Labels are handed in, not imported.** `baselines` may import `harness` and `universe` and not `targets`
 (docs/modules.json), so the caller passes `labels_for(horizon)`, `neonrain.targets.labels` with the market bound in,
 and the same `min_tickers` it used. Pure apart from what the caller's functions do (HAR-11).
@@ -45,6 +53,19 @@ class Labelled(Protocol):
     delisting_ends: int
 
 
+class Scorer(Protocol):
+    """A fitted model: the features of some rows (the run's columns, sorted by name) to one score each, in [0, 1]."""
+
+    def __call__(self, features: pl.DataFrame) -> np.ndarray: ...
+
+
+class Fit(Protocol):
+    """A model baseline: the training rows' features (the run's columns, sorted by name) and their direction labels
+    (1 up, 0 down) to a fitted `Scorer`. Given the same rows it must give the same scores (HAR-01)."""
+
+    def __call__(self, features: pl.DataFrame, direction: np.ndarray) -> Scorer: ...
+
+
 class Run(NamedTuple):
     """What a run is, apart from its data: all of it goes into the config hash (HAR-01)."""
 
@@ -56,6 +77,7 @@ class Run(NamedTuple):
     groups: int = split.GROUPS
     min_tickers: int = metrics.MIN_TICKERS
     horizons: tuple[int, ...] = split.HORIZONS
+    hyperparameters: dict[str, object] = {}
 
 
 class Cell(NamedTuple):
@@ -124,13 +146,52 @@ def period_cells(fold: split.Fold, test: pl.DataFrame, tested: pl.DataFrame, pri
     return found
 
 
-def evaluate_horizon(market: Market, found: Labelled, groups: dict[str, int], run: Run, horizon: int) -> Horizon:
-    """One horizon's grid: every fold of HAR-03, in each period, by every held-out group of HAR-05."""
+def fixed_rows(market: Market, found: Labelled) -> Callable[[split.Fold], tuple[pl.DataFrame, pl.DataFrame]]:
+    """A fold's test rows (labelled and scored) and every scored row of its test span, from the market's score frame."""
     scores = market.features.select(*KEYS, "score")
     rows = found.frame.join(scores, on=KEYS)
+    return lambda fold: (split.testing(rows, fold, market.calendar), split.testing(scores, fold, market.calendar))
+
+
+# Decision: HAR-05 (a model is trained on the fold's purged rows of the other groups and scores the held-out group)
+def fitted_scores(features: pl.DataFrame, labelled: pl.DataFrame, groups: dict[str, int], run: Run, horizon: int,
+                  fold: split.Fold, calendar: list, fit: Fit) -> pl.DataFrame:
+    """ticker, date, score for the fold's test span: each group scored by a model fitted on `split.cell`'s training
+    rows (the other groups', purged for `horizon`). A group with no feature row in the span is not fitted."""
+    names = sorted(run.feature_columns)
+    test = split.testing(features, fold, calendar)
+    found = []
+    for group in range(run.groups):
+        mine = test.filter(pl.col("ticker").is_in([name for name, number in groups.items() if number == group]))
+        if mine.height:
+            train, _ = split.cell(labelled, fold, calendar, horizon, groups, group)
+            score = fit(train.select(names), train["direction"].to_numpy())(mine.select(names))
+            if score.shape != (mine.height,) or not (score >= 0.0).all() or not (score <= 1.0).all():
+                raise ValueError(f"fold {fold.number}, group {group}: the scores are not one per row in [0, 1]")
+            found.append(mine.select(KEYS).with_columns(score=pl.Series(score, dtype=pl.Float64)))
+    empty = pl.DataFrame(schema={"ticker": pl.String, "date": pl.Date, "score": pl.Float64})
+    return pl.concat([empty, *found]).sort(KEYS)
+
+
+def fitted_rows(market: Market, found: Labelled, groups: dict[str, int], run: Run, horizon: int,
+                fit: Fit) -> Callable[[split.Fold], tuple[pl.DataFrame, pl.DataFrame]]:
+    """A fold's test rows and scored rows, scored by the models `fit` gives, one per group, as `fitted_scores`."""
+    features = market.features.select(*KEYS, *sorted(run.feature_columns))
+    labelled = found.frame.filter(pl.col("direction").is_not_null()).select(*KEYS, "direction").join(features, on=KEYS)
+
+    def rows(fold: split.Fold) -> tuple[pl.DataFrame, pl.DataFrame]:
+        tested = fitted_scores(features, labelled, groups, run, horizon, fold, market.calendar, fit)
+        return split.testing(found.frame, fold, market.calendar).join(tested, on=KEYS).sort(KEYS), tested
+    return rows
+
+
+def evaluate_horizon(market: Market, found: Labelled, groups: dict[str, int], run: Run, horizon: int,
+                     fit: Fit | None = None) -> Horizon:
+    """One horizon's grid: every fold of HAR-03, in each period, by every held-out group of HAR-05."""
+    rows_of = fixed_rows(market, found) if fit is None else fitted_rows(market, found, groups, run, horizon, fit)
     cells: dict[str, list[Cell]] = {period: [] for period in PERIOD_NAMES}
     for fold in split.folds(len(market.calendar), **run.geometry):  # type: ignore[arg-type]
-        test, tested = split.testing(rows, fold, market.calendar), split.testing(scores, fold, market.calendar)
+        test, tested = rows_of(fold)
         prices = window_prices(market.prices, market.calendar, fold, horizon)
         for period in PERIOD_NAMES:
             there = in_period(period)
@@ -139,10 +200,12 @@ def evaluate_horizon(market: Market, found: Labelled, groups: dict[str, int], ru
     return Horizon(horizon, found, cells)
 
 
-def evaluate(market: Market, labels_for: Callable[[int], Labelled], run: Run) -> dict[int, Horizon]:
-    """The run's grid at each of its horizons; `market.features` is the score frame (`scored_market`)."""
+def evaluate(market: Market, labels_for: Callable[[int], Labelled], run: Run,
+             fit: Fit | None = None) -> dict[int, Horizon]:
+    """The run's grid at each of its horizons; `market.features` is the score frame (`scored_market`), or with a `fit`
+    the feature table, each model's scores made per cell."""
     groups = split.ticker_groups(market.features["ticker"].unique().to_list(), run.groups, run.group_seed)
-    return {h: evaluate_horizon(market, labels_for(h), groups, run, h) for h in run.horizons}
+    return {h: evaluate_horizon(market, labels_for(h), groups, run, h, fit) for h in run.horizons}
 
 
 def scalar_metrics() -> dict[str, Callable[[Cell], float | None]]:

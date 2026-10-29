@@ -37,7 +37,7 @@ apart. Add a term before using a new word for a concept (Katana R-039's rule).
 | **dispersion** | the spread of a metric across folds and across groups: standard deviation and range | variance (a statistic, not the report), error bars |
 | **trials line** | one row of `harness/trials.tsv` for one harness run (R-005) | run log, experiment |
 | **baseline** | one of the fixed comparators of R-007: zero, momentum, reversal, tree | benchmark (Ghost's word for a horizon; avoided for this), control |
-| **tree** | the LightGBM baseline | GBM, booster |
+| **tree** | the LightGBM baseline of R-007 (TODO 3.2): a gradient-boosted classifier of the direction label on the feature table's sixteen features, one model fitted for each grid cell on the other groups' purged training rows (HAR-03, HAR-05); its score is the model's probability of an up label, from a fixed hyperparameter set carried in the config hash (HAR-01) | GBM, booster |
 | **network** | the one neural model of R-009 | model (alone: ambiguous with the scorer), `NN`, net |
 | **scorer** | the pinned Haiku reader that writes the news ledger (R-008) | sentiment model, agent, classifier |
 | **score** | the scorer's 1–10 bullish/bearish value for one story and one ticker | sentiment, polarity, rating |

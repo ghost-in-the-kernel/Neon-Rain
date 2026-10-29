@@ -37,3 +37,4 @@ Written by `python3 -I scripts/decisions_index.py` from `theGhost.md`; do not ed
 | R-031 | The fast loop's target re-based to 40 s | in force | agent environment |
 | R-032 | Results by period, the DSR line outside the conflict rule, and V defined exactly | in force | harness |
 | R-033 | The context canary: every reply starts with "Context Canary" | in force | agent environment |
+| R-034 | The tree baseline's hyperparameters, fixed and chosen blind | in force | baselines |
