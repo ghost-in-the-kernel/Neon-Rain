@@ -48,13 +48,14 @@ glossary term and a stamped signal from the verified prices (HAR-12), through th
 the same lines. Three tasks, (a) first; no number reaches `docs/RESULTS.md` before 3.3.
 
 Task (a) is built (`neonrain/baselines/`, `scripts/baseline_run.py`; the zero baseline's lines are in
-`harness/trials.tsv`). Fable ruled on five questions (decision R-032, to be written by Opus); provisional in the code until then: (1) folds are HAR-03's on the whole
-calendar and a period selects test dates, a straddling fold being a cell in both (HARNESS.md is silent); (2) the
-period is in the config hash's `split` since trials.tsv has no period column; (3) `baselines` may not import `targets`
-(modules.json), so the caller hands in the labels; (4) a constant score still gets a portfolio (ties order by ticker),
-so zero's Sharpe is defined, not undefined as this item expected (ruled: reported as the harness computes it, NR-F-10);
-(5) the DSR's V is taken from the Sharpe_10bps lines in the file (HAR-07, HAR-09), and a rerun of the same config marks
-no line: the DSR is excepted from HAR-01's conflict rule.
+`harness/trials.tsv`). Fable's five rulings are in decision R-032: (1) folds are HAR-03's on the whole
+calendar and a period selects test dates, a straddling fold being a cell in both; (2) the period is in the config
+hash's `split` since trials.tsv has no period column; (3) `baselines` may not import `targets` (modules.json), so
+the caller hands in the labels; (4) a constant score still gets a portfolio (ties order by ticker), so zero's Sharpe
+is defined, not undefined as this item expected (reported as the harness computes it, NR-F-10); (5) the DSR's V is
+taken from the Sharpe_10bps lines in the file (HAR-07, HAR-09), and a rerun of the same config marks no line: the
+DSR is excepted from HAR-01's conflict rule. Task (b) is built (`neonrain/baselines/momentum.py`, glossary term
+**momentum**, `scripts/baseline_run.py momentum`); task (c) is next.
 
 ### 3.2 LightGBM
 

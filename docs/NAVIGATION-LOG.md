@@ -26,3 +26,9 @@ Last review: 95b090d (2026-10-27, tithe pass 2, J-069: two debriefs and phase 2'
 - **Opened:** CLAUDE.md, docs/rules/done.md, neonrain/baselines/{record,runner}.py, neonrain/harness/trials.py, docs/HARNESS.md (HAR-01, 03, 07, 09, 14), test/test_the_freeze.py, test/test_baselines.py, test/test_trials.py, docs/FINDINGS.md, TODO.md, docs/ROADMAP.md
 - **Complaints:** the routing table has no row for "a ruled change to the frozen harness": HAR-14 says a decision, but which tests catch a change (goldens.py, test_the_freeze.py) was found by reading. The ROADMAP check text and TODO's check text are copies kept by hand, and nothing says so.
 - **Suggestions:** in the "The goldens" row, a clause: a harness change that moves no golden is shown by `scripts/goldens.py` ("identical").
+
+### 2026-10-28 3.1 (b) momentum (Claude Sonnet)
+- **Task:** 3.1 (b), the 12-1 momentum baseline through the runner, its glossary term, its real run
+- **Opened:** CLAUDE.md, TODO.md (3.1), neonrain/baselines/{zero,runner,record}.py, scripts/baseline_run.py, neonrain/universe/prices.py, neonrain/features/{returns,common}.py, neonrain/harness/{market,metrics,goldens}.py, docs/GLOSSARY.md, docs/modules.json, test/test_baselines.py, test/test_glossary.py, theGhost.md (R-032)
+- **Complaints:** which range a score may take (rank fraction 0 to 1, 0.5 = predicts excess 0) is in no document; it was found by reading `metrics.predictions` and `goldens.edge_scores`. Whether a baseline's prices may be the cut frame (the script cuts it at the universe's first date) or the whole one is nowhere said; a lookback signal needs the whole.
+- **Suggestions:** a sentence in the "A baseline" row or HARNESS.md: a score is read as P(up) with 0.5 the median, and a signal that looks back must be given the uncut prices.

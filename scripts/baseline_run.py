@@ -1,6 +1,6 @@
 """Run a baseline through the runner on the real WIKI data and append its trials lines (TODO 3.1; R-007, R-026).
 
-    PYTHONPATH=. python scripts/baseline_run.py zero <neon-rain-data clone> <YYYY-MM-DD>
+    PYTHONPATH=. python scripts/baseline_run.py zero|momentum <neon-rain-data clone> <YYYY-MM-DD>
 
 The date is the run's date for harness/trials.tsv (the clock is read nowhere in neonrain/, MOD-05). Loads the prices
 through `prices.load` (refused unless every hash checks), ranks the universe (membership), cuts the calendar to the
@@ -15,11 +15,11 @@ from functools import partial
 from pathlib import Path
 
 from neonrain import targets
-from neonrain.baselines import record, runner, zero
+from neonrain.baselines import momentum, record, runner, zero
 from neonrain.universe import calendar, membership, prices, verified
 
 ROOT = Path(__file__).resolve().parents[1]
-BASELINES = {zero.NAME: zero.scores}
+BASELINES = {zero.NAME: lambda prices, members, every: zero.scores(members), momentum.NAME: momentum.scores}
 
 
 def stage(name: str, started: float) -> float:
@@ -44,7 +44,7 @@ def main(argv: list[str]) -> int:
     now = stage("universe", now)
     sessions = [d for d in every if members["date"].min() <= d <= loaded.prices["date"].max()]
     frame = loaded.prices.filter(loaded.prices["date"].is_between(sessions[0], sessions[-1]))
-    market = runner.scored_market(frame, members, sessions, BASELINES[argv[0]](members))
+    market = runner.scored_market(frame, members, sessions, BASELINES[argv[0]](loaded.prices, members, every))
     now = stage(f"market ({len(sessions)} sessions {sessions[0]} to {sessions[-1]}, {members.height} universe cells)", now)
     run = runner.Run(argv[0], [], {prices.DATASET: verified.manifest_hash(manifest, prices.DATASET)})
     labels_for = partial(targets.labels, frame, members, sessions, min_tickers=run.min_tickers)

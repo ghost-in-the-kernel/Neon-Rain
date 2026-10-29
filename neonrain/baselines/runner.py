@@ -4,6 +4,8 @@ Given prices, the universe, the calendar and a score for each cell (ticker, date
 HAR-02's labels (handed in, see below), HAR-03's folds, HAR-05's ticker groups, HAR-07's metrics, the portfolio at the
 three costs of HAR-06 and R-021, and keeps every (fold, group) cell, so HAR-08's dispersion can be read off any metric.
 It reimplements nothing of the harness: every number is a call into `neonrain.harness`.
+A signal that looks back is computed on the uncut prices; the runner is given the prices cut at the universe's
+first date (`scripts/baseline_run.py`). The stamp check (HAR-12) holds what a score claims, not what it read.
 
 **How folds fall within a period (R-026).** The folds are HAR-03's, laid on the whole calendar and the same for all
 four horizons and both periods (J-015). A period is then a selection of test dates: a cell's test rows, and the rows its
