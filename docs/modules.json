@@ -48,7 +48,8 @@
     "neonrain.universe.periods.wiki_period",
     "neonrain.universe.verified.read_verified",
     "neonrain.universe.prices.load",
-    "neonrain.universe.prices.for_membership"
+    "neonrain.universe.prices.for_membership",
+    "neonrain.universe.prices.universe"
    ]
   },
   "features": {

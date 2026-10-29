@@ -73,12 +73,12 @@ trials line (J-077). Step (b), the wiring, is built: `scripts/baseline_run.py tr
 loads the feature table from the artifact store (`feature_table.load`: the index by the manifest row's hash, each year by
 the index's, `verified.read_verified` before a byte is parsed), takes the sixteen feature names from `table.columns()`
 (`feature_table.feature_names`), and appends one line to the log (never inside the repository) as each (horizon, fold) is
-done (`runner.evaluate`'s optional `progress`); the three fixed-score baselines are unchanged. **Open before the run
-starts:** the stored feature table's universe is not the baselines' (it was built by `feature_table.build` with
-`membership.universe(prices)` on the adjusted close and volume, where `baseline_run.py` ranks the raw ones through
-`prices.for_membership`: 141,655 of 4,934,000 cells differ), and `feature_market` refuses it. The run needs a ruling:
-rebuild the table with `for_membership` (a new hash in MANIFEST) or run the tree on the table's own universe. Next is
-the full run, about 3.3 hours in the background, all four horizons, after the final code and the gate.
+done (`runner.evaluate`'s optional `progress`); the three fixed-score baselines are unchanged. **The feature table is rebuilt** on the baselines' universe (J-079): `prices.universe`, one function
+`feature_table.build`, `baseline_run.py` and the wiki_normalize probe all call (raw close and volume through
+`for_membership`), so they cannot drift again; the new index hash is in MANIFEST's `feature-table` row, and the
+`feature_market` guard passes on the rebuilt files. **Next:** Opus stores the 21 files in `neon-rain-artifacts` and
+fetches them into a fresh clone to compare; then the full run, about 3.3 hours in the background, all four
+horizons, after the final code and the gate. Until the files are stored, `feature_table.load` cannot fetch the table.
 Check: the tree trains on the feature table's sixteen features, one model per grid cell, with a
 hyperparameter set recorded once as a decision in `theGhost.md` and carried in the config hash
 (HAR-01), no search; its lines in `harness/trials.tsv` as 3.1's, both periods apart; the lock

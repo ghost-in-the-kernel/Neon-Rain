@@ -1,7 +1,7 @@
 """The feature table as yearly parquet files and an index (TODO 2.5, R-006, R-016).
 
 Loads WIKI's prices from the data repository's clone through `prices.load` (every file hash-checked against the index
-and the manifest row `wiki-prices` before a byte is parsed), builds the universe (`membership.universe`) and the table
+and the manifest row `wiki-prices` before a byte is parsed), builds the universe (`prices.universe`, ranked on the raw close and volume as the baselines do) and the table
 (`table.feature_table`), and writes `<year>.parquet` for each year the table has rows, each under 100 MB, and
 `index.tsv` (`year<TAB>file<TAB>sha256`, the dataset layout of `verified`). The SHA-256 of that index is the hash the
 manifest row `feature-table` carries; the files are stored in the artifact store by their own hashes
@@ -24,7 +24,7 @@ from pathlib import Path
 import polars as pl
 
 from neonrain.features import returns, table
-from neonrain.universe import calendar, membership, prices, verified
+from neonrain.universe import calendar, prices, verified
 from scripts.fetch import artifacts, wiki
 
 DATASET = "feature-table"
@@ -61,7 +61,7 @@ def build(clone: Path, manifest: str, out: Path) -> str:
     """The table of the data clone's verified prices written to `out`; the index's SHA-256, for the manifest row."""
     sessions = calendar.sessions(FIRST_YEAR, LAST_YEAR)
     loaded = prices.load(clone / "wiki" / "prices", manifest, sessions)
-    members = membership.universe(loaded.prices, sessions)
+    members = prices.universe(loaded.prices, sessions)
     write_years(table.feature_table(loaded.prices, sessions, members), out)
     return artifacts.sha256_of(out / "index.tsv")
 

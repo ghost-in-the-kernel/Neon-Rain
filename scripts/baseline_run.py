@@ -27,7 +27,7 @@ import polars as pl
 from neonrain import targets
 from neonrain.baselines import momentum, record, reversal, runner, tree, zero
 from neonrain.harness.market import Market, check_market
-from neonrain.universe import calendar, membership, prices, verified
+from neonrain.universe import calendar, prices, verified
 from scripts.fetch import artifacts, feature_table
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -98,7 +98,7 @@ def main(argv: list[str]) -> int:
     every = calendar.sessions(1998, 2017)
     loaded = prices.load(Path(argv[1]) / "wiki" / "prices", manifest, every)
     now = stage("load prices", now)
-    members = membership.universe(prices.for_membership(loaded.prices), every)
+    members = prices.universe(loaded.prices, every)
     now = stage("universe", now)
     sessions = [d for d in every if members["date"].min() <= d <= loaded.prices["date"].max()]
     frame = loaded.prices.filter(loaded.prices["date"].is_between(sessions[0], sessions[-1]))

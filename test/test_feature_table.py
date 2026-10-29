@@ -10,7 +10,7 @@ import polars as pl
 import pytest
 
 from neonrain.features import table
-from neonrain.universe import calendar, prices, verified
+from neonrain.universe import calendar, membership, prices, verified
 from scripts.fetch import artifacts, feature_table, wiki
 
 SESSIONS = calendar.sessions(1998, 1999)[150:330]
@@ -34,10 +34,11 @@ def export() -> pl.DataFrame:
     )
 
 
-def invented_clone(root: Path) -> tuple[Path, str]:
-    """A data clone under `root` holding invented `wiki/prices` and the manifest text that carries its index hash."""
+def invented_clone(root: Path, rows: pl.DataFrame | None = None) -> tuple[Path, str]:
+    """A data clone under `root` holding invented `wiki/prices` (`rows`, else `export()`) and the manifest text that
+    carries its index hash."""
     folder = root / "data" / "wiki" / "prices"
-    wiki.write_years(export().lazy(), folder)
+    wiki.write_years((export() if rows is None else rows).lazy(), folder)
     digest = artifacts.sha256_of(folder / "index.tsv")
     return root / "data", f"| wiki-prices | s | l | f | r | sha256 {digest} (of index.tsv) |\n"
 
@@ -73,6 +74,40 @@ def test_the_same_input_gives_the_same_bytes(built: tuple[Path, str], clone: tup
     assert first == second
     for name in ("1998.parquet", "1999.parquet", "index.tsv"):
         assert (built[0] / name).read_bytes() == (tmp_path / "b" / name).read_bytes()
+
+
+def dividend_export() -> pl.DataFrame:
+    """Four tickers where the raw and the adjusted dollar volume rank differently: A and B trade big on the raw close
+    (50 against 10) but a dividend history adjusts their close to 1% of it, and the adjusted volume is the raw one."""
+    big = {"A", "B"}
+    rows = []
+    for ticker in ("A", "B", "C", "D"):
+        for i, day in enumerate(SESSIONS):
+            close = (50.0 if ticker in big else 10.0) * (1 + 0.001 * ((i + ord(ticker)) % 5))
+            volume = 1e4 if ticker in big else 1e3
+            adjusted = close * (0.01 if ticker in big else 1.0)
+            rows.append((ticker, day, close, volume, adjusted))
+    frame = pl.DataFrame(rows, schema=["ticker", "date", "close", "volume", "adj"], orient="row")
+    return frame.select(
+        "ticker", "date",
+        *[{"close": pl.col("close"), "volume": pl.col("volume")}.get(
+            name, pl.col("adj") if name.startswith("adj_") and name != "adj_volume" else pl.col("volume") if name == "adj_volume"
+            else pl.col("close") if name in ("open", "high", "low") else pl.lit(1.0)).cast(pl.Float64).alias(name)
+          for name in prices.EXPORT if name not in ("ticker", "date")],
+    )
+
+
+def test_the_universe_is_ranked_on_the_raw_close_and_volume_as_the_baselines_do(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr(membership, "UNIVERSE_SIZE", 2)
+    data, manifest = invented_clone(tmp_path, dividend_export())
+    feature_table.build(data, manifest, tmp_path / "out")
+    cells = pl.concat([pl.read_parquet(path) for path in sorted((tmp_path / "out").glob("*.parquet"))]).select("ticker", "date")
+    loaded = prices.load(data / "wiki" / "prices", manifest, calendar.sessions(1998, 2017))
+    raw = membership.universe(prices.for_membership(loaded.prices), calendar.sessions(1998, 2017))
+    adjusted = membership.universe(loaded.prices, calendar.sessions(1998, 2017))
+    assert not raw.equals(adjusted)  # the two rankings really differ here: the test could fail
+    assert sorted(raw["ticker"].unique().to_list()) == ["A", "B"]
+    assert cells.sort("ticker", "date").equals(raw.sort("ticker", "date"))
 
 
 def test_the_files_hold_the_table_in_order(built: tuple[Path, str]) -> None:

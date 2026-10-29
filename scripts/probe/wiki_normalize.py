@@ -15,7 +15,7 @@ import polars as pl
 
 from neonrain.features import normalize, returns, volume
 from neonrain.harness import market
-from neonrain.universe import calendar, membership, prices
+from neonrain.universe import calendar, prices
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -28,7 +28,7 @@ def main(argv: list[str]) -> int:
     sessions = calendar.sessions(1998, 2017)
     try:
         loaded = prices.load(Path(argv[0]) / "wiki" / "prices", (ROOT / "data" / "MANIFEST.md").read_text(), sessions)
-        members = membership.universe(loaded.prices, sessions)
+        members = prices.universe(loaded.prices, sessions)
         print(f"universe cells: {members.height}; dates: {members['date'].n_unique()}")
         for label, frame in (("returns", returns.returns(loaded.prices, sessions)), ("volume", volume.volume_ratios(loaded.prices, sessions))):
             result = normalize.normalize(frame, members)

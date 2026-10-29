@@ -57,3 +57,9 @@ Last review: 95b090d (2026-10-27, tithe pass 2, J-069: two debriefs and phase 2'
 - **Complaints:** nothing says where a mutation run's minutes go: mutmut's stats time only a test's call, so a fixture-heavy test looks free and runs first; I found it by logging every mutant's tests from a temporary hook in conftest. The lead's figures of 7 s for `test_readability` and `test_modules` are the stats run under coverage tracing (0.3 s and 0.2 s in the loop). The scratchpad is shared across sessions and full of earlier sessions' files.
 - **Suggestions:** MUTATION.md now says how to see per-mutant tests (the probe above, one `pytest_runtest_logreport` hook writing the mutant name and the test) and that stats durations exclude setup. A routing hint in the "surviving mutant, slower check" row: `test/conftest.py` holds the order and the thread knobs.
 
+
+### 2026-10-29 the feature table rebuilt on the raw universe (Claude Sonnet)
+- **Task:** fix `feature_table.build`'s universe, a test that fails on the old line, rebuild, new hash in MANIFEST
+- **Opened:** CLAUDE.md, docs/rules/done.md, J-078 and J-068, scripts/fetch/feature_table.py, neonrain/universe/{prices,membership}.py, scripts/baseline_run.py, data/MANIFEST.md, test/test_feature_table.py, test/test_prices.py, docs/modules.json
+- **Complaints:** nothing says that membership is meant to be called only through `prices.for_membership`; `scripts/probe/wiki_normalize.py` had the same defect and only a grep for `membership.universe` found it. The scratch location for a rebuild (outside both repositories) is in the script's docstring only.
+- **Suggestions:** MANIFEST's `feature-table` row could say the universe it was built on; `membership.universe`'s docstring could point at `prices.universe`.

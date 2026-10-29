@@ -27,7 +27,7 @@ from typing import NamedTuple
 
 import polars as pl
 
-from neonrain.universe import verified
+from neonrain.universe import membership, verified
 
 DATASET = "wiki-prices"  # the manifest row whose hash is the index's
 EXPORT: dict[str, pl.DataType | type[pl.DataType]] = {
@@ -89,3 +89,10 @@ def load(folder: Path, manifest: str, sessions: list[date], years: list[int] | N
 def for_membership(prices: pl.DataFrame) -> pl.DataFrame:
     """The frame `membership` reads: ticker, date, and the raw close and volume under the names `close` and `volume`."""
     return prices.select("ticker", "date", close=pl.col("raw_close"), volume=pl.col("raw_volume"))
+
+
+# Decision: J-078: the universe is ranked on the raw close and volume (`for_membership`), by this one function; the
+# feature table and the baselines both call it, so they cannot rank on different prices again.
+def universe(prices: pl.DataFrame, sessions: list[date]) -> pl.DataFrame:
+    """The universe of a loaded price frame: `membership.universe` of `for_membership(prices)`, the contract's ranking."""
+    return membership.universe(for_membership(prices), sessions)
