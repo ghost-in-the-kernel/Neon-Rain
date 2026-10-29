@@ -34,7 +34,7 @@ at the plan.
 | A feature family (phase 2) | `docs/modules.json` (`features`), `neonrain/features/returns.py` (the example: one file a family; features cannot import harness), `neonrain/features/common.py` (the shared helpers), `neonrain/harness/market.py` (the stamps) | HAR-12, MOD-04; `docs/GLOSSARY.md` (its term first) | one unit test per feature |
 | The goldens: the freeze, a harness change | `neonrain/harness/goldens.py`, `scripts/goldens.py` | HAR-14, R-002 | `test/test_golden_files.py`, `test/test_the_freeze.py` |
 | A measurement through the frozen harness (a probe of the harness, not a trial, HAR-09) | `scripts/probe/survivorship.py` (the model; run with `PYTHONPATH=.`), `test/test_survivorship_probe.py` | NR-F-09, HAR-09 | its own test |
-| A baseline | `neonrain/baselines/` (phase 3) | R-007 | `harness/goldens/` |
+| A baseline | `neonrain/baselines/momentum.py` (the model: a signal), `neonrain/baselines/runner.py` | R-007 | `harness/goldens/` |
 | The network | `neonrain/models/` (phase 4) | R-009 | `docs/RESULTS.md` |
 | The scorer and the news ledger | `neonrain/scorer/`, `neonrain/ledger/` (phase 5) | `docs/LEDGER.md`, R-008 | `test/test_ledger.py` |
 | Reporting a number | `docs/RESULTS.md`, `harness/trials.tsv` | P-07, R-014 | `test/test_results.py` |

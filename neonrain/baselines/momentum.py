@@ -34,10 +34,10 @@ SKIP = 21  # the most recent sessions left out
 SPAN = LOOKBACK - SKIP  # sessions between the window's two closes
 
 
-def window_returns(prices: pl.DataFrame, calendar: list[date]) -> pl.DataFrame:
-    """ticker, pos (the closing session's place on the calendar), date, value: the total return over `SPAN` sessions
+def window_returns(prices: pl.DataFrame, calendar: list[date], span: int = SPAN) -> pl.DataFrame:
+    """ticker, pos (the closing session's place on the calendar), date, value: the total return over `span` sessions
     ending at that session, for each usable close whose window has every session present; refuses a date off the
-    calendar."""
+    calendar. Reversal (`neonrain.baselines.reversal`) counts its own window with the same rule."""
     places = pl.DataFrame({"date": calendar, "pos": range(len(calendar))}, schema={"date": pl.Date, "pos": pl.Int64})
     rows = prices.select("ticker", "date", "close").join(places, on="date", how="left")
     off = rows.filter(pl.col("pos").is_null())
@@ -45,20 +45,30 @@ def window_returns(prices: pl.DataFrame, calendar: list[date]) -> pl.DataFrame:
         raise ValueError(f"price row ({off['ticker'][0]}, {off['date'][0]}) is off the calendar")
     good = rows.filter(pl.col("close").is_not_null() & pl.col("close").is_finite() & (pl.col("close") > 0))
     good = good.sort("ticker", "pos")
-    whole = (pl.col("pos") - pl.col("pos").shift(SPAN).over("ticker")) == SPAN
-    value = pl.when(whole).then(pl.col("close") / pl.col("close").shift(SPAN).over("ticker") - 1.0).otherwise(None)
+    whole = (pl.col("pos") - pl.col("pos").shift(span).over("ticker")) == span
+    value = pl.when(whole).then(pl.col("close") / pl.col("close").shift(span).over("ticker") - 1.0).otherwise(None)
     return good.select("ticker", "pos", "date", value.alias("value")).filter(pl.col("value").is_not_null())
+
+
+# Decision: HAR-07 (a score above 0.5 predicts an up label, so the day's rank fraction puts the median at 0.5)
+def rank_scores(prices: pl.DataFrame, universe: pl.DataFrame, calendar: list[date], span: int, skip: int,
+                descending: bool = False) -> pl.DataFrame:
+    """The score frame of a baseline that ranks a return: columns ticker, date, score (Float64), stamp (Date), one row
+    for each universe cell whose `span`-session return, ending `skip` sessions before the cell's date, has a value, in
+    the universe's own row order. The score is the day's rank fraction of that return, or of its negation when
+    `descending` (the highest return then scores lowest); the stamp is the closing session of the window."""
+    places = pl.DataFrame({"date": calendar, "pos": range(len(calendar))}, schema={"date": pl.Date, "pos": pl.Int64})
+    cells = universe.join(places, on="date", maintain_order="left").with_columns(before=pl.col("pos") - skip)
+    known = window_returns(prices, calendar, span).rename({"pos": "before", "date": "stamp"})
+    held = cells.join(known, on=["ticker", "before"], maintain_order="left")
+    rank = pl.col("value").rank("average", descending=descending).over("date") - 1.0
+    width = pl.len().over("date") - 1.0
+    score = pl.when(width == 0).then(0.5).otherwise(rank / width)
+    return held.select("ticker", "date", score.alias("score"), "stamp")
 
 
 # Decision: HAR-07 (a score above 0.5 predicts an up label, so the day's rank fraction puts the median at 0.5)
 def scores(prices: pl.DataFrame, universe: pl.DataFrame, calendar: list[date]) -> pl.DataFrame:
     """The score frame of the 12-1 momentum baseline: columns ticker, date, score (Float64), stamp (Date), one row for
     each universe cell that has a momentum, in the universe's own row order."""
-    places = pl.DataFrame({"date": calendar, "pos": range(len(calendar))}, schema={"date": pl.Date, "pos": pl.Int64})
-    cells = universe.join(places, on="date", maintain_order="left").with_columns(before=pl.col("pos") - SKIP)
-    known = window_returns(prices, calendar).rename({"pos": "before", "date": "stamp"})
-    held = cells.join(known, on=["ticker", "before"], maintain_order="left")
-    rank = pl.col("value").rank("average").over("date") - 1.0
-    width = pl.len().over("date") - 1.0
-    score = pl.when(width == 0).then(0.5).otherwise(rank / width)
-    return held.select("ticker", "date", score.alias("score"), "stamp")
+    return rank_scores(prices, universe, calendar, SPAN, SKIP)

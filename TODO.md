@@ -55,7 +55,9 @@ the caller hands in the labels; (4) a constant score still gets a portfolio (tie
 is defined, not undefined as this item expected (reported as the harness computes it, NR-F-10); (5) the DSR's V is
 taken from the Sharpe_10bps lines in the file (HAR-07, HAR-09), and a rerun of the same config marks no line: the
 DSR is excepted from HAR-01's conflict rule. Task (b) is built (`neonrain/baselines/momentum.py`, glossary term
-**momentum**, `scripts/baseline_run.py momentum`); task (c) is next.
+**momentum**, `scripts/baseline_run.py momentum`). Task (c) is built (`neonrain/baselines/reversal.py`, glossary term
+**reversal**, `scripts/baseline_run.py reversal`; the prior 21-session return negated, stamped *t*, ranked with
+`momentum.rank_scores`); all three tasks are done and the item awaits review.
 
 ### 3.2 LightGBM
 
