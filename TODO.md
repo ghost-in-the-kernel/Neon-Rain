@@ -28,62 +28,6 @@ Nothing under `neonrain/baselines/` existed before this phase; 1.6 passed, so it
 WIKI's licence is accepted for private research and a portfolio piece (D-002, in `neon-rain-data`):
 its results may be reported, none licensed or sold. Every result is for two periods apart (R-026).
 
-### 3.1 Zero, momentum, reversal
-
-Plan: ROADMAP 3.1. One item, three tasks in order, a fresh agent each: (a) the zero baseline and the
-runner, (b) momentum (12-1), (c) short-term reversal (1 month). The zero baseline scores 0.5 for
-every cell (predicting the median is predicting excess 0, HAR-02); the harness reports what that
-gives (accuracy as it is; IC undefined with every date in `dropped_flat`; the portfolio as HAR-07 gives a
-constant: the tie-break's book, its after-cost Sharpe the turnover floor, NR-F-10), and that is
-the result. The feature table has no 12-month return: momentum and reversal are signals from the
-verified prices (`neonrain/universe/prices.py`), each with a glossary term before its file (P-08).
-Check: (a) zero, a score of 0.5 for every cell (the median's excess is 0), through the frozen
-harness on the feature table at all four horizons, each period apart (R-026): a line in
-`harness/trials.tsv` per (horizon, metric) with both axes' dispersion (HAR-08) and the three cost
-levels (HAR-06), by a runner in `neonrain/baselines/` that calls the harness and reimplements none
-of it, every golden byte-identical (HAR-14); for zero the IC is undefined with every date in
-`dropped_flat`, and the portfolio as HAR-07 gives a constant: the tie-break's book, its after-cost
-Sharpe the turnover floor (NR-F-10); (b) 12-1 momentum and (c) 1-month reversal, each a
-glossary term and a stamped signal from the verified prices (HAR-12), through the same runner,
-the same lines. Three tasks, (a) first; no number reaches `docs/RESULTS.md` before 3.3.
-
-Task (a) is built (`neonrain/baselines/`, `scripts/baseline_run.py`; the zero baseline's lines are in
-`harness/trials.tsv`). Fable's five rulings are in decision R-032: (1) folds are HAR-03's on the whole
-calendar and a period selects test dates, a straddling fold being a cell in both; (2) the period is in the config
-hash's `split` since trials.tsv has no period column; (3) `baselines` may not import `targets` (modules.json), so
-the caller hands in the labels; (4) a constant score still gets a portfolio (ties order by ticker), so zero's Sharpe
-is defined, not undefined as this item expected (reported as the harness computes it, NR-F-10); (5) the DSR's V is
-taken from the Sharpe_10bps lines in the file (HAR-07, HAR-09), and a rerun of the same config marks no line: the
-DSR is excepted from HAR-01's conflict rule. Task (b) is built (`neonrain/baselines/momentum.py`, glossary term
-**momentum**, `scripts/baseline_run.py momentum`). Task (c) is built (`neonrain/baselines/reversal.py`, glossary term
-**reversal**, `scripts/baseline_run.py reversal`; the prior 21-session return negated, stamped *t*, ranked with
-`momentum.rank_scores`); all three tasks are done and the item awaits review.
-
-### 3.2 LightGBM
-
-Plan: ROADMAP 3.2. The hyperparameters are a decision in `theGhost.md` (take its id from
-`scripts/next_id.py decision`) and sit in the config hash's `model.hyperparameters` (HAR-01).
-LightGBM 4.7.0 is in `requirements.lock`: no dependency changes.
-Step (a) is built: the runner's per-cell fit (`runner.Fit`, `fitted_rows`: one model for each horizon, fold and
-held-out group, trained on `split.cell`'s purged rows of the other groups, scoring every feature row of the held-out
-group's test span; a fold's two periods share its model; the fixed-score path is untouched), `neonrain/baselines/tree.py`
-with the hyperparameters of R-034 (ruled by Claude Fable: chosen blind, fixed 200 rounds, no early stopping; labels are
-`direction` with ties out; a row with every feature null is scored), `test/test_tree.py`, and one timed real fit with no
-trials line (J-077). Step (b), the wiring, is built: `scripts/baseline_run.py tree <data clone> <YYYY-MM-DD> <progress log>`
-loads the feature table from the artifact store (`feature_table.load`: the index by the manifest row's hash, each year by
-the index's, `verified.read_verified` before a byte is parsed), takes the sixteen feature names from `table.columns()`
-(`feature_table.feature_names`), and appends one line to the log (never inside the repository) as each (horizon, fold) is
-done (`runner.evaluate`'s optional `progress`); the three fixed-score baselines are unchanged. **The feature table is rebuilt** on the baselines' universe (J-079): `prices.universe`, one function
-`feature_table.build`, `baseline_run.py` and the wiki_normalize probe all call (raw close and volume through
-`for_membership`), so they cannot drift again; the new index hash is in MANIFEST's `feature-table` row, and the
-`feature_market` guard passes on the rebuilt files. **Next:** Opus stores the 21 files in `neon-rain-artifacts` and
-fetches them into a fresh clone to compare; then the full run, about 3.3 hours in the background, all four
-horizons, after the final code and the gate. Until the files are stored, `feature_table.load` cannot fetch the table. **The run is resumable, horizon by horizon** (the first attempt died at horizon 21, fold 19 of 32, after 2 hours, with nothing written): `scripts/baseline_run.py tree <clone> <date> <progress log> <checkpoint dir> [--horizons 3,5,21,63]` saves each finished horizon in `neonrain/baselines/checkpoint.py`'s file (a zip of JSON, parquet and .npy, no pickle; atomic rename; named by the run's name, config hash and horizon) outside the repository, loads what is saved on the next start, and writes the lines only when all four are present; `--horizons` computes only those named and exits 0 with no line. Open: the config hash holds no code version, so a change to the runner or `tree.py` under unchanged hyperparameters keeps a checkpoint's name; delete the directory after such a change.
-Check: the tree trains on the feature table's sixteen features, one model per grid cell, with a
-hyperparameter set recorded once as a decision in `theGhost.md` and carried in the config hash
-(HAR-01), no search; its lines in `harness/trials.tsv` as 3.1's, both periods apart; the lock
-unchanged (LightGBM 4.7.0 is in it) and every golden byte-identical.
-
 ### 3.3 Baseline goldens and the first results table
 
 Plan: ROADMAP 3.3. The fast loop has no data (AGT-01), so a baseline golden is held by its hash in

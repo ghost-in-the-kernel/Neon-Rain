@@ -214,3 +214,23 @@ journal index's columns named where they are written, the manifest's rule for a 
 Fast loop 22.9 s, full check 4.8 min, on a quiet machine. By a fresh Claude Sonnet agent under
 `docs/rules/tithe.md`. Check: AGENT.md re-measured; every debrief given a verdict, the log wiped and
 "Last review" moved; open questions in the journal. ✓ Phase 2 is done.
+
+## Phase 3: baselines
+
+### 3.1 Zero, momentum, reversal — done 2026-10-29 (J-071 to J-076)
+
+The runner (`neonrain/baselines/runner.py`, `record.py`) calls the frozen harness and reimplements none of it;
+zero (0.5 for every cell), 12-1 momentum and 1-month reversal, each a glossary term and a stamped signal from the
+verified prices, run on WIKI with 56 lines each in `harness/trials.tsv`, both periods apart (R-026). Fable's
+rulings in R-032 (results by period, the DSR outside the conflict rule, V defined) and NR-F-10 (zero's
+alphabetical book). Built by fresh Claude Sonnet agents under R-030. Check: a line per (period, horizon, metric)
+with both dispersions and the three costs; zero's IC undefined with every date in `dropped_flat` and its portfolio
+the tie-break's book (NR-F-10); every golden byte-identical. ✓
+
+### 3.2 LightGBM — done 2026-10-30 (J-077 to J-082)
+
+The runner's per-cell fit (one model per horizon, fold and held-out group, HAR-05) and `neonrain/baselines/tree.py`
+with one fixed set chosen blind (R-034); the feature table rebuilt on the raw-ranked universe the baselines use
+(J-079); the run made resumable by horizon (J-081) and run on WIKI in four pieces (J-082). Check: sixteen
+features, one model per grid cell, the set recorded once and carried in the config hash, no search; 56 lines as
+3.1's, both periods apart; the lock unchanged; every golden byte-identical. ✓
