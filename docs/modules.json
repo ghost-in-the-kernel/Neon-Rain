@@ -25,7 +25,7 @@
   },
   {
    "id": "MOD-05",
-   "rule": "Nothing but scripts/fetch and the forward test reads the clock.",
+   "rule": "Nothing under neonrain/ reads the clock; a run's date is the caller's (HAR-09). Outside it only scripts/fetch, the forward test and a script's progress log may, and a time read there enters no result.",
    "source": "ROADMAP 3.1"
   },
   {

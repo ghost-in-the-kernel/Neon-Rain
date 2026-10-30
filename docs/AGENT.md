@@ -22,8 +22,18 @@ until a metric is first measured within its target it is "not armed" and not com
 - **AGT-06 Every number carries its trials line and its dispersion** (P-07). An agent never reports a
   metric from a run that wrote no line.
 - **AGT-07 The session is the machine.** There is no CI and no local run (R-003);
-  `scripts/precommit.sh` is the gate and the agent runs it, every push, and quotes it.
+  `scripts/precommit.sh` is the gate and the agent runs it, every push, and quotes it. What the machine is: below.
 - **AGT-08 Data and artifacts are fetched by hash**, never assumed present and never committed.
+
+## The machine
+
+Measured facts, not contract items; a tithe pass re-measures them.
+
+- 4 cores, 15 GB. The tree baseline's real-data run peaks near 7 GB, 4.3 GB of it the price load (J-077).
+- A background task lives at most 2 hours, and an idle container is reclaimed within minutes. A live background
+  task keeps the session; a scheduled check-in does not. A run longer than 2 hours is cut into pieces (J-081).
+- The container restarts without warning, and a restart stops every process: keep notes and checkpoints on disk.
+- The scratchpad is shared across sessions: a file of an old name may already be there (`docs/rules/done.md` (h)).
 
 ## The metrics
 

@@ -88,3 +88,4 @@ Written by `python3 -I scripts/journal_index.py` from `docs/journal/`; do not ed
 | J-082 | Step 3.2 (b): the tree baseline run on WIKI, in four checkpointed pieces; 3.2 done | measurement | `J-081-090.md:28` |
 | J-083 | Step 3.3: the baseline goldens held by hash, RESULTS.md's first table, and the expectation missed (NR-F-11) | measurement | `J-081-090.md:43` |
 | J-084 | Tithe pass 3: phase 3's routing measured, twelve debriefs; phase 3 done | decision | `J-081-090.md:68` |
+| J-085 | Tithe pass 3's open questions ruled by Claude Fable; nothing to Ghost | decision | `J-081-090.md:92` |

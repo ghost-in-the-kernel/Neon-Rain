@@ -1,4 +1,6 @@
-"""Every import under neonrain/ is one docs/modules.json allows, and MOD-01 to MOD-05 hold (test/test_modules.py)."""
+"""Every import under neonrain/ is one docs/modules.json allows, and MOD-01 to MOD-05 hold there (test/test_modules.py).
+
+MOD-05 is checked under neonrain/ only, which is where it binds: outside it, a time read enters no result."""
 import ast
 import json
 from pathlib import Path

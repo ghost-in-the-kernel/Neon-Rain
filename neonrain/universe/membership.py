@@ -47,6 +47,8 @@ def median_dollar_volume(prices: pl.DataFrame, sessions: list[date]) -> pl.DataF
 def universe(prices: pl.DataFrame, sessions: list[date]) -> pl.DataFrame:
     """The harness's universe frame: columns `ticker`, `date`, one row per eligible name per date.
 
+    Takes raw prices only (J-079): callers build a universe with `prices.universe`, which hands this `for_membership(prices)`.
+
     On each date, the UNIVERSE_SIZE names with the largest median dollar volume (ties to the earlier ticker), among
     names with a price row that day; fewer when fewer qualify. The first 62 sessions of the frame's names have no
     full window, so the frame starts 63 sessions after the first price row.

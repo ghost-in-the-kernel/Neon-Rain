@@ -30,6 +30,16 @@ its results may be reported, none licensed or sold. Every result is for two peri
 
 ## Phase 4: the network
 
+### 4.0 Before the network: each trials line names its model; the feature table fetched in one command
+
+Plan: Claude Fable's rulings on tithe pass 3's open questions (J-085). (a) HAR-09's file format is frozen, and the
+`note` field already opens with `period=`; the baseline runner's record path writes `model=<name>; period=<p>;` first,
+and `test/test_results.py` reads a model's lines by it. Existing lines keep their mapping in the goldens (R-036),
+nothing is rewritten. (b) `scripts/fetch/feature_table.py`'s `main` gains a `fetch DATA_CLONE OUT_DIR` form over
+`fetch()` (prints the index hash, the same exit codes), tested in `test/test_feature_table.py`.
+Check: every trials line written after this item carries `model=` first in its note and `test_results` reads it; the
+feature table is fetched, all years verified by hash, by one command.
+
 ## Phase 5: news
 
 ## Phase 6: the news-augmented model and the ablations

@@ -194,7 +194,9 @@ portfolio metrics carry costs.
 ## HAR-07 The metrics, defined exactly
 
 Let a run produce, for each horizon, a set of test-set predictions: for direction, a score in [0, 1]
-per (i, t); for rank, a real-valued score per (i, t) whose order is what matters.
+per (i, t); for rank, a real-valued score per (i, t) whose order is what matters. A direction score is the run's
+probability that `d = 1` (the ticker beats the cross-sectional median, HAR-02); 0.5 is indifference and `score > 0.5`
+is its call (R-032).
 
 - **Accuracy**: over test rows that have a direction label (a tie has none, HAR-02), the fraction
   where `(score > 0.5) == (d == 1)`. A score of exactly 0.5 predicts 0.
@@ -296,7 +298,8 @@ therefore judged over several seeds, never one.
 
 Every run appends tab-separated lines to `harness/trials.tsv`, which is git-tracked and
 append-only: `config_hash`, `date`, `horizon`, `metric`, `mean`, `dispersion`, `trials_so_far`,
-`note`. The first line of the file is these eight names joined by tabs. A run appends one line for
+`note`. A hash names one period where a result is reported by period: the period is in its `split` (HAR-01,
+R-032 (a)), so two periods of one run are two hashes. The first line of the file is these eight names joined by tabs. A run appends one line for
 each (horizon, metric) pair it reports (HAR-01). `trials_so_far` is the count of lines before this one
 that share the metric, whatever their hash or horizon and whether they failed or not — a run's own
 earlier lines count, and so does a repeat of an earlier run. The `N` of HAR-07's DSR is
