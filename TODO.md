@@ -28,12 +28,6 @@ Nothing under `neonrain/baselines/` existed before this phase; 1.6 passed, so it
 WIKI's licence is accepted for private research and a portfolio piece (D-002, in `neon-rain-data`):
 its results may be reported, none licensed or sold. Every result is for two periods apart (R-026).
 
-### 3.4 Tithe pass 3
-
-Plan: `docs/rules/tithe.md`.
-Check: AGENT.md re-measured; every debrief given a verdict, the log wiped and "Last review"
-moved; open questions in the journal (R-023); Opus's phase-boundary report to Ghost (R-030 (d)).
-
 ## Phase 4: the network
 
 ## Phase 5: news

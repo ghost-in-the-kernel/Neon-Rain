@@ -9,7 +9,7 @@ apart. Add a term before using a new word for a concept (Katana R-039's rule).
 
 | Term | Means | Not |
 | --- | --- | --- |
-| **universe** | the set of tickers eligible on a given date, with dates in and out | watchlist, basket, index (an index is a published one) |
+| **universe** | the set of tickers eligible on a given date, with dates in and out. Build it with `prices.universe` (raw prices, J-079), never `membership.universe`, which takes any prices and ranks adjusted ones wrongly | watchlist, basket, index (an index is a published one) |
 | **dollar volume** | raw (unadjusted) close times volume for one ticker on one day; the universe ranks tickers by its median over 63 sessions (TODO 2.1b) | turnover, notional |
 | **calendar** | the ordered NYSE trading dates (whole days), derived by rule in `neonrain/universe/calendar.py` (TODO 2.1a); the harness counts horizons on it | trading days list, holiday file |
 | **horizon** | one of the four forward windows: 3, 5, 21, 63 trading days | window (a window looks back), period, `timeframe` |

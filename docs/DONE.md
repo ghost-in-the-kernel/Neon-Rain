@@ -245,3 +245,11 @@ byte-identical with no data; the table's rows each carry a trials line, both dis
 NR-F-03 or NR-F-04; `test/test_results.py` green with rows present; the expectation set against the results, its
 miss a finding. ✓ Open for phase 4: its results table needs the Model column (`scripts/checks/results.py` pairs a
 model's two periods by it).
+
+### 3.4 Tithe pass 3 — done 2026-10-30 (J-084)
+
+Twelve debriefs given verdicts and phase 3's routing measured; document fixes only (two routing rows, the
+glossary's universe, the feature table's manifest line, MUTATION.md, done.md's trap (h)). Fast loop 31.96 s, full
+check 8.25 min. By a fresh Claude Sonnet agent under `docs/rules/tithe.md`. Check: AGENT.md re-measured; every
+debrief given a verdict, the log wiped and "Last review" moved; open questions in the journal; Opus's
+phase-boundary report to Ghost. ✓ Phase 3 is done.
