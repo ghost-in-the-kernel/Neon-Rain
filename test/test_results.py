@@ -147,3 +147,35 @@ def test_a_row_with_no_run_and_one_period_is_named_by_a_question_mark() -> None:
     assert "? 5 is reported for the survivor-only period only, not for the from-2014-04-01 (R-026)" in results.problems(
         HEADER + row, TRIALS
     )
+
+
+# --- A model's periods are paired by the model, though each period's run has its own hash ---------------------------
+
+MODEL_HEADER = ("| Run | Model | Horizon | Period | Folds: mean ± sd [min, max] | Groups: mean ± sd [min, max] | Findings |\n"
+                "| --- | --- | --- | --- | --- | --- | --- |\n")
+TWO_RUNS = TRIALS + "cd34\t2026-11-01\t5\tIC\t0.02\t0.01\t3\t\n"
+MODEL_ROW = "| ab12 | zero | 5 | survivor-only | 0.02 ± 0.01 [0.00, 0.04] | 0.02 ± 0.02 [-0.01, 0.05] | NR-F-03 |\n"
+
+
+def test_a_model_with_a_run_for_each_period_holds() -> None:
+    later = MODEL_ROW.replace("ab12", "cd34").replace("survivor-only", "from-2014-04-01")
+    assert results.problems(MODEL_HEADER + MODEL_ROW + later, TWO_RUNS) == []
+
+
+def test_a_model_reported_for_one_period_only_is_named_by_the_model() -> None:
+    assert results.problems(MODEL_HEADER + MODEL_ROW, TWO_RUNS) == [
+        "zero 5 is reported for the survivor-only period only, not for the from-2014-04-01 (R-026)"
+    ]
+
+
+def test_two_models_with_the_same_run_cell_are_not_paired_with_each_other() -> None:
+    other = MODEL_ROW.replace("zero", "tree").replace("survivor-only", "from-2014-04-01")
+    assert results.problems(MODEL_HEADER + MODEL_ROW + other, TRIALS) == [
+        "zero 5 is reported for the survivor-only period only, not for the from-2014-04-01 (R-026)",
+        "tree 5 is reported for the from-2014-04-01 period only, not for the survivor-only (R-026)",
+    ]
+
+
+def test_a_run_with_no_model_cell_is_named_by_its_run() -> None:
+    assert results.label({"Run": "ab12", "Model": "", "Horizon": "5", "Metric": "IC"}) == "ab12 5 IC"
+    assert results.label({"Run": "ab12", "Model": "zero", "Horizon": "5"}) == "zero 5"

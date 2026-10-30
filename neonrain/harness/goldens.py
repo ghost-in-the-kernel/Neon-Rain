@@ -32,6 +32,10 @@ CONFIG = {"feature_columns": ["edge"], "target": {"horizons": list(targets.HORIZ
           "cost": {"levels_bps": list(portfolio.COST_LEVELS_BPS), "default_bps": portfolio.DEFAULT_COST_BPS},
           "model_name": "edge-rank", "hyperparameters": {}, "data_manifest": {"synthetic": "seed-7"}}
 DECISION = re.compile(r"R-\d{3}")
+# A baseline's golden holds a run on the real data (3.3): the fast loop has no data (AGT-01), so it is held by the hash
+# the index keeps and never recomputed; it was written by a TODO step ("3.3") and changes only under a decision.
+HELD = re.compile(r"baseline_[a-z]+\.json")
+STEP = re.compile(r"\d+\.\d+")
 
 
 class GoldenChange(Exception):
@@ -152,17 +156,32 @@ def in_force(ghost: str, decision: str) -> bool:
     return entry is not None and re.search(r"^- \*\*Status:\*\* in force$", entry.group(0), re.MULTILINE) is not None
 
 
-def index_text(files: dict[str, str], changed_by: dict[str, str]) -> str:
-    """The index: the harness version and, per golden, its SHA-256 and what last changed it (FIRST or a decision)."""
-    return dumped({"harness_version": trials.HARNESS_VERSION,
-                   "files": {name: {"sha256": sha256(text), "changed_by": changed_by[name]}
-                             for name, text in sorted(files.items())}})
+def is_held(name: str) -> bool:
+    """Whether a golden is a baseline's, held by its hash (baseline_zero.json), not one the harness recomputes."""
+    return HELD.fullmatch(name) is not None
+
+
+def entries(files: dict[str, str], changed_by: dict[str, str]) -> dict[str, dict[str, str]]:
+    """The index entry of each golden: its SHA-256 and what last changed it (FIRST, a TODO step or a decision)."""
+    return {name: {"sha256": sha256(text), "changed_by": changed_by[name]} for name, text in sorted(files.items())}
+
+
+def index_text(found: dict[str, dict[str, str]]) -> str:
+    """The index: the harness version and every golden's entry."""
+    return dumped({"harness_version": trials.HARNESS_VERSION, "files": found})
 
 
 def recorded(directory: Path) -> dict[str, dict[str, str]]:
     """The index's files entry, {} where there is no index."""
     path = directory / INDEX
     return json.loads(path.read_text())["files"] if path.is_file() else {}
+
+
+def split_index(directory: Path) -> tuple[dict[str, dict[str, str]], dict[str, dict[str, str]]]:
+    """The index's entries as (the baseline goldens', the others')."""
+    found = recorded(directory)
+    return ({name: entry for name, entry in found.items() if is_held(name)},
+            {name: entry for name, entry in found.items() if not is_held(name)})
 
 
 # Decision: R-002 (a golden changes only under a decision in force, and the index says which)
@@ -173,7 +192,7 @@ def write(directory: Path, files: dict[str, str], ghost: str, decision: str | No
     and needs `decision`: an R-nnn in force in `ghost` (theGhost.md's text), kept in the index. Nothing is written
     when refused.
     """
-    old = recorded(directory)
+    held, old = split_index(directory)
     changed = sorted(name for name, text in files.items() if name not in old or (directory / name).read_text() != text)
     removed = sorted(set(old) - set(files))
     if old and (changed or removed) and decision is None:
@@ -187,8 +206,32 @@ def write(directory: Path, files: dict[str, str], ghost: str, decision: str | No
         (directory / name).write_text(files[name])
     for name in removed:
         (directory / name).unlink()
-    (directory / INDEX).write_text(index_text(files, by))
+    (directory / INDEX).write_text(index_text(entries(files, by) | held))
     return changed + removed
+
+
+# Decision: R-002 (a golden changes only under a decision in force; a new baseline golden is written by its TODO step)
+def write_held(directory: Path, files: dict[str, str], ghost: str, changed_by: str) -> list[str]:
+    """Record baseline goldens (HELD names) beside the others, which stay as they are; returns the names written.
+
+    A new golden is written by a TODO step ("3.3") or a decision in force; one that exists and would differ is
+    rewritten only under a decision in force (HAR-14). Nothing is written when refused.
+    """
+    found = recorded(directory)
+    changed = sorted(name for name, text in files.items()
+                     if name not in found or (directory / name).read_text() != text)
+    rewritten = [name for name in changed if name in found]
+    if not all(is_held(name) for name in files):
+        raise GoldenChange(f"{', '.join(n for n in files if not is_held(n))} is no baseline golden (HAR-14)")
+    if changed and not (in_force(ghost, changed_by) or (not rewritten and STEP.fullmatch(changed_by))):
+        raise GoldenChange(f"{', '.join(changed)} would change: pass a step for a new golden, a decision in force "
+                           f"for a changed one (HAR-14, R-002), not {changed_by!r}")
+    directory.mkdir(parents=True, exist_ok=True)
+    for name in changed:
+        (directory / name).write_text(files[name])
+    found |= entries({name: files[name] for name in changed}, {name: changed_by for name in changed})
+    (directory / INDEX).write_text(index_text(found))
+    return changed
 
 
 def first_difference(golden: str, found: str) -> str:
@@ -212,9 +255,29 @@ def file_problems(directory: Path, name: str, text: str, entry: dict[str, str] |
     return found
 
 
+def held_problems(directory: Path, held: dict[str, dict[str, str]], ghost: str) -> list[str]:
+    """What is wrong with the baseline goldens: one on disk the index lacks, missing, edited by hand, or changed_by
+    neither a TODO step nor a decision in force. Their numbers are not recomputed (AGT-01)."""
+    found = [f"{path.name} is not in {INDEX}" for path in sorted(directory.glob("baseline_*.json"))
+             if is_held(path.name) and path.name not in held]
+    for name, entry in sorted(held.items()):
+        path = directory / name
+        if not path.is_file():
+            found.append(f"{name} is missing from {directory.name}/ (HAR-14)")
+            continue
+        if entry["sha256"] != sha256(path.read_text()):
+            found.append(f"{name} was edited by hand: its hash is not the index's")
+        if STEP.fullmatch(entry["changed_by"]) is None and not in_force(ghost, entry["changed_by"]):
+            found.append(f"{name} was changed by {entry['changed_by']}, which is no TODO step and not in force in theGhost.md")
+    return found
+
+
 def check(directory: Path, files: dict[str, str], ghost: str) -> list[str]:
-    """Every disagreement between the goldens on disk and the harness's `files`, [] when there is none."""
-    old = recorded(directory)
+    """Every disagreement between the goldens on disk and the harness's `files`, [] when there is none.
+
+    The baseline goldens are held by their hashes (held_problems); the rest are recomputed and compared.
+    """
+    held, old = split_index(directory)
     found = [] if (directory / INDEX).is_file() else [f"{INDEX} is missing from {directory.name}/ (HAR-14)"]
     for name, text in sorted(files.items()):
         found += file_problems(directory, name, text, old.get(name))
@@ -228,4 +291,4 @@ def check(directory: Path, files: dict[str, str], ghost: str) -> list[str]:
     if (directory / INDEX).is_file():
         version = json.loads((directory / INDEX).read_text())["harness_version"]
         found += [] if version == trials.HARNESS_VERSION else [f"{INDEX} is for harness version {version}"]
-    return found
+    return found + held_problems(directory, held, ghost)

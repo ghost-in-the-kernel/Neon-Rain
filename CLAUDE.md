@@ -32,12 +32,12 @@ at the plan.
 | The adversarial tests (TODO 1.6) | `test/test_harness_adversarial.py`, `test/mirror_har07.py` (written blind; never edit) | HAR-03, HAR-08, HAR-10, HAR-12 | those two, `test/test_mirror.py` |
 | A dataset: fetch, manifest, universe; the calendar; a measuring script (`scripts/probe/`, run with `PYTHONPATH=.`) | `scripts/fetch/`, `data/MANIFEST.md` (phase 2); `neonrain/universe/calendar.py` | R-006; a dataset's licence: `neon-rain-data`'s theGhost.md (D-001, D-002) | `test/test_manifest.py`, `test/test_calendar.py` |
 | A feature family (phase 2) | `docs/modules.json` (`features`), `neonrain/features/returns.py` (the example: one file a family; features cannot import harness), `neonrain/features/common.py` (the shared helpers), `neonrain/harness/market.py` (the stamps) | HAR-12, MOD-04; `docs/GLOSSARY.md` (its term first) | one unit test per feature |
-| The goldens: the freeze, a harness change | `neonrain/harness/goldens.py`, `scripts/goldens.py` | HAR-14, R-002 | `test/test_golden_files.py`, `test/test_the_freeze.py` |
+| The goldens: the freeze, a harness change (`baseline_*.json` are held by hash, 3.3) | `neonrain/harness/goldens.py`, `scripts/goldens.py` | HAR-14, R-002 | `test/test_golden_files.py`, `test/test_the_freeze.py` |
 | A measurement through the frozen harness (a probe of the harness, not a trial, HAR-09) | `scripts/probe/survivorship.py` (the model; run with `PYTHONPATH=.`), `test/test_survivorship_probe.py` | NR-F-09, HAR-09 | its own test |
 | A baseline | `neonrain/baselines/momentum.py` (the model: a signal), `neonrain/baselines/runner.py` | R-007 | `harness/goldens/` |
 | The network | `neonrain/models/` (phase 4) | R-009 | `docs/RESULTS.md` |
 | The scorer and the news ledger | `neonrain/scorer/`, `neonrain/ledger/` (phase 5) | `docs/LEDGER.md`, R-008 | `test/test_ledger.py` |
-| Reporting a number | `docs/RESULTS.md`, `harness/trials.tsv` | P-07, R-014 | `test/test_results.py` |
+| Reporting a number (a baseline's golden and table: `scripts/baseline_goldens.py`) | `docs/RESULTS.md`, `harness/trials.tsv`, `scripts/baseline_goldens.py` | P-07, R-014, HAR-13 | `test/test_results.py`, `test/test_baseline_results.py` |
 | A bias, a leak, a failed hypothesis | `docs/FINDINGS.md` | P-03 | |
 | The agent's environment: metrics | `docs/AGENT.md`, `scripts/metrics.py` | AGT-01 to AGT-08 (AGENT.md) | `test/test_metrics.py` |
 | A document's test: what it holds | `scripts/checks/<check>.py`, `test/test_<check>.py` | the check's docstring | that test |

@@ -234,3 +234,14 @@ with one fixed set chosen blind (R-034); the feature table rebuilt on the raw-ra
 (J-079); the run made resumable by horizon (J-081) and run on WIKI in four pieces (J-082). Check: sixteen
 features, one model per grid cell, the set recorded once and carried in the config hash, no search; 56 lines as
 3.1's, both periods apart; the lock unchanged; every golden byte-identical. ✓
+
+### 3.3 Baseline goldens and the first results table — done 2026-10-30 (J-083)
+
+`harness/goldens/baseline_{zero,momentum,reversal,tree}.json`, each a baseline's latest real-data run per period
+read from `harness/trials.tsv`, held by hash (R-036); `docs/RESULTS.md`'s baseline table (216 rows) written from the
+goldens and held to them; NR-F-11, the expectation of ROADMAP 3.3 set against what came. Built by a fresh Claude
+Sonnet agent under R-030. Check: the four goldens listed in `index.json` with `changed_by` 3.3 and held
+byte-identical with no data; the table's rows each carry a trials line, both dispersions, the three costs and
+NR-F-03 or NR-F-04; `test/test_results.py` green with rows present; the expectation set against the results, its
+miss a finding. ✓ Open for phase 4: its results table needs the Model column (`scripts/checks/results.py` pairs a
+model's two periods by it).

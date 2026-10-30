@@ -495,5 +495,15 @@ for the freeze, or the `R-nnn` of the decision that last changed it. The check f
 the harness gives now (naming the golden and the first line that differs), when a golden was edited by hand (its
 hash is not the index's), when a golden is missing, unindexed or no longer the harness's, when `changed_by` is a
 decision not `in force` in `theGhost.md`, when any golden was changed under a decision while `harness_version` is still `"1"` (HAR-01), and when the index is for another `harness_version`. Writing a golden that
+
+**The baselines' goldens** (TODO 3.3) are of another kind: `baseline_<name>.json` holds the lines of a baseline's run on
+the real data, per period (the lines of `harness/trials.tsv` for a config hash and a date, parsed and not rounded: each
+metric's line number, mean, both axes' dispersion, the three cost levels as Sharpe metrics, and per horizon the dropped
+counts of HAR-02). The fast loop has no data (AGT-01), so such a golden is held by its hash in the index and never
+recomputed; its `changed_by` is the TODO step that wrote it (`"3.3"`) or a decision in force. A new one is written by a
+step or a decision; one that exists is rewritten only under a decision in force, and does not need a raised
+`harness_version`, since the harness did not compute it. `scripts/baseline_goldens.py` writes them and
+`test/test_baseline_results.py` shows each is what the trials lines say and that `docs/RESULTS.md`'s baseline table is
+what the goldens say.
 exists and would differ, adding one or removing one, is refused unless a decision in force is named, and it is kept
 in the index.

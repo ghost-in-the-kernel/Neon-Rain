@@ -53,8 +53,12 @@ def row_problems(row: dict[str, str], hashes: set[str]) -> list[str]:
 
 
 def label(row: dict[str, str]) -> str:
-    """What a reported number is of: its run, horizon and metric, the cells it has, joined by spaces."""
-    return " ".join(part for part in (cell(row, "Run") or "?", cell(row, "Horizon"), cell(row, "Metric")) if part)
+    """What a reported number is of: its model (else its run), horizon and metric, the cells it has, joined by spaces.
+
+    A WIKI model has one run per period (one config hash names one period), so a table that carries a Model column
+    pairs its periods by the model, and one without pairs them by the run."""
+    return " ".join(part for part in (cell(row, "Model") or cell(row, "Run") or "?", cell(row, "Horizon"),
+                                      cell(row, "Metric")) if part)
 
 
 def pairing_problems(rows: list[dict[str, str]]) -> list[str]:

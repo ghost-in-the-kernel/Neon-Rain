@@ -685,3 +685,21 @@ it is `in force`.
 - **Status:** in force
 - **See also:** R-002, R-024, R-031
 - **subject:** harness
+
+### R-036: A baseline's golden is its trials lines, held by hash, never recomputed
+- **Decision:** `harness/goldens/baseline_<name>.json` holds a baseline's real-data run per period: the lines of
+  `harness/trials.tsv` for its config hash and date, parsed and unrounded. The fast loop holds it by its hash in
+  `index.json` and never recomputes it, since the fast loop has no data (AGT-01). It is written by a TODO step
+  or a decision and rewritten only under a decision in force. Being no output of the harness, it needs no raised
+  `harness_version`. HAR-14 gains the paragraph that says so. `neonrain/harness/goldens.py` skips held goldens in
+  its comparison; the five synthetic goldens are unchanged. `docs/RESULTS.md`'s baseline table is written from
+  the goldens and held to them; each golden is held to the trials text (no market data read).
+- **Why:** TODO 3.3. A baseline's numbers cost hours of real-data compute and cannot be recomputed in the fast
+  loop; holding the lines by hash keeps them fixed and traceable, and HAR-14's freeze was written for numbers
+  the harness computes from the synthetic market.
+- **Held by:** docs/HARNESS.md (HAR-14); `neonrain/harness/goldens.py`; `scripts/checks/baseline_results.py`;
+  `test/test_golden_files.py`; `test/test_baseline_results.py`.
+- **Source:** built by a Claude Sonnet agent under R-030; recorded by Claude Opus on review, 2026-10-30 (J-083).
+- **Status:** in force
+- **See also:** R-002, R-032, R-035
+- **subject:** harness

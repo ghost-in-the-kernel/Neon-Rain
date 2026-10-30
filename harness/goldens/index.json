@@ -1,5 +1,21 @@
 {
  "files": {
+  "baseline_momentum.json": {
+   "changed_by": "3.3",
+   "sha256": "11779ecad25e467cf6613797335fffd9055d7c910956489d1c6e60cbd5774420"
+  },
+  "baseline_reversal.json": {
+   "changed_by": "3.3",
+   "sha256": "d4864ad5c0cb76c2660361dfaa99234650e04ce5c7a6687d6bb29a4a71331de4"
+  },
+  "baseline_tree.json": {
+   "changed_by": "3.3",
+   "sha256": "434bda28aff04c76b0b259be369816a1a66d6046ab2e687b3d000c26a0edc546"
+  },
+  "baseline_zero.json": {
+   "changed_by": "3.3",
+   "sha256": "f38d34e15c2b9ca7e17633bf4fff7d8d22cc509d2a40d878134d57eb35bd6e5a"
+  },
   "config_hash.json": {
    "changed_by": "1.7",
    "sha256": "fce485a69b6db63361833d5e68c515da33632f3fa9f0b8bca06dc8899d9ad26b"

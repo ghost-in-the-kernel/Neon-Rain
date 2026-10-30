@@ -188,3 +188,127 @@ def test_goldens_of_another_harness_version_are_caught(tmp_path: Path, monkeypat
     goldens.write(tmp_path, FILES, GHOST)
     monkeypatch.setattr(trials, "HARNESS_VERSION", "2")
     assert goldens.check(tmp_path, FILES, GHOST) == ["index.json is for harness version 1"]
+
+
+# --- The baselines' goldens: held by their hashes, never recomputed (TODO 3.3, AGT-01) --------------------------------
+
+HELD = {"baseline_zero.json": '{"baseline": "zero"}\n', "baseline_tree.json": '{"baseline": "tree"}\n'}
+
+
+def index_of(directory: Path) -> dict[str, dict[str, str]]:
+    return json.loads((directory / goldens.INDEX).read_text())["files"]
+
+
+@pytest.mark.parametrize("name", ["baseline_zero.json", "baseline_tree.json", "baseline_a.json"])
+def test_a_baseline_golden_is_held(name: str) -> None:
+    assert goldens.is_held(name)
+
+
+@pytest.mark.parametrize("name", ["synthetic_cells.json", "baseline_.json", "baseline_Zero.json", "baseline_zero.json.bak",
+                                  "old_baseline_zero.json", "baseline_zero2.json", "index.json"])
+def test_anything_else_is_not_held(name: str) -> None:
+    assert not goldens.is_held(name)
+
+
+def test_a_new_baseline_golden_is_written_by_a_step_and_indexed_beside_the_others(tmp_path: Path) -> None:
+    goldens.write(tmp_path, FILES, GHOST)
+    assert goldens.write_held(tmp_path, HELD, GHOST, "3.3") == ["baseline_tree.json", "baseline_zero.json"]
+    index = index_of(tmp_path)
+    assert index["baseline_zero.json"] == {"sha256": goldens.sha256(HELD["baseline_zero.json"]), "changed_by": "3.3"}
+    assert index["a.json"] == {"sha256": goldens.sha256(FILES["a.json"]), "changed_by": "1.7"}
+    assert (tmp_path / "baseline_tree.json").read_text() == HELD["baseline_tree.json"]
+    assert goldens.check(tmp_path, FILES, GHOST) == []
+
+
+def test_baseline_goldens_may_be_the_first_files_of_a_directory(tmp_path: Path) -> None:
+    goldens.write_held(tmp_path / "g", HELD, GHOST, "3.3")
+    assert sorted(index_of(tmp_path / "g")) == sorted(HELD)
+    assert json.loads((tmp_path / "g" / goldens.INDEX).read_text())["harness_version"] == trials.HARNESS_VERSION
+
+
+def test_writing_the_others_keeps_the_baseline_goldens_and_their_entries(tmp_path: Path) -> None:
+    goldens.write(tmp_path, FILES, GHOST)
+    goldens.write_held(tmp_path, HELD, GHOST, "3.3")
+    assert goldens.write(tmp_path, FILES | {"c.json": "c\n"}, GHOST, "R-002") == ["c.json"]
+    assert (tmp_path / "baseline_zero.json").read_text() == HELD["baseline_zero.json"]
+    assert index_of(tmp_path)["baseline_zero.json"]["changed_by"] == "3.3"
+    assert goldens.write(tmp_path, FILES | {"c.json": "c\n"}, GHOST) == []
+
+
+def test_writing_what_is_there_changes_no_baseline_golden(tmp_path: Path) -> None:
+    goldens.write_held(tmp_path, HELD, GHOST, "3.3")
+    before = (tmp_path / goldens.INDEX).read_text()
+    assert goldens.write_held(tmp_path, HELD, GHOST, "3.3") == []
+    assert (tmp_path / goldens.INDEX).read_text() == before
+
+
+@pytest.mark.parametrize("changed_by", ["R-009", "R-003", "3", "3.3.1", "x3.3", "3.3x", ""])
+def test_a_new_baseline_golden_needs_a_step_or_a_decision_in_force(tmp_path: Path, changed_by: str) -> None:
+    with pytest.raises(goldens.GoldenChange, match=r"baseline_tree.json, baseline_zero.json would change: pass a step"):
+        goldens.write_held(tmp_path, HELD, GHOST, changed_by)
+    assert not (tmp_path / "baseline_zero.json").exists()
+
+
+def test_a_new_baseline_golden_may_come_under_a_decision_in_force(tmp_path: Path) -> None:
+    goldens.write_held(tmp_path, HELD, GHOST, "R-020")
+    assert index_of(tmp_path)["baseline_tree.json"]["changed_by"] == "R-020"
+
+
+def test_a_baseline_golden_that_would_differ_needs_a_decision_in_force_not_a_step(tmp_path: Path) -> None:
+    goldens.write_held(tmp_path, HELD, GHOST, "3.3")
+    changed = HELD | {"baseline_zero.json": '{"baseline": "zero", "x": 1}\n'}
+    with pytest.raises(goldens.GoldenChange, match=r"baseline_zero.json would change: .*, not '3.3'"):
+        goldens.write_held(tmp_path, changed, GHOST, "3.3")
+    with pytest.raises(goldens.GoldenChange, match="not 'R-003'"):
+        goldens.write_held(tmp_path, changed, GHOST, "R-003")
+    assert (tmp_path / "baseline_zero.json").read_text() == HELD["baseline_zero.json"]
+    assert goldens.write_held(tmp_path, changed, GHOST, "R-020") == ["baseline_zero.json"]
+    index = index_of(tmp_path)
+    assert index["baseline_zero.json"] == {"sha256": goldens.sha256(changed["baseline_zero.json"]), "changed_by": "R-020"}
+    assert index["baseline_tree.json"]["changed_by"] == "3.3"
+    assert goldens.check(tmp_path, {}, GHOST) == []
+
+
+def test_a_golden_that_is_no_baseline_is_refused_by_write_held(tmp_path: Path) -> None:
+    with pytest.raises(goldens.GoldenChange, match=r"^a.json, b.json is no baseline golden \(HAR-14\)$"):
+        goldens.write_held(tmp_path, FILES | HELD, GHOST, "3.3")
+    assert not (tmp_path / "baseline_zero.json").exists()
+
+
+def test_baseline_goldens_are_checked_by_their_hashes_only(tmp_path: Path) -> None:
+    goldens.write_held(tmp_path, HELD, GHOST, "3.3")
+    assert goldens.check(tmp_path, {}, GHOST) == []
+    assert goldens.check(tmp_path, FILES, GHOST) == [f"{name} is missing from {tmp_path.name}/ (HAR-14)" for name in FILES]
+
+
+def test_a_baseline_golden_edited_by_hand_missing_or_unindexed_is_caught(tmp_path: Path) -> None:
+    goldens.write_held(tmp_path, HELD, GHOST, "3.3")
+    (tmp_path / "baseline_zero.json").write_text("edited\n")
+    (tmp_path / "baseline_tree.json").unlink()
+    (tmp_path / "baseline_new.json").write_text("new\n")
+    (tmp_path / "baseline_Bad.json").write_text("not a baseline name\n")
+    assert goldens.check(tmp_path, {}, GHOST) == [
+        "baseline_new.json is not in index.json",
+        f"baseline_tree.json is missing from {tmp_path.name}/ (HAR-14)",
+        "baseline_zero.json was edited by hand: its hash is not the index's"]
+
+
+def test_a_baseline_golden_changed_by_something_else_than_a_step_or_a_decision_in_force_is_caught(tmp_path: Path) -> None:
+    goldens.write_held(tmp_path, HELD, GHOST, "R-020")
+    assert goldens.check(tmp_path, {}, GHOST) == []
+    assert goldens.check(tmp_path, {}, GHOST.replace("R-020: Four\n- **Status:** in force", "R-020: Four\n- **Status:** proposed")) == [
+        "baseline_tree.json was changed by R-020, which is no TODO step and not in force in theGhost.md",
+        "baseline_zero.json was changed by R-020, which is no TODO step and not in force in theGhost.md"]
+
+
+def test_the_real_baseline_goldens_are_held_by_the_hashes_of_the_index(root: Path) -> None:
+    directory = root / "harness" / "goldens"
+    held, _ = goldens.split_index(directory)
+    assert sorted(held) == ["baseline_momentum.json", "baseline_reversal.json", "baseline_tree.json", "baseline_zero.json"]
+    assert {entry["changed_by"] for entry in held.values()} == {"3.3"}
+    assert goldens.held_problems(directory, held, (root / "theGhost.md").read_text()) == []
+
+
+def test_baseline_goldens_are_written_into_a_directory_that_has_no_parents_yet(tmp_path: Path) -> None:
+    goldens.write_held(tmp_path / "harness" / "goldens", HELD, GHOST, "3.3")
+    assert (tmp_path / "harness" / "goldens" / "baseline_zero.json").read_text() == HELD["baseline_zero.json"]

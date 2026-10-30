@@ -86,3 +86,4 @@ Written by `python3 -I scripts/journal_index.py` from `docs/journal/`; do not ed
 | J-080 | `portfolio.daily` partitions by date once (R-035); the first hand-back without the canary | decision | `J-071-080.md:199` |
 | J-081 | The tree run lost to an idle container; the run made resumable, horizon by horizon | failure-caught | `J-081-090.md:5` |
 | J-082 | Step 3.2 (b): the tree baseline run on WIKI, in four checkpointed pieces; 3.2 done | measurement | `J-081-090.md:28` |
+| J-083 | Step 3.3: the baseline goldens held by hash, RESULTS.md's first table, and the expectation missed (NR-F-11) | measurement | `J-081-090.md:43` |

@@ -28,17 +28,6 @@ Nothing under `neonrain/baselines/` existed before this phase; 1.6 passed, so it
 WIKI's licence is accepted for private research and a portfolio piece (D-002, in `neon-rain-data`):
 its results may be reported, none licensed or sold. Every result is for two periods apart (R-026).
 
-### 3.3 Baseline goldens and the first results table
-
-Plan: ROADMAP 3.3. The fast loop has no data (AGT-01), so a baseline golden is held by its hash in
-`index.json`, not recomputed; `scripts/goldens.py` keeps recomputing the synthetic ones.
-Check: `harness/goldens/baseline_<name>.json` for each of the four, listed in `index.json` with
-its hash and `changed_by` 3.3, held byte-identical by the fast loop with no data (AGT-01) and
-rewritten only by its run under a decision (HAR-14); `docs/RESULTS.md`'s baseline table has a row
-per (run, horizon, period, metric) and `test/test_results.py` is green with rows present (HAR-13:
-a trials line, both dispersions, the three costs, the dropped counts in the golden, NR-F-03 and
-NR-F-04 cited); the expectation in ROADMAP 3.3 is set against what came, and a miss is a finding (P-03).
-
 ### 3.4 Tithe pass 3
 
 Plan: `docs/rules/tithe.md`.
